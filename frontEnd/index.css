@@ -6,7 +6,7 @@
 }
 
 body {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
@@ -17,8 +17,8 @@ header {
     height: 70px;
     display: flex;
     align-items: center;
-    padding: 0 40px;
     justify-content: space-between;
+    padding: 0 40px;
 }
 
 .logo {
@@ -34,15 +34,18 @@ nav {
     gap: 40px;
 }
 
-nav a {
+nav a,
+.dropdown-btn {
     color: white;
     text-decoration: none;
     font-size: 16px;
     padding: 8px 10px;
     transition: background 0.2s;
+    cursor: pointer;
 }
 
-nav a:hover {
+nav a:hover,
+.dropdown-btn:hover {
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
 }
@@ -50,18 +53,6 @@ nav a:hover {
 /* LANGUAGE DROPDOWN */
 .dropdown {
     position: relative;
-}
-
-.dropdown-btn {
-    cursor: pointer;
-    color: white;
-    font-size: 16px;
-    padding: 8px 10px;
-}
-
-.dropdown-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
 }
 
 .dropdown-menu {
@@ -91,16 +82,20 @@ nav a:hover {
     display: flex;
 }
 
-/* MAIN AREA */
+/* MAIN CONTENT */
 main {
     flex: 1;
     background-color: #3f73b9;
+    padding: 30px 50px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 20px;
+    gap: 40px;
     color: white;
+}
+
+/* Centered main layout (for index page) */
+.center-content {
+    justify-content: center;
+    align-items: center;
 }
 
 .placeholder-text {
@@ -108,6 +103,62 @@ main {
     font-size: 18px;
     line-height: 1.5;
     opacity: 0.85;
+}
+
+.page-title {
+    text-align: center;
+    margin: 30px 0 0;
+    color: white;
+}
+
+/* SIDEBAR MENU */
+.sidebar {
+    width: 220px;
+    background-color: white;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    height: fit-content;
+}
+
+.sidebar a {
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    color: black;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+.sidebar a:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.sidebar a.active {
+    background-color: rgba(0, 0, 0, 0.15);
+    font-weight: bold;
+}
+
+/* CONTENT BOX */
+.content-box {
+    flex: 1;
+    background-color: white;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    overflow-y: auto;
+    max-height: calc(100vh - 70px - 110px);
+}
+
+.content-box h2 {
+    margin-bottom: 15px;
+    font-size: 22px;
+    color: black;
+}
+
+.content-box p {
+    margin-bottom: 40px;
+    line-height: 1.6;
+    font-size: 15px;
+    color: black;
 }
 
 /* FOOTER */
