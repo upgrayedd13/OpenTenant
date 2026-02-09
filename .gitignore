@@ -11,3 +11,9 @@ wheels/
 
 # Flask environment
 .env
+
+# VS Code
+**/.vscode/
+
+# Databases
+*.db
