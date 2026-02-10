@@ -21,8 +21,6 @@ def create_app():
         app.config.from_object(ProductionConfig)
     else:
         app.config.from_object(DevelopmentConfig)
-    print(os.getenv("FLASK_SECRET_KEY"))
-    print(app.config['SECRET_KEY'])
 
     # Initialize extensions with the app
     db.init_app(app)
@@ -33,7 +31,29 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
 
+    # TODO: Clean all of this up with routes
+
     # Routes
+    @app.route("/")
+    def homepage():
+        return render_template('index.html')
+
+    @app.route("/about")
+    def about():
+        return render_template('about.html')
+
+    @app.route("/login", methods=["GET", "POST"])
+    def login():
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = User.query.filter_by(username=form.username.data).first()
+            if user and user.check_password(form.password.data):
+                remember = request.form.get("remember") == "on"  # True if checkbox checked
+                login_user(user, remember=remember)  # <-- remember=True keeps session across browser restarts
+                return redirect(url_for("dashboard"))
+            flash("Invalid credentials")
+        return render_template("login.html", form=form)
+
     @app.route("/register", methods=["GET", "POST"])
     def register():
         form = RegisterForm()
@@ -53,19 +73,6 @@ def create_app():
 
         return render_template("register.html", form=form)
 
-    @app.route("/login", methods=["GET", "POST"])
-    def login():
-        form = LoginForm()
-        if form.validate_on_submit():
-            user = User.query.filter_by(username=form.username.data).first()
-            if user and user.check_password(form.password.data):
-                remember = request.form.get("remember") == "on"  # True if checkbox checked
-                login_user(user, remember=remember)  # <-- remember=True keeps session across browser restarts
-                return redirect(url_for("dashboard"))
-            flash("Invalid credentials")
-        return render_template("login.html", form=form)
-
-    @app.route("/", methods=["GET", "POST"])
     @app.route("/dashboard")
     @login_required
     def dashboard():
@@ -76,6 +83,14 @@ def create_app():
     def logout():
         logout_user()
         return redirect(url_for("login"))
+
+    @app.route("/contact")
+    def contact():
+        return render_template('contact.html')
+
+    @app.route("/bug")
+    def bug():
+        return render_template('bug.html')
 
     # Create database tables if they don't exist
     with app.app_context():
