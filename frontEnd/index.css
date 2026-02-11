@@ -329,6 +329,11 @@ footer a:hover {
     background-color: #5a8ed6;
 }
 
+a.account-btn, a.login-btn {
+    text-decoration: none;
+    text-align: center;
+}
+
 /* INFO ICON */
 .info-icon {
     display: inline-flex;
