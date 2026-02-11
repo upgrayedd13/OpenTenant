@@ -245,3 +245,235 @@ footer a:hover {
     padding: 6px 0;
     font-size: 12px;
 }
+
+/* ACCOUNT PAGE */
+.account-main {
+    flex: 1;
+    background-color: #3f73b9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.account-box {
+    background-color: white;
+    width: 90%;
+    max-width: 1200px;
+    min-height: 500px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.account-left {
+    flex: 3;
+}
+
+.account-left h2 {
+    color: black;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: black;
+    font-weight: 500;
+}
+
+.form-group input {
+    border: none;
+    border-bottom: 2px solid gray;
+    padding: 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+/* RIGHT BUTTONS */
+.account-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.account-btn {
+    background-color: #3f73b9;
+    color: white;
+    border: none;
+    padding: 18px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.account-btn:hover {
+    background-color: #5a8ed6;
+}
+
+/* INFO ICON */
+.info-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    font-size: 12px;
+    border: 1px solid black;
+    border-radius: 50%;
+    margin-left: 6px;
+    cursor: pointer;
+    position: relative;
+}
+
+/* TOOLTIP */
+.info-icon::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #b7c7e6;
+    color: black;
+    padding: 10px;
+    font-size: 12px;
+    width: 200px;
+    border: 1px solid black;
+    display: none;
+    z-index: 20;
+}
+
+.info-icon:hover::after {
+    display: block;
+}
+
+nav a.active-page {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* REGISTER PAGE */
+.register-main {
+    flex: 1;
+    background-color: #3f73b9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.register-box {
+    background-color: white;
+    width: 95%;
+    max-width: 1050px;
+    min-height: 520px;
+    border: 2px solid rgba(0, 0, 0, 0.4);
+    padding: 20px 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.register-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: black;
+    margin-bottom: 25px;
+}
+
+.register-form {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    flex: 1;
+}
+
+.register-fields {
+    flex: 2;
+}
+
+.register-row {
+    display: flex;
+    gap: 35px;
+    margin-bottom: 35px;
+}
+
+.register-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.register-group label {
+    font-size: 15px;
+    font-weight: 500;
+    color: black;
+}
+
+.register-group input {
+    border: none;
+    border-bottom: 2px solid gray;
+    padding: 6px;
+    font-size: 15px;
+    outline: none;
+    text-align: center;
+}
+
+.register-notes {
+    flex: 1;
+    font-size: 15px;
+    color: black;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 40px;
+    line-height: 1.5;
+}
+
+.submit-btn {
+    background-color: #3f73b9;
+    color: white;
+    border: 2px solid rgba(0,0,0,0.3);
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 30px;
+    width: 100%;
+    transition: background 0.2s;
+}
+
+.uploadLease-btn {
+background-color: #3f73b9;
+    color: white;
+    border: 2px solid rgba(0,0,0,0.3);
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 50px;
+    width: 100%;
+    transition: background 0.2s;
+}
+
+.submit-btn:hover, .uploadLease-btn:hover {
+    background-color: #5a8ed6;
+}
