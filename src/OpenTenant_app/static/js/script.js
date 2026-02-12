@@ -31,11 +31,11 @@ function updateLoginTab() {
 
     if (localStorage.getItem("loggedIn") === "true") {
         loginTab.textContent = "Account";
-        loginTab.href = "account.html";
+        loginTab.href = "/account";
         loginTab.classList.add("account-tab");
     } else {
         loginTab.textContent = "Login";
-        loginTab.href = "login.html";
+        loginTab.href = "/login";
         loginTab.classList.remove("account-tab");
     }
 }
@@ -60,7 +60,7 @@ if (loginBtn) {
         updateLoginTab();
 
         // Redirect to account page
-        window.location.href = "account.html";
+        window.location.href = "/account";
     });
 }
 
@@ -80,7 +80,7 @@ if (signOutBtn) {
         updateLoginTab();
 
         // Redirect to homepage
-        window.location.href = "index.html";
+        window.location.href = "/index";
     });
 }
 
