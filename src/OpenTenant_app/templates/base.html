@@ -1,55 +1,35 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-    <title>Open Tenant</title>
-</head>
-
-
-<body>
-    <h1>Welcome to Open Tenant!</h1>
-</body>
-
-</html><!DOCTYPE html>
 <html lang="en">
+
+<!-- Header metadata -->
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Secure Flask App{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LPM Tenant's Association{% endblock %}</title>
 
-    <!-- Basic hardening -->
+    <!-- Main style file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Basic hardening metadata -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
-
-    <style>
-        body {
-            font-family: sans-serif;
-            max-width: 600px;
-            margin: 2rem auto;
-        }
-        .flash {
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ccc;
-            background: #f5f5f5;
-        }
-        label {
-            display: block;
-            margin-top: 0.5rem;
-        }
-    </style>
 </head>
+
 <body>
+    <!-- Header -->
+    {% include "layout/_header.html" %}
 
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for message in messages %}
-          <div class="flash">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+    <!-- Handle flashed messages -->
+    {% include "components/_flash_messages.html" %}
 
+    <!-- Main part of the page -->
     {% block content %}{% endblock %}
 
+    <!-- Footer -->
+    {% include "layout/_footer.html" %}
+
+    <!-- JS files -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
+
 </html>

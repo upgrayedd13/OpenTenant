@@ -36,11 +36,11 @@ def create_app():
     # Routes
     @app.route("/")
     def homepage():
-        return render_template('index.html')
+        return render_template('pages/index.html')
 
     @app.route("/about")
     def about():
-        return render_template('about.html')
+        return render_template('pages/about.html')
 
     @app.route("/login", methods=["GET", "POST"])
     def login():
@@ -52,7 +52,7 @@ def create_app():
                 login_user(user, remember=remember)  # <-- remember=True keeps session across browser restarts
                 return redirect(url_for("dashboard"))
             flash("Invalid credentials")
-        return render_template("login.html", form=form)
+        return render_template("pages/login.html", form=form)
 
     @app.route("/register", methods=["GET", "POST"])
     def register():
@@ -71,12 +71,12 @@ def create_app():
             flash("Account created. Please log in.")
             return redirect(url_for("login"))
 
-        return render_template("register.html", form=form)
+        return render_template("pages/register.html", form=form)
 
     @app.route("/dashboard")
     @login_required
     def dashboard():
-        return render_template("dashboard.html", user=current_user)
+        return render_template("pages/dashboard.html", user=current_user)
 
     @app.route("/logout")
     @login_required
@@ -86,11 +86,11 @@ def create_app():
 
     @app.route("/contact")
     def contact():
-        return render_template('contact.html')
+        return render_template('pages/contact.html')
 
     @app.route("/bug")
     def bug():
-        return render_template('bug.html')
+        return render_template('pages/bug.html')
 
     # Create database tables if they don't exist
     with app.app_context():

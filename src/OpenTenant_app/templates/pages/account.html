@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Account{% endblock %}
+
+{% block content %}
+
+<main class="account-main">
+    <div class="account-box">
+
+        <!-- LEFT SIDE FORM -->
+        <div class="account-left">
+
+            <h2>Personal Info</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span></label>
+                    <input type="text" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Last Name <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span></label>
+                    <input type="text" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Pronouns (Optional) <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span></label>
+                    <input type="text">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email <span class="info-icon" data-tooltip="Used to contact you about your lease.">i</span></label>
+                    <input type="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number <span class="info-icon" data-tooltip="Used for urgent building contact.">i</span></label>
+                    <input type="text" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Preferred Contact Method <span class="info-icon" data-tooltip="Lets us know how to reach you.">i</span></label>
+                    <input type="text" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Occupation (Optional) <span class="info-icon" data-tooltip="Optional demographic info.">i</span></label>
+                    <input type="text">
+                </div>
+            </div>
+
+            <br><br><br>
+
+            <h2>Emergency Contact</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Contact Name <span class="info-icon" data-tooltip="Who we contact if there's an emergency.">i</span></label>
+                    <input type="text" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number <span class="info-icon" data-tooltip="Emergency contact phone number.">i</span></label>
+                    <input type="text" required>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDE BUTTONS -->
+        <div class="account-right">
+            <button class="account-btn">Download Current Lease</button>
+            <a href="upload-lease.html" class="account-btn">Upload New Lease</a>
+            <button class="account-btn">Upload Utilities</button>
+            <button class="account-btn" id="signOutBtn">Sign Out</button>
+        </div>
+
+    </div>
+</main>
+
+{% endblock %}

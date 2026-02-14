@@ -237,6 +237,12 @@ footer a:hover {
     text-decoration: underline;
 }
 
+footer .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
 .legal {
     background-color: #0a1c33;
     color: white;

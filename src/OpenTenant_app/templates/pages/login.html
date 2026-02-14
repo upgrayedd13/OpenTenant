@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<main class="login-main">
+    <form class="login-box" method="post">
+        {{ form.hidden_tag() }}
+        <label>{{ form.username.label }} {{ form.username(size=32) }}</label>
+        <label>{{ form.password.label }} {{ form.password(size=32) }}</label>
+        <label>{{ form.remember.label }} {{ form.remember() }}</label>
+        <button class="login-btn" type="submit">Login</button>
+    </form>
+</main>
+
+{% endblock %}
