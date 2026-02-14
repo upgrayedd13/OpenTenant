@@ -73,10 +73,10 @@ def create_app():
 
         return render_template("pages/register.html", form=form)
 
-    @app.route("/dashboard")
+    @app.route("/account")
     @login_required
-    def dashboard():
-        return render_template("pages/dashboard.html", user=current_user)
+    def account():
+        return render_template("pages/account.html", user=current_user)
 
     @app.route("/logout")
     @login_required
@@ -90,7 +90,7 @@ def create_app():
 
     @app.route("/bug")
     def bug():
-        return render_template('pages/bug.html')
+        return render_template('pages/bug_report.html')
 
     # Create database tables if they don't exist
     with app.app_context():
