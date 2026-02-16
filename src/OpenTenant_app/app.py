@@ -50,7 +50,7 @@ def create_app():
             if user and user.check_password(form.password.data):
                 remember = request.form.get("remember") == "on"  # True if checkbox checked
                 login_user(user, remember=remember)  # <-- remember=True keeps session across browser restarts
-                return redirect(url_for("dashboard"))
+                return redirect(url_for("account"))
             flash("Invalid credentials")
         return render_template("pages/login.html", form=form)
 

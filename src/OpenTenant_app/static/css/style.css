@@ -57,7 +57,7 @@ nav a:hover,
 
 .dropdown-menu {
     position: absolute;
-    top: 40px;
+    top: 100%;
     right: 0;
     background-color: #6fa94d;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -81,6 +81,7 @@ nav a:hover,
 .dropdown:hover .dropdown-menu {
     display: flex;
 }
+
 
 /* MAIN CONTENT */
 main {
@@ -117,6 +118,12 @@ main {
     background-color: white;
     border: 2px solid rgba(0, 0, 0, 0.3);
     height: fit-content;
+}
+
+.sidebar {
+    position: sticky;
+    top: 20px; /* how far from the top it stays */
+    align-self: flex-start;
 }
 
 .sidebar a {
@@ -240,7 +247,7 @@ footer a:hover {
 footer .row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 2rem;
 }
 
 .legal {
