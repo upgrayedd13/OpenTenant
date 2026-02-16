@@ -1,38 +1,32 @@
-const sidebar = document.querySelector(".sidebar");
 const menuLinks = document.querySelectorAll(".sidebar a");
 const contentBox = document.querySelector(".content-box");
 const sections = document.querySelectorAll(".content-box h2");
 
-// function to activate a link + move it to top
+// highlight sidebar link
 function setActiveLink(sectionId) {
     menuLinks.forEach(link => link.classList.remove("active"));
-
     const activeLink = document.querySelector(`.sidebar a[href="#${sectionId}"]`);
-
-    if (activeLink) {
-        activeLink.classList.add("active");
-        sidebar.prepend(activeLink);
-    }
+    if (activeLink) activeLink.classList.add("active");
 }
 
-// SCROLL DETECTION (updates sidebar automatically)
+// scroll detection
 contentBox.addEventListener("scroll", () => {
-    let currentSection = "";
+    let closestSection = null;
+    let closestDistance = Infinity;
 
     sections.forEach(section => {
-        const sectionTop = section.offsetTop;
+        const distance = Math.abs(section.offsetTop - contentBox.scrollTop);
 
-        if (contentBox.scrollTop >= sectionTop - 60) {
-            currentSection = section.id;
+        if (distance < closestDistance) {
+            closestDistance = distance;
+            closestSection = section;
         }
     });
 
-    if (currentSection) {
-        setActiveLink(currentSection);
-    }
+    if (closestSection) setActiveLink(closestSection.id);
 });
 
-// CLICK BEHAVIOR (jump to section + move tab to top)
+// click sidebar links
 menuLinks.forEach(link => {
     link.addEventListener("click", (e) => {
         e.preventDefault();
@@ -41,8 +35,10 @@ menuLinks.forEach(link => {
         const targetSection = document.getElementById(targetId);
 
         if (targetSection) {
+            const scrollPosition = targetSection.offsetTop - contentBox.offsetTop;
+
             contentBox.scrollTo({
-                top: targetSection.offsetTop,
+                top: scrollPosition,
                 behavior: "smooth"
             });
 
