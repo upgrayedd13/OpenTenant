@@ -558,3 +558,24 @@ background-color: #3f73b9;
 .submit-btn:hover, .uploadLease-btn:hover {
     background-color: #5a8ed6;
 }
+
+/* admin stuff */
+.admin-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 40px;
+}
+
+.admin-btn {
+    background-color: #4f73b8;
+    color: white;
+    padding: 18px 30px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+}
+
+.admin-btn:hover {
+    background-color: #3c5c99;
+}

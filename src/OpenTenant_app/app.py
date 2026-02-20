@@ -91,6 +91,10 @@ def create_app():
     @app.route("/bug")
     def bug():
         return render_template('pages/bug_report.html')
+    
+    @app.route("/admin")
+    def admin():
+        return render_template("admin.html")
 
     # Create database tables if they don't exist
     with app.app_context():
