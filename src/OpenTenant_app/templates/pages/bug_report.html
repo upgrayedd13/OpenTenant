@@ -3,11 +3,32 @@
 
 {% block content %}
 
-<main class="center-content">
-    Placeholder for bug report form
+<main class="bug-container">
+
+    <div class="bug-box">
+        <h2>Report a Bug</h2>
+
+        <form method="POST" class="bug-form">
+
+            <label for="name">Name</label>
+            <input type="text" name="name" required>
+
+            <label for="email">Email</label>
+            <input type="email" name="email" required>
+
+            <label for="description">Describe the Issue</label>
+            <textarea name="description" rows="5" required></textarea>
+
+            <button type="submit" class="bug-btn">
+                Submit Report
+            </button>
+
+        </form>
+    </div>
+
 </main>
 
 <!-- JS files -->
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 {% endblock %}

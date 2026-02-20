@@ -579,3 +579,54 @@ background-color: #3f73b9;
 .admin-btn:hover {
     background-color: #3c5c99;
 }
+
+/* Bug Page */
+
+.bug-container {
+    background-color: #4f73b8;
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.bug-box {
+    background: #e6e6e6;
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.bug-box h2 {
+    margin-bottom: 25px;
+    color: black;
+}
+
+.bug-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    color: black;
+}
+
+.bug-form input,
+.bug-form textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.bug-btn {
+    background-color: #4f73b8;
+    color: white;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.bug-btn:hover {
+    background-color: #3c5c99;
+}
