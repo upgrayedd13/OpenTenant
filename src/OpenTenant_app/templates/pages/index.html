@@ -2,9 +2,25 @@
 {% block content %}
 
 <main class="center-content">
-    <div class="placeholder-text">
-        <img src="{{ url_for('static', filename='images/example1.jpg') }}" class="homepage_images" alt="">
+    <div class="slideshow">
+
+        <div class="slides-wrapper">
+            <img src="{{ url_for('static', filename='images/example1.jpg') }}" class="slide">
+            <img src="{{ url_for('static', filename='images/example2.jpg') }}" class="slide">
+        </div>
+
+        <!-- Arrows -->
+        <button class="arrow left">&#10094;</button>
+        <button class="arrow right">&#10095;</button>
+
+        <!-- Dots -->
+        <div class="dots"></div>
+
     </div>
+
+    <!-- JS files -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </main>
+
 
 {% endblock %}
