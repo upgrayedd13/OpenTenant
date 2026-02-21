@@ -50,6 +50,18 @@ nav a:hover,
     border-radius: 4px;
 }
 
+/* Active link styling */
+nav a.active {
+    background-color: rgba(255, 255, 255, 0.35); /* slightly brighter for normal links */
+    border-radius: 4px;
+}
+
+/* Admin button active styling */
+nav a.admin.active {
+    background-color: rgba(0, 0, 0, 0.3); /* darker background for admin */
+    border-radius: 4px;
+}
+
 /* LANGUAGE DROPDOWN */
 .dropdown {
     position: relative;
@@ -560,28 +572,60 @@ background-color: #3f73b9;
 }
 
 /* admin stuff */
-.admin-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 40px;
+.admin-page {
+    background-color: #4f73b8;
+    min-height: 85vh;
+    padding: 40px 60px;
 }
 
+/* Big light gray box */
+.admin-panel {
+    background-color: white;
+    min-height: 600px;
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+}
+
+/* Left column */
+.admin-left {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Right column */
+.admin-right {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Buttons */
 .admin-btn {
     background-color: #4f73b8;
     color: white;
-    padding: 18px 30px;
-    font-size: 18px;
     border: none;
+    padding: 25px 40px;
+    font-size: 20px;
     cursor: pointer;
+    width: 100%;
+    text-align: center;
 }
 
-.admin-btn:hover {
-    background-color: #3c5c99;
+/* Wider right-side button */
+.admin-btn.wide {
+    width: 100%;
 }
+
+/* Optional subtle border like mockup */
+.admin-btn {
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.15);
+}
+
 
 /* Bug Page */
-
 .bug-container {
     background-color: #4f73b8;
     min-height: 80vh;
@@ -592,7 +636,7 @@ background-color: #3f73b9;
 }
 
 .bug-box {
-    background: #e6e6e6;
+    background: white;
     padding: 40px;
     width: 100%;
     max-width: 500px;

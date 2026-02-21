@@ -94,7 +94,7 @@ def create_app():
     
     @app.route("/admin")
     def admin():
-        return render_template("admin.html")
+        return render_template("pages/admin.html")
 
     # Create database tables if they don't exist
     with app.app_context():
