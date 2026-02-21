@@ -6,6 +6,7 @@ const slidesWrapper = document.querySelector(".slides-wrapper");
 const prevBtn = document.querySelector(".arrow.left");
 const nextBtn = document.querySelector(".arrow.right");
 const dotsContainer = document.querySelector(".dots");
+const navLinks = document.querySelectorAll('nav a');
 
 
 // -----------------------------
@@ -120,3 +121,12 @@ if (slides.length > 0) {
 
     startAutoSlide();
 }
+
+
+// active pages in nav bar
+navLinks.forEach(link => {
+    // Compare just the pathname (ignores domain)
+    if (link.pathname === window.location.pathname) {
+        link.classList.add('active');
+    }
+});
