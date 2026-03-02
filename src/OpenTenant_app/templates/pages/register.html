@@ -6,7 +6,8 @@
 <main class="register-main">
     <div class="register-box">
 
-        <button class="uploadLease-btn">Upload Lease</button>
+        <button type="button" class="uploadLease-btn" id="uploadLeaseBtn">Upload Lease</button>
+        <input type="file" id="leasePdfInput" accept="application/pdf" hidden>
 
         <!-- LEFT SIDE FORM -->
         <div class="account-left">
@@ -149,5 +150,8 @@
 
     </div>
 </main>
+
+<!-- JS files -->
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
 
 {% endblock %}

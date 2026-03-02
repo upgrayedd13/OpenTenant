@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash, request
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -6,6 +6,7 @@ import os
 from .config import DevelopmentConfig, ProductionConfig
 from .models import db, User
 from .forms import LoginForm, RegisterForm
+from .parsers.leaseParser import parse_lease
 
 # Initialize extensions (without app yet)
 login_manager = LoginManager()
@@ -91,6 +92,15 @@ def create_app():
     @app.route("/bug")
     def bug():
         return render_template('pages/bug_report.html')
+
+    @app.route("/parse-lease", methods=["POST"])
+    def parse_pdf_route():
+        file = request.files.get("pdf")
+        if not file:
+            return jsonify({"error": "No file"}), 400
+
+        parsed_data = parse_lease(file)
+        return jsonify(parsed_data)
 
     # Create database tables if they don't exist
     with app.app_context():
