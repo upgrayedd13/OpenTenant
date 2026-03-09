@@ -25,21 +25,31 @@ pdfInput.addEventListener("change", async () => {
     const data = await response.json();
 
     // Autofill fields
-    if (data.first_name)
-        document.getElementById("first_name").value = data.first_name;
+    if (data.residents) {
+        const name = data.residents.split(" ");
+        document.getElementById("first_name").value = name[0];
+        document.getElementById("last_name").value = name[1];
+    }
 
-    if (data.last_name)
-        document.getElementById("last_name").value = data.last_name;
-
-    if (data.unit_number)
+    if (data.unit_number) {
         document.getElementById("unit_number").value = data.unit_number;
+    }
 
-    if (data.lease_start)
-        document.getElementById("lease_start").value = data.lease_start;
+    if (data.lease_start_date) {
+        document.getElementById("lease_start_date").value = data.lease_start_date;
+    }
 
-    if (data.lease_end)
-        document.getElementById("lease_end").value = data.lease_end;
+    if (data.lease_end_date) {
+        document.getElementById("lease_end_date").value = data.lease_end_date;
+    }
 
-    if (data.monthly_rate)
-        document.getElementById("monthly_rate").value = data.monthly_rate;
+    if (data.base_rent) {
+        document.getElementById("base_monthly_rent").value = data.base_rent.toFixed(2);
+    }
+
+    if (data.monthly_rent_total) {
+        document.getElementById("monthly_rent_total").value = data.monthly_rent_total.toFixed(2);
+    }
+
+    document.getElementById("lease_num_occupants").value = 1;  // TODO: actually parse this value
 });

@@ -33,6 +33,23 @@ def parse_str_field(m: re.Match|None, group: str|int) -> str:
     return m.group(group) or 'UNKNOWN'
 
 
+def parse_date(m: re.Match|None, group: str|int) -> str:
+    DEFAULT_DATE = '1970-01-01'
+
+    # ensure we got a match
+    if m is None:
+        return DEFAULT_DATE
+
+    # parse out the value
+    v: str = m.group(group)
+    if not v:
+        return DEFAULT_DATE
+
+    # split out the date and reformat
+    m, d, y = v.split('/')
+    return f'{y}-{m}-{d}'
+
+
 def parse_terms(text: str) -> Dict[str, Any]:
     # make a compoiled regex object for this subparser
     terms_pattern  = rf'THIS LEASE AGREEMENT is entered into on: {date_pattern("signing_date")}.*?'
@@ -54,9 +71,9 @@ def parse_terms(text: str) -> Dict[str, Any]:
     d['unit_number']       = parse_str_field(m, 'unit_number')
     d['address']           = parse_str_field(m, 'address')
     d['lease_term_months'] = int(m.group('lease_term_months')) or float('nan')
-    d['lease_signed_date'] = parse_str_field(m, 'signing_date')
-    d['lease_start_date']  = parse_str_field(m, 'lease_start_date')
-    d['lease_end_date']    = parse_str_field(m, 'lease_end_date')
+    d['lease_signed_date'] = parse_date(m, 'signing_date')
+    d['lease_start_date']  = parse_date(m, 'lease_start_date')
+    d['lease_end_date']    = parse_date(m, 'lease_end_date')
     return d
 
 

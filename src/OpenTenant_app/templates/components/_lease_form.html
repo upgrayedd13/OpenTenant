@@ -1,0 +1,39 @@
+<div class="account-left">
+
+    <!-- Personal Info -->
+    <h2>Personal Info</h2>
+    {% include "components/_personal_info_form.html" %}
+
+    <br><br><br>
+
+    <!-- Emergency Contact Info -->
+    <h2>Emergency Contact</h2>
+    {% include "components/_emergency_info_form.html" %}
+
+</div>
+
+<br><br><br>
+
+<!-- Apartment Unit Info -->
+<h2 class="register-title">Apartment Info</h2>
+{% include "components/_apartment_info_form.html" %}
+
+<script src="https://cdn.jsdelivr.net/npm/cleave.js@1/dist/cleave.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cleave.js@1/dist/addons/cleave-phone.us.js"></script>
+<script>
+    new Cleave('#user_phone', {
+        phone: true,
+        phoneRegionCode: 'US',
+        // numericOnly: true,
+        // blocks: [0, 3, 3, 4],
+        // delimiters: ['(', ')', '-']
+    });
+
+    new Cleave('#emergency_contact_phone', {
+        phone: true,
+        phoneRegionCode: 'US',
+        // numericOnly: true,
+        // blocks: [0, 3, 3, 4],
+        // delimiters: ['(', ')', '-']
+    });
+</script>
