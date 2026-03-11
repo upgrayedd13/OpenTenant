@@ -1,5 +1,4 @@
 :root {
-
     /* Core colors */
     --primary-color: #6aa0b8;         /* replaced pink with muted blue */
     --primary-color-hover: #58899d;
@@ -18,11 +17,9 @@
     --text-light: white;
 
     --shadow: rgba(0,0,0,0.1);
-
 }
 
 /* GLOBAL RESET */
-
 * {
     margin: 0;
     padding: 0;
@@ -37,7 +34,6 @@ body {
 }
 
 /* NAVBAR */
-
 header {
     background-color: var(--header-color);
     height: 70px;
@@ -77,7 +73,6 @@ nav a:hover,
 }
 
 /* Active links */
-
 nav a.active {
     background-color: var(--header-active);
     border-radius: 4px;
@@ -90,7 +85,6 @@ nav a.admin.active {
 }
 
 /* LANGUAGE DROPDOWN */
-
 .dropdown {
     position: relative;
 }
@@ -123,7 +117,6 @@ nav a.admin.active {
 }
 
 /* SLIDESHOW */
-
 .slideshow {
     width: 100%;
     max-width: 1000px;
@@ -143,7 +136,6 @@ nav a.admin.active {
 }
 
 /* Arrows */
-
 .arrow {
     position: absolute;
     top: 50%;
@@ -160,7 +152,6 @@ nav a.admin.active {
 .arrow.right { right: 10px; }
 
 /* Dots */
-
 .dots {
     text-align: center;
     position: absolute;
@@ -183,7 +174,6 @@ nav a.admin.active {
 }
 
 /* MAIN CONTENT */
-
 main {
     flex: 1;
     background-color: var(--background);
@@ -194,7 +184,6 @@ main {
 }
 
 /* Centered layout */
-
 .center-content {
     justify-content: center;
     align-items: center;
@@ -214,7 +203,6 @@ main {
 }
 
 /* SIDEBAR */
-
 .sidebar {
     width: 220px;
     background-color: var(--sidebar-background);
@@ -243,7 +231,6 @@ main {
 }
 
 /* CONTENT BOX */
-
 .content-box {
     flex: 1;
     background-color: var(--box-background);
@@ -270,7 +257,6 @@ main {
 }
 
 /* HOMEPAGE IMAGES */
-
 .homepage_images {
     width: 100%;
     max-height: 800px;
@@ -278,7 +264,6 @@ main {
 }
 
 /* LOGIN PAGE */
-
 .login-main {
     flex: 1;
     display: flex;
@@ -311,7 +296,6 @@ main {
 }
 
 /* BUTTONS */
-
 .login-btn,
 .account-btn,
 .submit-btn,
@@ -369,7 +353,6 @@ a.login-btn {
 }
 
 /* FOOTER */
-
 footer {
     background-color: var(--header-color);
     height: 80px;
@@ -406,7 +389,6 @@ footer .row {
 }
 
 /* ACCOUNT PAGE */
-
 .account-main {
     flex: 1;
     background-color: var(--primary-color);
@@ -465,7 +447,6 @@ footer .row {
 }
 
 /* RIGHT BUTTONS */
-
 .account-right {
     flex: 1;
     display: flex;
@@ -480,7 +461,6 @@ footer .row {
 }
 
 /* TOOLTIP */
-
 .info-icon {
     display: inline-flex;
     justify-content: center;
@@ -516,7 +496,6 @@ footer .row {
 }
 
 /* REGISTER PAGE */
-
 .register-main {
     flex: 1;
     background-color: var(--primary-color);
@@ -593,16 +572,28 @@ footer .row {
     line-height: 1.5;
 }
 
-/* ADMIN PAGE */
+main.admin-main {
+    flex: 1;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
 
+/* ADMIN PAGE */
 .admin-page {
     background-color: var(--primary-color);
-    min-height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 40px 60px;
+    width: 100%;
+    padding: 0;
 }
 
 .admin-panel {
     background-color: var(--box-background);
+    width: 100%;
+    max-width: 1200px;
     min-height: 600px;
     padding: 60px;
     display: grid;
@@ -631,7 +622,6 @@ footer .row {
 }
 
 /* BUG PAGE */
-
 .bug-container {
     background-color: var(--primary-color);
     min-height: 80vh;
