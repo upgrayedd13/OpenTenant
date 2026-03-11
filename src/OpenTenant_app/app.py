@@ -92,6 +92,10 @@ def create_app():
     @app.route("/bug")
     def bug():
         return render_template('pages/bug_report.html')
+    
+    @app.route("/admin")
+    def admin():
+        return render_template("pages/admin.html")
 
     @app.route("/parse-lease", methods=["POST"])
     def parse_pdf_route():

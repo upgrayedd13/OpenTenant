@@ -1,3 +1,28 @@
+:root {
+
+    /* Core colors */
+    --primary-color: #6aa0b8;         /* replaced pink with muted blue */
+    --primary-color-hover: #58899d;
+
+    --header-color: #e0e8ec;          /* light neutral for header */
+    --header-hover: rgba(106,160,184,0.5);
+    --header-active: rgba(106,160,184,0.35);
+
+    --background: #FCFBFA;
+    --box-background: white;
+
+    --sidebar-background: #e8f0f2;    /* light neutral for sidebar */
+    --about-background: #f3f7f9;      /* light color for about section */
+
+    --text-main: #1b1b1b;             /* dark gray for text */
+    --text-light: white;
+
+    --shadow: rgba(0,0,0,0.1);
+
+}
+
+/* GLOBAL RESET */
+
 * {
     margin: 0;
     padding: 0;
@@ -12,8 +37,9 @@ body {
 }
 
 /* NAVBAR */
+
 header {
-    background-color: #6fa94d;
+    background-color: var(--header-color);
     height: 70px;
     display: flex;
     align-items: center;
@@ -22,7 +48,7 @@ header {
 }
 
 .logo {
-    color: white;
+    color: var(--text-main);
     font-size: 20px;
     font-weight: 500;
     text-decoration: none;
@@ -36,7 +62,7 @@ nav {
 
 nav a,
 .dropdown-btn {
-    color: white;
+    color: var(--text-main);
     text-decoration: none;
     font-size: 16px;
     padding: 8px 10px;
@@ -46,11 +72,25 @@ nav a,
 
 nav a:hover,
 .dropdown-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--header-hover);
     border-radius: 4px;
 }
 
+/* Active links */
+
+nav a.active {
+    background-color: var(--header-active);
+    border-radius: 4px;
+}
+
+nav a.admin.active {
+    background-color: #4b7c8d;      /* darker muted blue for admin active */
+    border-radius: 4px;
+    color: var(--text-light);
+}
+
 /* LANGUAGE DROPDOWN */
+
 .dropdown {
     position: relative;
 }
@@ -59,8 +99,7 @@ nav a:hover,
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: #6fa94d;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: var(--background);
     width: 140px;
     display: none;
     flex-direction: column;
@@ -70,30 +109,92 @@ nav a:hover,
 .dropdown-menu a {
     padding: 10px;
     text-decoration: none;
-    color: white;
-    border-top: 1px solid rgba(0, 0, 0, 0.15);
+    color: var(--text-main);
 }
 
 .dropdown-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--primary-color); /* hover matches new primary */
+    color: var(--text-light);
+    border-radius: 0;
 }
 
 .dropdown:hover .dropdown-menu {
     display: flex;
 }
 
+/* SLIDESHOW */
+
+.slideshow {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    overflow: hidden;
+    position: relative;
+}
+
+.slides-wrapper {
+    display: flex;
+    transition: transform 0.6s ease-in-out;
+}
+
+.slide {
+    width: 100%;
+    flex-shrink: 0;
+}
+
+/* Arrows */
+
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--header-active);
+    color: var(--text-light);
+    border: none;
+    font-size: 30px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.arrow.left { left: 10px; }
+.arrow.right { right: 10px; }
+
+/* Dots */
+
+.dots {
+    text-align: center;
+    position: absolute;
+    bottom: 15px;
+    width: 100%;
+}
+
+.dot {
+    height: 12px;
+    width: 12px;
+    margin: 0 5px;
+    display: inline-block;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.dot.active {
+    background: var(--primary-color);
+}
 
 /* MAIN CONTENT */
+
 main {
     flex: 1;
-    background-color: #3f73b9;
+    background-color: var(--background);
     padding: 30px 50px;
     display: flex;
     gap: 40px;
-    color: white;
+    color: var(--text-main);
 }
 
-/* Centered main layout (for index page) */
+/* Centered layout */
+
 .center-content {
     justify-content: center;
     align-items: center;
@@ -109,20 +210,17 @@ main {
 .page-title {
     text-align: center;
     margin: 30px 0 0;
-    color: white;
+    color: var(--text-main);
 }
 
-/* SIDEBAR MENU */
+/* SIDEBAR */
+
 .sidebar {
     width: 220px;
-    background-color: white;
-    border: 2px solid rgba(0, 0, 0, 0.3);
+    background-color: var(--sidebar-background);
     height: fit-content;
-}
-
-.sidebar {
     position: sticky;
-    top: 20px; /* how far from the top it stays */
+    top: 20px;
     align-self: flex-start;
 }
 
@@ -130,75 +228,79 @@ main {
     display: block;
     padding: 15px;
     text-decoration: none;
-    color: black;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    color: var(--text-main);
     font-size: 16px;
     transition: background 0.2s;
 }
 
 .sidebar a:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0,0,0,0.05);
 }
 
 .sidebar a.active {
-    background-color: rgba(0, 0, 0, 0.15);
+    background-color: rgba(0,0,0,0.15);
     font-weight: bold;
 }
 
 /* CONTENT BOX */
+
 .content-box {
     flex: 1;
-    background-color: white;
-    border: 2px solid rgba(0, 0, 0, 0.3);
+    background-color: var(--box-background);
     padding: 30px;
     overflow-y: auto;
     max-height: calc(100vh - 70px - 110px);
 }
 
+.content-box.about {
+    background-color: var(--about-background);
+}
+
 .content-box h2 {
     margin-bottom: 15px;
     font-size: 22px;
-    color: black;
+    color: var(--text-main);
 }
 
 .content-box p {
     margin-bottom: 40px;
     line-height: 1.6;
     font-size: 15px;
-    color: black;
+    color: var(--text-main);
 }
 
-/* homeage images */
+/* HOMEPAGE IMAGES */
+
 .homepage_images {
     width: 100%;
     max-height: 800px;
     object-fit: cover;
 }
 
-/* Login page main layout */
+/* LOGIN PAGE */
+
 .login-main {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #597ac7; /* matches screenshot background */
+    background-color: var(--background);
     padding: 20px;
 }
 
 .login-box {
-    background-color: white;
+    background-color: var(--box-background);
     padding: 40px;
-    border: 2px solid rgba(0,0,0,0.2);
     display: flex;
     flex-direction: column;
     gap: 15px;
     min-width: 250px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px var(--shadow);
 }
 
 .login-box label {
     font-size: 14px;
-    color: black;
+    color: var(--text-main);
 }
 
 .login-box input {
@@ -208,31 +310,68 @@ main {
     border-radius: 3px;
 }
 
-.login-btn {
-    background-color: #798ed3;
-    color: white;
+/* BUTTONS */
+
+.login-btn,
+.account-btn,
+.submit-btn,
+.uploadLease-btn,
+.admin-btn,
+.bug-btn {
+    background-color: var(--primary-color);
+    color: var(--text-light);
     border: none;
-    padding: 10px;
-    font-size: 15px;
     cursor: pointer;
     transition: background 0.2s;
+}
+
+.login-btn:hover,
+.account-btn:hover,
+.submit-btn:hover,
+.uploadLease-btn:hover,
+.admin-btn:hover,
+.bug-btn:hover {
+    background-color: var(--primary-color-hover);
+}
+
+.login-btn {
+    padding: 10px;
+    font-size: 15px;
     border-radius: 3px;
 }
 
-.login-btn:hover {
-    background-color: #a3b2e1; /* lightens on hover */
+.submit-btn,
+.uploadLease-btn {
+    padding: 12px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.uploadLease-btn {
+    margin-bottom: 50px;
+}
+
+.submit-btn {
+    margin-top: 30px;
+}
+
+a.account-btn,
+a.login-btn {
+    text-decoration: none;
+    text-align: center;
 }
 
 .error-message {
     color: red;
     font-size: 13px;
-    display: none; /* only show if login fails */
+    display: none;
     text-align: center;
 }
 
 /* FOOTER */
+
 footer {
-    background-color: #9fc2e3;
+    background-color: var(--header-color);
     height: 80px;
     display: flex;
     flex-direction: column;
@@ -243,7 +382,7 @@ footer {
 }
 
 footer a {
-    color: black;
+    color: var(--text-main);
     text-decoration: none;
 }
 
@@ -258,8 +397,8 @@ footer .row {
 }
 
 .legal {
-    background-color: #0a1c33;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-light);
     width: 100%;
     text-align: center;
     padding: 6px 0;
@@ -267,9 +406,10 @@ footer .row {
 }
 
 /* ACCOUNT PAGE */
+
 .account-main {
     flex: 1;
-    background-color: #3f73b9;
+    background-color: var(--primary-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -277,11 +417,10 @@ footer .row {
 }
 
 .account-box {
-    background-color: white;
+    background-color: var(--box-background);
     width: 90%;
     max-width: 1200px;
     min-height: 500px;
-    border: 2px solid rgba(0, 0, 0, 0.3);
     padding: 30px;
     display: flex;
     justify-content: space-between;
@@ -293,7 +432,7 @@ footer .row {
 }
 
 .account-left h2 {
-    color: black;
+    color: var(--text-main);
     font-size: 18px;
     margin-bottom: 20px;
 }
@@ -313,7 +452,7 @@ footer .row {
 
 .form-group label {
     font-size: 14px;
-    color: black;
+    color: var(--text-main);
     font-weight: 500;
 }
 
@@ -326,35 +465,22 @@ footer .row {
 }
 
 /* RIGHT BUTTONS */
+
 .account-right {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    justify-content: flex-start;
     align-items: stretch;
 }
 
 .account-btn {
-    background-color: #3f73b9;
-    color: white;
-    border: none;
     padding: 18px;
     font-size: 16px;
-    cursor: pointer;
-    transition: background 0.2s;
 }
 
-.account-btn:hover {
-    background-color: #5a8ed6;
-}
+/* TOOLTIP */
 
-a.account-btn, a.login-btn {
-    text-decoration: none;
-    text-align: center;
-}
-
-/* INFO ICON */
 .info-icon {
     display: inline-flex;
     justify-content: center;
@@ -369,7 +495,6 @@ a.account-btn, a.login-btn {
     position: relative;
 }
 
-/* TOOLTIP */
 .info-icon::after {
     content: attr(data-tooltip);
     position: absolute;
@@ -390,16 +515,11 @@ a.account-btn, a.login-btn {
     display: block;
 }
 
-nav a.active-page {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    font-weight: bold;
-}
-
 /* REGISTER PAGE */
+
 .register-main {
     flex: 1;
-    background-color: #3f73b9;
+    background-color: var(--primary-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -407,11 +527,10 @@ nav a.active-page {
 }
 
 .register-box {
-    background-color: white;
+    background-color: var(--box-background);
     width: 95%;
     max-width: 1050px;
     min-height: 520px;
-    border: 2px solid rgba(0, 0, 0, 0.4);
     padding: 20px 25px;
     display: flex;
     flex-direction: column;
@@ -421,7 +540,7 @@ nav a.active-page {
 .register-title {
     font-size: 18px;
     font-weight: bold;
-    color: black;
+    color: var(--text-main);
     margin-bottom: 25px;
 }
 
@@ -452,7 +571,7 @@ nav a.active-page {
 .register-group label {
     font-size: 15px;
     font-weight: 500;
-    color: black;
+    color: var(--text-main);
 }
 
 .register-group input {
@@ -467,38 +586,84 @@ nav a.active-page {
 .register-notes {
     flex: 1;
     font-size: 15px;
-    color: black;
+    color: var(--text-main);
     display: flex;
     align-items: flex-start;
-    justify-content: flex-start;
     padding-top: 40px;
     line-height: 1.5;
 }
 
-.submit-btn {
-    background-color: #3f73b9;
-    color: white;
-    border: 2px solid rgba(0,0,0,0.3);
-    padding: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 30px;
-    width: 100%;
-    transition: background 0.2s;
+/* ADMIN PAGE */
+
+.admin-page {
+    background-color: var(--primary-color);
+    min-height: 85vh;
+    padding: 40px 60px;
 }
 
-.uploadLease-btn {
-background-color: #3f73b9;
-    color: white;
-    border: 2px solid rgba(0,0,0,0.3);
-    padding: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-bottom: 50px;
-    width: 100%;
-    transition: background 0.2s;
+.admin-panel {
+    background-color: var(--box-background);
+    min-height: 600px;
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
 }
 
-.submit-btn:hover, .uploadLease-btn:hover {
-    background-color: #5a8ed6;
+.admin-left {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.admin-right {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.admin-btn {
+    padding: 25px 40px;
+    font-size: 20px;
+    width: 100%;
+    text-align: center;
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.15);
+}
+
+/* BUG PAGE */
+
+.bug-container {
+    background-color: var(--primary-color);
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.bug-box {
+    background: var(--box-background);
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.bug-box h2 {
+    margin-bottom: 25px;
+    color: var(--text-main);
+}
+
+.bug-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    color: var(--text-main);
+}
+
+.bug-form input,
+.bug-form textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
 }

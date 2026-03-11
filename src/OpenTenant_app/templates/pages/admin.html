@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+
+<div class="admin-page">
+
+    <div class="admin-panel">
+
+        <div class="admin-left">
+            <button class="admin-btn">View Property Map</button>
+            <button class="admin-btn">Approve User Accounts</button>
+        </div>
+
+        <div class="admin-right">
+            <button class="admin-btn wide">Data Visualizations</button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- JS files -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+{% endblock %}
