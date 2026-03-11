@@ -657,3 +657,30 @@ main.admin-main {
     border: 1px solid #ccc;
     font-size: 16px;
 }
+
+/* Base select styling */
+select {
+    appearance: none;             /* removes default browser arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: var(--box-background);
+    color: var(--text-main);
+    font-size: 16px;
+    padding: 10px 14px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: border 0.2s, box-shadow 0.2s;
+    width: 100%;                  /* full-width by default */
+    outline: none;
+}
+
+/* Hover and focus states */
+select:hover {
+    border-color: var(--primary-color);
+}
+
+select:focus {
+    border-color: var(--primary-color-hover);
+    box-shadow: 0 0 0 3px rgba(106, 160, 184, 0.2);
+}
