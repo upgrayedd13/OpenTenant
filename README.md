@@ -13,8 +13,33 @@ OpenTenant is an app that helps tenants track problems with their management com
 The easiest way to start the web app is to run `./run.sh`. More methods for running the app may come in the future.
 
 # TODO
+These TODOs aren't presented in any particular order.
+- [x] Initialize SQL database
 - [ ] Write a bill parser
-- [ ] Initialize SQL database
 - [ ] Add info from parsed bills into database
-- [ ] Data visualization from info in DB
+- [ ] Fill in placeholder text with actual info
+- [ ] Determine what "Legal BS" should actually go in the [footer](src/OpenTenant_app/templates/layout/_footer.html) and update it
+- [ ] Replace stock photos with ones the union takes
+- [ ] Create data visualization widget from info in DB in [Admin page](src/OpenTenant_app/templates/pages/admin.html)
 - [ ] Pretty up frontend
+- [ ] Add in multilanguage support with [flask_babel](https://python-babel.github.io/flask-babel/index.html)
+- [ ] Pull actual account data from DB when user logs in
+- [ ] Fix broken "Remember me" login and Login -> Account tab with JS
+- [ ] Make submit button on Register page actually save info to DB and make a user account
+- [ ] Change from password auth to 2FA (bug Kyle about this?)
+- [ ] Add support for different user account types (admin vs normal user)
+- [ ] Make [Admin page](src/OpenTenant_app/templates/pages/admin.html) only visible when an admin is logged in
+- [ ] Create property map widget based on Weidner's [Interactive Leasing](https://www.lpmapartments.com/floor-plans) page
+- [ ] Create spider that checks for empty apartments once a day and updates DB
+- [ ] Replace [About page](src/OpenTenant_app/templates/pages/about.html) with drop-down menu of several pages (there's going to be too much info there for one page) (probably should rename "About"  too)
+- [ ] Add sub-page under [About](src/OpenTenant_app/templates/pages/about.html) for legal help, rights, etc.
+- [ ] Add sub-page under [About](src/OpenTenant_app/templates/pages/about.html) for who we are, what we stand for, bylaws, etc.
+- [ ] Add sub-page under [About](src/OpenTenant_app/templates/pages/about.html) for union calendar
+- [ ] Add a less-intense way to create an account (i.e. for those who don't feel comfortable uploading a lease)
+- [ ] Make [Report a Bug](src/OpenTenant_app/templates/pages/bug_report.html) page actually send an email to *someone*
+- [ ] Actually host the damn thing on a VPS
+- [ ] Create an actual OS image for said VPS host (should be minimal, but secure)
+- [ ] Make a way to approve user accounts in [Admin page](src/OpenTenant_app/templates/pages/admin.html)
+- [ ] Clean up the beast of a [CSS file](src/OpenTenant_app/static/css/style.css)
+- [ ] Reorder Python code to make use of blueprints/routes instead of everything being in [app.py](src/OpenTenant_app/app.py)
+- [ ] Perform some type of hardening
