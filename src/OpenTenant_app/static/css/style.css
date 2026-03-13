@@ -236,7 +236,7 @@ main {
     background-color: var(--box-background);
     padding: 30px;
     overflow-y: auto;
-    max-height: calc(100vh - 70px - 110px);
+    max-height: calc(100vh - 70px - 110px - 57px);  /* No clue why 57px makes it so About doesn't scroll, but it works... */
 }
 
 .content-box.about {
