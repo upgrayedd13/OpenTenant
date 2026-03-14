@@ -13,7 +13,7 @@ OpenTenant is an app that helps tenants track problems with their management com
 The easiest way to start the web app is to run `./run.sh`. More methods for running the app may come in the future.
 
 # Hosting
-The following is a list of thoughts on what setup would need to be performed on an OS hosting our applications.
+The following is a list of thoughts on what setup would need to be performed on an OS hosting our applications. A separate repo should be created to house quick-start scripts for OS.
 
 ## VPS Requirements
   * Ubuntu Server 24.04 LTS
@@ -57,7 +57,7 @@ The following is a list of thoughts on what setup would need to be performed on 
 
 ## Email Hosting
   * Probably want to use a standalone email hoster
-    * This is because of email spam filtering/trust/etc.
+    * This is because email spam filtering/trust/etc. is hard
   * Could use [Proton](https://proton.me/mail) or [Zoho](https://www.zoho.com/) Mail
 
 # TODO
