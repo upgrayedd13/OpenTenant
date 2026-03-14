@@ -12,6 +12,54 @@ OpenTenant is an app that helps tenants track problems with their management com
 # Running Open Tenant
 The easiest way to start the web app is to run `./run.sh`. More methods for running the app may come in the future.
 
+# Hosting
+The following is a list of thoughts on what setup would need to be performed on an OS hosting our applications.
+
+## VPS Requirements
+  * Ubuntu Server 24.04 LTS
+  * 2 vCPUs
+  * 2 GB RAM
+  * 100 GB SSD
+    * Plenty of space for bulk storage and OS
+    * Could probably also use less if money is tight
+  * Only port 443 exposed
+
+## Flask-based website hosted on VPS
+  * Support for at most 360 users
+    * Assuming low concurrancy
+  * Exposes basic file utility for bulk file storage for admin users (board members)
+    * Using this method for bulk storage instead of SMB/SFTP for simplicity and security
+  * Apps will run as non-root user
+  * Will need to install/configure:
+    * [Nginx](https://nginx.org/en/)
+      * Handles HTTPS requests
+      * Serves static files
+      * Reverse proxy to app
+    * [Gunicorn](https://gunicorn.org/)
+      * WSGI server
+      * Runs Flask app
+    * [UV](https://docs.astral.sh/uv/)
+      * Python package manager
+    * systemd
+      * Keeps app running
+      * Auto-restarts on crash
+    * UFW
+      * Firewall
+      * Only allows connection to ports 443 and SSH port
+      * WILL NOT USE PORT 22 FOR SSH
+    * [Fail2Ban](https://github.com/fail2ban/fail2ban)
+      * Intrusion prevention
+    * [Certbot](https://certbot.eff.org/)
+      * Handles certificates for Nginx/HTTPS
+    * Bulk storage backup
+    * SMTP relay
+      * Handles outgoing email from app
+
+## Email Hosting
+  * Probably want to use a standalone email hoster
+    * This is because of email spam filtering/trust/etc.
+  * Could use [Proton](https://proton.me/mail) or [Zoho](https://www.zoho.com/) Mail
+
 # TODO
 These TODOs aren't presented in any particular order.
 - [x] Initialize SQL database
