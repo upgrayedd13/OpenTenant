@@ -5,6 +5,7 @@ from ..models.user import User
 from ..extensions import db
 
 from .forms import LoginForm, RegisterForm
+from .apartment_info_form import ApartmentInfoForm
 
 account_bp = Blueprint('account', __name__)
 
@@ -23,20 +24,20 @@ def login():
 
 @account_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        if User.query.filter_by(username=form.username.data).first():
-            flash('Username already exists')
-            return redirect(url_for('register'))
+    form = ApartmentInfoForm()
+    # if form.validate_on_submit():
+    #     if User.query.filter_by(username=form.username.data).first():
+    #         flash('Username already exists')
+    #         return redirect(url_for('register'))
 
-        user = User(username=form.username.data)
-        user.set_password(form.password.data)
+    #     user = User(username=form.username.data)
+    #     user.set_password(form.password.data)
 
-        db.session.add(user)
-        db.session.commit()
+    #     db.session.add(user)
+    #     db.session.commit()
 
-        flash('Account created. Please log in.')
-        return redirect(url_for('account.login'))
+    #     flash('Account created. Please log in.')
+    #     return redirect(url_for('account.login'))
 
     return render_template('pages/register.html', form=form)
 

@@ -5,18 +5,18 @@
 
             <div class="register-group">
                 <label>
-                    Unit Number
+                    {{ form.unit_number.label.text }}
                     <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
                 </label>
-                <input id="unit_number" type="number" step="1">
+                {{ form.unit_number(class="form-control", step="1") }}
             </div>
 
             <div class="register-group">
                 <label>
-                    Lease Start Date
+                    {{ form.lease_start_date.label.text }}
                     <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
                 </label>
-                <input id="lease_start_date" type="date">
+                {{ form.lease_start_date(type="date") }}
             </div>
 
             <div class="register-group">
@@ -24,7 +24,7 @@
                     Lease End Date
                     <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
                 </label>
-                <input id="lease_end_date" type="date">
+                {{ form.lease_end_date(type="date") }}
             </div>
 
         </div>
@@ -33,26 +33,26 @@
 
             <div class="register-group">
                 <label>
-                    Monthly Rate
+                    {{ form.base_monthly_rent.label.text }}
                     <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
                 </label>
-                <input id="base_monthly_rent" type="number" step="0.01" min="0.00">
+                {{ form.base_monthly_rent() }}
             </div>
 
             <div class="register-group">
                 <label>
-                    Monthly Total
+                    {{ form.monthly_rent_total.label.text }}
                     <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
                 </label>
-                <input id="monthly_rent_total" type="number" step="0.01" min="0.00">
+                {{ form.monthly_rent_total() }}
             </div>
 
             <div class="register-group">
                 <label>
-                    Number of Occupants
+                    {{ form.num_occupants.label.text }}
                     <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
                 </label>
-                <input id="lease_num_occupants" type="number" step="1" min="1" required>
+                {{ form.num_occupants() }}
             </div>
         </div>
     </div>
