@@ -1,12 +1,12 @@
 <!-- NAVBAR -->
 <header>
-    <a href="{{ url_for('homepage') }}" class="logo">LPM Tenants Union</a>
+    <a href="{{ url_for('main.homepage') }}" class="logo">LPM Tenants Union</a>
 
     <nav>
-        <a href="{{ url_for('admin') }}" class="admin">Admin</a>
-        <a href="{{ url_for('about') }}">About</a>
-        <a href="{{ url_for('login') }}" id="loginTab">Login</a>
-        <a href="{{ url_for('register') }}">Register</a>
+        <a href="{{ url_for('main.admin') }}" class="admin">Admin</a>
+        <a href="{{ url_for('main.about') }}">About</a>
+        <a href="{{ url_for('account.login') }}" id="loginTab">Login</a>
+        <a href="{{ url_for('account.register') }}">Register</a>
 
         <div class="dropdown">
             <div class="dropdown-btn">Language</div>
