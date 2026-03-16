@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template
-from flask_login import login_required, current_user
 
 main_bp = Blueprint('main', __name__)
 
@@ -27,9 +26,3 @@ def bug():
 @main_bp.route("/admin")
 def admin():
     return render_template("pages/admin.html")
-
-
-@main_bp.route("/account")
-@login_required
-def account():
-    return render_template("pages/account.html", user=current_user)
