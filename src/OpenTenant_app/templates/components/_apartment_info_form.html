@@ -1,59 +1,45 @@
+{% from "macros/form_fields.html" import form_group %}
+
 <div class="register-form">
 
     <div class="register-fields">
         <div class="register-row">
+            {{ form_group(
+                form.unit_number,
+                "Lorem ipsum dolor sit amet.",
+                {"class": "form-control", "step": "1"})
+            }}
 
-            <div class="register-group">
-                <label>
-                    {{ form.unit_number.label.text }}
-                    <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
-                </label>
-                {{ form.unit_number(class="form-control", step="1") }}
-            </div>
+            {{ form_group(
+                form.lease_start_date,
+                "Lorem ipsum dolor sit amet.",
+                {"type": "date"})
+            }}
 
-            <div class="register-group">
-                <label>
-                    {{ form.lease_start_date.label.text }}
-                    <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
-                </label>
-                {{ form.lease_start_date(type="date") }}
-            </div>
-
-            <div class="register-group">
-                <label>
-                    Lease End Date
-                    <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
-                </label>
-                {{ form.lease_end_date(type="date") }}
-            </div>
+            {{ form_group(
+                form.lease_end_date,
+                "Lorem ipsum dolor sit amet.",
+                {"type": "date"})
+            }}
 
         </div>
 
         <div class="register-row">
 
-            <div class="register-group">
-                <label>
-                    {{ form.base_monthly_rent.label.text }}
-                    <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
-                </label>
-                {{ form.base_monthly_rent() }}
-            </div>
+            {{ form_group(
+                form.base_monthly_rent,
+                "Lorem ipsum dolor sit amet.")
+            }}
 
-            <div class="register-group">
-                <label>
-                    {{ form.monthly_rent_total.label.text }}
-                    <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
-                </label>
-                {{ form.monthly_rent_total() }}
-            </div>
+            {{ form_group(
+                form.monthly_rent_total,
+                "Lorem ipsum dolor sit amet.")
+            }}
 
-            <div class="register-group">
-                <label>
-                    {{ form.num_occupants.label.text }}
-                    <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
-                </label>
-                {{ form.num_occupants() }}
-            </div>
+            {{ form_group(
+                form.num_occupants,
+                "Lorem ipsum dolor sit amet.")
+            }}
         </div>
     </div>
 </div>

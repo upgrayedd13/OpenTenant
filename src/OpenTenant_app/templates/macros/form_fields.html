@@ -1,0 +1,17 @@
+{% macro form_group(field, tooltip, attrs=None) %}
+<div class="register-group">
+    <label>
+        {{ field.label.text }}
+        <span
+            class="info-icon"
+            data-tooltip="{{ 'Why we collect this: ' ~ tooltip }}"
+        >i</span>
+    </label>
+
+    {% if attrs %}
+        {{ field(**attrs) }}
+    {% else %}
+        {{ field() }}
+    {% endif %}
+</div>
+{% endmacro %}

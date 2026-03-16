@@ -79,6 +79,7 @@ These TODOs aren't presented in any particular order.
 - [ ] Make [Admin page](src/OpenTenant_app/templates/pages/admin.html) only visible when an admin is logged in
 - [ ] Create property map widget based on Weidner's [Interactive Leasing](https://www.lpmapartments.com/floor-plans) page
 - [ ] Create spider that checks for empty apartments once a day and updates DB
+- [ ] Create spider that checks various compliance sites for the building (think elevators, etc.)
 - [ ] Replace [About page](src/OpenTenant_app/templates/pages/about.html) with drop-down menu of several pages (there's going to be too much info there for one page) (probably should rename "About"  too)
 - [ ] Add sub-page under [About](src/OpenTenant_app/templates/pages/about.html) for legal help, rights, etc.
 - [ ] Add sub-page under [About](src/OpenTenant_app/templates/pages/about.html) for who we are, what we stand for, bylaws, etc.

@@ -1,0 +1,11 @@
+{% block form_entry %}
+
+<div class="register-group">
+    <label>
+        {{ form.num_occupants.label.text }}
+        <span class="info-icon" data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span>
+    </label>
+    {{ form.num_occupants() }}
+</div>
+
+{% endblock %}
