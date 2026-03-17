@@ -92,3 +92,4 @@ These TODOs aren't presented in any particular order.
 - [ ] Clean up the beast of a [CSS file](src/OpenTenant_app/static/css/style.css)
 - [ ] Reorder Python code to make use of blueprints/routes instead of everything being in [app.py](src/OpenTenant_app/app.py)
 - [ ] Perform some type of hardening
+- [ ] Create a generic error page
