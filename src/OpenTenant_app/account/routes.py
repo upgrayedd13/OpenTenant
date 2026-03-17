@@ -4,8 +4,7 @@ from flask_login import login_required, login_user, logout_user, current_user
 from ..models.user import User
 from ..extensions import db
 
-from .forms import LoginForm, RegisterForm
-from .apartment_info_form import ApartmentInfoForm
+from .forms import LoginForm, RegisterForm, LeaseForm
 
 account_bp = Blueprint('account', __name__)
 
@@ -24,7 +23,8 @@ def login():
 
 @account_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    form = ApartmentInfoForm()
+    form = LeaseForm()
+    
     # if form.validate_on_submit():
     #     if User.query.filter_by(username=form.username.data).first():
     #         flash('Username already exists')

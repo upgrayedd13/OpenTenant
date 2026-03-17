@@ -1,57 +1,17 @@
+{% from "macros/form_fields.html" import form_group %}
+
 <div class="form-row">
-    <div class="form-group">
-        <label>First Name <span class="info-icon"
-                data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span></label>
-        <input id="first_name" type="text" required>
-    </div>
-
-    <div class="form-group">
-        <label>Last Name <span class="info-icon"
-                data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span></label>
-        <input id="last_name" type="text" required>
-    </div>
-
-    <div class="form-group">
-        <label>Pronouns (Optional) <span class="info-icon"
-                data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span></label>
-        <select id="pronouns" required>
-            <option value="none"></option>
-            <option value="he/him">He/Him</option>
-            <option value="she/her">She/Her</option>
-            <option value="they/them">They/Them</option>
-            <option value="other">Other</option>
-        </select>
-    </div>
+    {{ form_group(form.personal_info.first_name) }}
+    {{ form_group(form.personal_info.last_name) }}
+    {{ form_group(form.personal_info.pronouns) }}
 </div>
 
 <div class="form-row">
-    <div class="form-group">
-        <label>Email <span class="info-icon"
-                data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span></label>
-        <input id="user_email" type="email" required>
-    </div>
-
-    <div class="form-group">
-        <label>Phone Number <span class="info-icon"
-                data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span></label>
-        <input id="user_phone" type="tel" required>
-    </div>
-
-    <div class="form-group">
-        <label>Preferred Contact Method <span class="info-icon"
-                data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span></label>
-        <select id="contact_method" required>
-            <option value="none"></option>
-            <option value="phone">Phone</option>
-            <option value="email">Email</option>
-        </select>
-    </div>
+    {{ form_group(form.personal_info.email) }}
+    {{ form_group(form.personal_info.phone_number) }}
+    {{ form_group(form.personal_info.contact_method) }}
 </div>
 
 <div class="form-row">
-    <div class="form-group">
-        <label>Occupation (Optional) <span class="info-icon"
-                data-tooltip="Why we collect this: Lorem ipsum dolor sit amet.">i</span></label>
-        <input id="occupation" type="text">
-    </div>
+    {{ form_group(form.personal_info.occupation) }}
 </div>

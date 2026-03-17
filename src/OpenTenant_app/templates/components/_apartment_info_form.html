@@ -1,45 +1,17 @@
 {% from "macros/form_fields.html" import form_group %}
 
 <div class="register-form">
-
     <div class="register-fields">
         <div class="register-row">
-            {{ form_group(
-                form.unit_number,
-                "Lorem ipsum dolor sit amet.",
-                {"class": "form-control", "step": "1"})
-            }}
-
-            {{ form_group(
-                form.lease_start_date,
-                "Lorem ipsum dolor sit amet.",
-                {"type": "date"})
-            }}
-
-            {{ form_group(
-                form.lease_end_date,
-                "Lorem ipsum dolor sit amet.",
-                {"type": "date"})
-            }}
-
+            {{ form_group(form.apartment_info.unit_number, {"class": "form-control", "step": "1"}) }}
+            {{ form_group(form.apartment_info.lease_start_date) }}
+            {{ form_group(form.apartment_info.lease_end_date) }}
         </div>
 
         <div class="register-row">
-
-            {{ form_group(
-                form.base_monthly_rent,
-                "Lorem ipsum dolor sit amet.")
-            }}
-
-            {{ form_group(
-                form.monthly_rent_total,
-                "Lorem ipsum dolor sit amet.")
-            }}
-
-            {{ form_group(
-                form.num_occupants,
-                "Lorem ipsum dolor sit amet.")
-            }}
+            {{ form_group(form.apartment_info.base_monthly_rent) }}
+            {{ form_group(form.apartment_info.monthly_rent_total) }}
+            {{ form_group(form.apartment_info.num_occupants) }}
         </div>
     </div>
 </div>
