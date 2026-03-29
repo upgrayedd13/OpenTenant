@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from flask import Flask
 import os
 
@@ -12,9 +15,8 @@ from .main.routes import main_bp
 
 def create_app() -> None:
     app = Flask(__name__)
-    app.config.from_prefixed_env()
 
-    env = os.getenv("FLASK_ENV", "development")
+    env = os.getenv("ENV", "development")
     if env == "production":
         app.config.from_object(ProductionConfig)
     else:
