@@ -1,4 +1,8 @@
-from flask import Flask
+from dotenv import load_dotenv
+load_dotenv()
+
+from werkzeug.middleware.proxy_fix import ProxyFix
+from flask import Flask, Response
 import os
 
 from .config import DevelopmentConfig, ProductionConfig
@@ -12,14 +16,16 @@ from .main.routes import main_bp
 
 def create_app() -> None:
     app = Flask(__name__)
-    app.config.from_prefixed_env()
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
-    env = os.getenv("FLASK_ENV", "development")
+    # Setup the configs depending on our selected environment type
+    env = os.getenv("ENV", "development")
     if env == "production":
         app.config.from_object(ProductionConfig)
     else:
         app.config.from_object(DevelopmentConfig)
 
+    # Initialize the DB and app
     db.init_app(app)
     login_manager.init_app(app)
 
@@ -29,6 +35,7 @@ def create_app() -> None:
     app.register_blueprint(info_bp)
     app.register_blueprint(main_bp)
 
+    # Create the DB tables that don't exist
     with app.app_context():
         db.create_all()
 
