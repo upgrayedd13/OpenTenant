@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request
 from flask_login import login_required, login_user, logout_user, current_user
 
+from ..parsers.leaseParser import parse_lease
 from ..models.user import User
 from ..extensions import db
 
@@ -15,7 +16,7 @@ def login():
         user: User = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
             remember = request.form.get('remember') == 'on'  # True if checkbox checked
-            login_user(user, remember=remember)  # <-- remember=True keeps session across browser restarts
+            login_user(user, remember=remember)              # remember=True keeps session across browser restarts
             return redirect(url_for('account.account'))
         flash('Invalid credentials')
     return render_template('pages/login.html', form=form)
@@ -24,6 +25,11 @@ def login():
 @account_bp.route('/register', methods=['GET', 'POST'])
 def register():
     form = LeaseForm()
+
+    if form.validate_on_submit():
+        print('Success')
+        # TODO: save the data to DB
+        return redirect(url_for('account.login'))
     
     # if form.validate_on_submit():
     #     if User.query.filter_by(username=form.username.data).first():
@@ -42,22 +48,21 @@ def register():
     return render_template('pages/register.html', form=form)
 
 
-@account_bp.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('account.login'))
-
-
-@account_bp.route("/parse-lease", methods=["POST"])
-@login_required
-def parse_lease():
+@account_bp.route("/upload-lease", methods=["POST"])
+def upload_lease():
     file = request.files.get("pdf")
     if not file:
         return jsonify({"error": "No file"}), 400
 
     parsed_data = parse_lease(file)
     return jsonify(parsed_data)
+
+
+@account_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('account.login'))
 
 
 @account_bp.route("/account")

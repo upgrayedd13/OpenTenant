@@ -1,9 +1,9 @@
-from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, FormField, SubmitField
 from wtforms.validators import DataRequired, Length, EqualTo
+from flask_wtf import FlaskForm
 
-from .subforms.apartment_info_form import ApartmentInfoForm
 from .subforms.emergency_contact_form import EmergencyContactForm
+from .subforms.apartment_info_form import ApartmentInfoForm
 from .subforms.personal_info_form import PersonalInfoForm
 
 class LoginForm(FlaskForm):
@@ -22,5 +22,5 @@ class LeaseForm(FlaskForm):
     personal_info = FormField(PersonalInfoForm)
     emergency_contact = FormField(EmergencyContactForm)
     apartment_info = FormField(ApartmentInfoForm)
-    
+
     submit = SubmitField('Submit')

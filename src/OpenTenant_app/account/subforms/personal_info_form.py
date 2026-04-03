@@ -1,9 +1,9 @@
-from wtforms import Form
 from wtforms import StringField, TelField, SelectField, EmailField
 from wtforms.validators import DataRequired, Optional, Length
+from flask_wtf import FlaskForm
 
 
-class PersonalInfoForm(Form):
+class PersonalInfoForm(FlaskForm):
     first_name = StringField(
         'First Name',
         validators=[DataRequired()],

@@ -1,11 +1,11 @@
-from wtforms import Form
 from wtforms import DateField, IntegerField, DecimalField
 from wtforms.validators import DataRequired, NumberRange
+from flask_wtf import FlaskForm
 
 from .unit_number_validation import UnitNumberValidator
 
 
-class ApartmentInfoForm(Form):
+class ApartmentInfoForm(FlaskForm):
     unit_number = IntegerField(
         'Unit Number', 
         validators=[DataRequired(), UnitNumberValidator()],

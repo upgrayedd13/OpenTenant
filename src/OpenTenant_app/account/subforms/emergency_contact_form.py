@@ -1,8 +1,8 @@
-from wtforms import Form
-from wtforms import StringField, TelField
 from wtforms.validators import DataRequired
+from wtforms import StringField, TelField
+from flask_wtf import FlaskForm
 
-class EmergencyContactForm(Form):
+class EmergencyContactForm(FlaskForm):
     emergency_contact_name = StringField(
         'Contact Name',
         validators=[DataRequired()],
