@@ -18,6 +18,7 @@ class User(UserMixin, db.Model):
 
     id:                Mapped[int]       = mapped_column(Integer,     primary_key=True)
     role:              Mapped[int]       = mapped_column(Integer,     nullable=False, default=UserRole.USER)
+    username:          Mapped[str]       = mapped_column(String(50),  unique=True, nullable=False)
     email:             Mapped[str]       = mapped_column(String(254), unique=True, nullable=False)
     password_hash:     Mapped[str]       = mapped_column(String(256), nullable=False)
     name:              Mapped[str]       = mapped_column(String(150), nullable=False)
@@ -35,6 +36,11 @@ class User(UserMixin, db.Model):
             if lease.start_date <= today and (lease.end_date is None or lease.end_date >= today):
                 return lease
         return None
+
+
+    @staticmethod
+    def str_field_len(field: str) -> int:
+        return User.__table__.c[field].type.length
 
 
     def set_password(self, password: str):

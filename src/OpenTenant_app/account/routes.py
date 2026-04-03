@@ -7,7 +7,7 @@ from ..models.lease import Lease
 from ..models.user import User
 from ..extensions import db
 
-from .forms import LoginForm, RegisterForm, LeaseForm
+from .forms import LoginForm, LeaseForm
 
 account_bp = Blueprint('account', __name__)
 

@@ -1,8 +1,9 @@
-from wtforms import DateField, IntegerField, DecimalField
-from wtforms.validators import DataRequired, NumberRange
+from wtforms import DateField, IntegerField, DecimalField, StringField
+from wtforms.validators import DataRequired, NumberRange, Length
 from flask_wtf import FlaskForm
 
 from ...utils.unit_number_validation import UnitNumberValidator
+from ...models.lease import Lease
 
 
 class ApartmentInfoForm(FlaskForm):
@@ -43,5 +44,11 @@ class ApartmentInfoForm(FlaskForm):
     num_occupants = IntegerField(
         'Number of Occupants',
         validators=[DataRequired(), NumberRange(min=0, max=10)],
+        description='Lorem ipsum dolor sit amet.'
+    )
+
+    address = StringField(
+        'Address',
+        validators=[DataRequired(), Length(max=Lease.str_field_len('address'))],
         description='Lorem ipsum dolor sit amet.'
     )

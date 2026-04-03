@@ -16,3 +16,8 @@ class EmergencyContact(db.Model):
 
     user_id:       Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=False)
     user:          Mapped['User'] = relationship(back_populates='emergency_contact')
+
+
+    @staticmethod
+    def str_field_len(field: str) -> int:
+        return EmergencyContact.__table__.c[field].type.length

@@ -26,9 +26,7 @@ pdfInput.addEventListener("change", async () => {
 
     // Autofill fields
     if (data.authorized_adults) {
-        const name = data.authorized_adults.split(" ");
-        document.getElementById("personal_info-first_name").value = name[0];
-        document.getElementById("personal_info-last_name").value = name[1];
+        document.getElementById("personal_info-given_name").value = data.authorized_adults;
     }
 
     if (data.unit_number) {
