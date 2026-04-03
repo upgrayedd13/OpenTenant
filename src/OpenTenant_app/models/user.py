@@ -1,12 +1,39 @@
-from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.orm import mapped_column, relationship, Mapped
+from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy import Integer, String
+from flask_login import UserMixin
+from typing import TYPE_CHECKING
+from datetime import date
 
 from ..extensions import db, login_manager
+from .user_role import UserRole
+if TYPE_CHECKING:
+    from .lease import Lease
+
 
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False)
+    __tablename__ = 'users'
+
+    id:            Mapped[int] = mapped_column(Integer, primary_key=True)
+    role:          Mapped[int] = mapped_column(Integer, nullable=False, default=UserRole.USER)
+    username:      Mapped[str] = mapped_column(String(150), unique=True, nullable=False)
+    email:         Mapped[str] = mapped_column(String(254), unique=True, nullable=False)
+    password_hash: Mapped[str] = mapped_column(String(256), nullable=False)
+    firstname:     Mapped[str] = mapped_column(String(75),  nullable=False)
+    lastname:      Mapped[str] = mapped_column(String(75),  nullable=True)  # some people don't have last names
+    phone_number:  Mapped[str] = mapped_column(String(20),  nullable=False)
+    occupation:    Mapped[str] = mapped_column(String(100), nullable=True)
+    pronouns:      Mapped[str] = mapped_column(String(20),  nullable=True)
+    leases:        Mapped[list['Lease']] = relationship(back_populates='user', order_by='Lease.start_date')
+
+    @hybrid_property
+    def current_lease(self) -> 'Lease | None':
+        today = date.today()
+        for lease in self.leases:
+            if lease.start_date <= today and (lease.end_date is None or lease.end_date >= today):
+                return lease
+        return None
 
 
     def set_password(self, password: str):
@@ -18,5 +45,5 @@ class User(UserMixin, db.Model):
 
 
 @login_manager.user_loader
-def load_user(user_id):
+def load_user(user_id: int) -> User:
     return User.query.get(int(user_id))

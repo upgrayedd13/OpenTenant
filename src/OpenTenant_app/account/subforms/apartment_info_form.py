@@ -2,7 +2,7 @@ from wtforms import DateField, IntegerField, DecimalField
 from wtforms.validators import DataRequired, NumberRange
 from flask_wtf import FlaskForm
 
-from .unit_number_validation import UnitNumberValidator
+from ...utils.unit_number_validation import UnitNumberValidator
 
 
 class ApartmentInfoForm(FlaskForm):
