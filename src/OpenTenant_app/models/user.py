@@ -9,23 +9,24 @@ from datetime import date
 from ..extensions import db, login_manager
 from .user_role import UserRole
 if TYPE_CHECKING:
+    from .emergency_contact import EmergencyContact
     from .lease import Lease
 
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
-    id:            Mapped[int] = mapped_column(Integer, primary_key=True)
-    role:          Mapped[int] = mapped_column(Integer, nullable=False, default=UserRole.USER)
-    username:      Mapped[str] = mapped_column(String(150), unique=True, nullable=False)
-    email:         Mapped[str] = mapped_column(String(254), unique=True, nullable=False)
-    password_hash: Mapped[str] = mapped_column(String(256), nullable=False)
-    firstname:     Mapped[str] = mapped_column(String(75),  nullable=False)
-    lastname:      Mapped[str] = mapped_column(String(75),  nullable=True)  # some people don't have last names
-    phone_number:  Mapped[str] = mapped_column(String(20),  nullable=False)
-    occupation:    Mapped[str] = mapped_column(String(100), nullable=True)
-    pronouns:      Mapped[str] = mapped_column(String(20),  nullable=True)
-    leases:        Mapped[list['Lease']] = relationship(back_populates='user', order_by='Lease.start_date')
+    id:                Mapped[int]       = mapped_column(Integer,     primary_key=True)
+    role:              Mapped[int]       = mapped_column(Integer,     nullable=False, default=UserRole.USER)
+    email:             Mapped[str]       = mapped_column(String(254), unique=True, nullable=False)
+    password_hash:     Mapped[str]       = mapped_column(String(256), nullable=False)
+    name:              Mapped[str]       = mapped_column(String(150), nullable=False)
+    phone_number:      Mapped[str|None]  = mapped_column(String(20),  nullable=True)
+    occupation:        Mapped[str|None]  = mapped_column(String(100), nullable=True)
+    pronouns:          Mapped[str|None]  = mapped_column(String(20),  nullable=True)
+
+    emergency_contact: Mapped['EmergencyContact|None'] = relationship(back_populates='user')
+    leases:            Mapped[list['Lease']] = relationship(back_populates='user', order_by='Lease.start_date')
 
     @hybrid_property
     def current_lease(self) -> 'Lease | None':

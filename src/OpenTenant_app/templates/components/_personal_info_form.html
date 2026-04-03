@@ -1,17 +1,12 @@
 {% from "macros/form_fields.html" import form_group %}
 
 <div class="form-row">
-    {{ form_group(form.personal_info.first_name) }}
-    {{ form_group(form.personal_info.last_name) }}
+    {{ form_group(form.personal_info.given_name) }}
     {{ form_group(form.personal_info.pronouns) }}
 </div>
 
 <div class="form-row">
     {{ form_group(form.personal_info.email) }}
     {{ form_group(form.personal_info.phone_number) }}
-    {{ form_group(form.personal_info.contact_method) }}
-</div>
-
-<div class="form-row">
     {{ form_group(form.personal_info.occupation) }}
 </div>

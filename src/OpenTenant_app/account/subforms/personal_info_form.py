@@ -4,14 +4,8 @@ from flask_wtf import FlaskForm
 
 
 class PersonalInfoForm(FlaskForm):
-    first_name = StringField(
-        'First Name',
-        validators=[DataRequired()],
-        description='Lorem ipsum dolor sit amet.'
-    )
-    
-    last_name = StringField(
-        'Last Name',
+    given_name = StringField(
+        'Name',
         validators=[DataRequired()],
         description='Lorem ipsum dolor sit amet.'
     )
@@ -32,16 +26,8 @@ class PersonalInfoForm(FlaskForm):
 
     phone_number = TelField(
         'Phone Number',
-        validators=[DataRequired()],
+        validators=[Optional()],
         description='Lorem ipsum dolor sit amet.'
-    )
-
-    contact_method = SelectField(
-        'Preferred Contact Method',
-        validators=[DataRequired(), Length(min=1, message='Must make a selection!')],
-        description='Lorem ipsum dolor sit amet.',
-        choices=['', 'Email', 'Phone'],
-        default=''
     )
 
     occupation = StringField(

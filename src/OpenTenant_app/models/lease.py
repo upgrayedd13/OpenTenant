@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Float, String, Date, CheckConstraint
+from sqlalchemy import Integer, Float, String, Date, CheckConstraint, ForeignKey
 from sqlalchemy.orm import mapped_column, relationship, Mapped
 from typing import TYPE_CHECKING
 from datetime import date
@@ -13,7 +13,6 @@ class Lease(db.Model):
     __tablename__ = 'leases'
 
     id:                 Mapped[int]   = mapped_column(Integer,     primary_key=True)
-    user_id:            Mapped[int]   = mapped_column(Integer,     db.ForeignKey('users.id'), nullable=False)
     base_monthly_rent:  Mapped[float] = mapped_column(Float,       nullable=False)
     monthly_rent_total: Mapped[float] = mapped_column(Float,       nullable=False)
     unit_number:        Mapped[int]   = mapped_column(Integer,     nullable=False)
@@ -21,7 +20,8 @@ class Lease(db.Model):
     end_date:           Mapped[date]  = mapped_column(Date,        nullable=True)   # might not have an end date?
     address:            Mapped[str]   = mapped_column(String(256), nullable=False)
 
-    user: Mapped['User'] = relationship(back_populates='leases')
+    user_id:            Mapped[int]   = mapped_column(ForeignKey('users.id'), nullable=False)
+    user:               Mapped['User'] = relationship(back_populates='leases')
 
     __table_args__ = (
         CheckConstraint(
