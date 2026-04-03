@@ -3,7 +3,7 @@ from sqlalchemy.orm import mapped_column, relationship, Mapped
 from typing import TYPE_CHECKING
 from datetime import date
 
-import utils.unit_number_validation as unum
+from ..utils import unit_number_validation as unum
 from ..extensions import db
 if TYPE_CHECKING:
     from .user import User
@@ -30,7 +30,7 @@ class Lease(db.Model):
             (((unit_number / 100) = {unum.MAX_FLOOR})                              AND ((unit_number % 100) BETWEEN {unum.MIN_UNIT} AND {unum.MAX_UNIT_TOP_FLOOR}))
             ''',
             name='valid_unit_number'
-        )
+        ),
     )
 
     @property
