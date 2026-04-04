@@ -49,5 +49,11 @@ pdfInput.addEventListener("change", async () => {
         document.getElementById("apartment_info-monthly_rent_total").value = data.monthly_rent_total.toFixed(2);
     }
 
-    document.getElementById("apartment_info-num_occupants").value = 1;  // TODO: actually parse this value
+    if (data.num_authorized_adults || data.num_authorized_minors) {
+        document.getElementById("apartment_info-num_occupants").value = data.num_authorized_adults + data.num_authorized_minors
+    }
+
+    if (data.address) {
+        document.getElementById("apartment_info-address").value = data.address;
+    }
 });

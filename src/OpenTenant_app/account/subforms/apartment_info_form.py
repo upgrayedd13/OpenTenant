@@ -7,6 +7,9 @@ from ...models.lease import Lease
 
 
 class ApartmentInfoForm(FlaskForm):
+    class Meta:
+        csrf = False
+
     unit_number = IntegerField(
         'Unit Number', 
         validators=[DataRequired(), UnitNumberValidator()],
@@ -52,3 +55,13 @@ class ApartmentInfoForm(FlaskForm):
         validators=[DataRequired(), Length(max=Lease.str_field_len('address'))],
         description='Lorem ipsum dolor sit amet.'
     )
+
+    def create_lease(self) -> Lease:
+        l = Lease()
+        l.base_monthly_rent = self.base_monthly_rent.data
+        l.monthly_rent_total = self.monthly_rent_total.data
+        l.unit_number = self.unit_number.data
+        l.start_date = self.lease_start_date.data
+        l.end_date = self.lease_end_date.data
+        l.address = self.address.data
+        return l
