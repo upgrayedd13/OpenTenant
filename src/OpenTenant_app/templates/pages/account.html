@@ -8,10 +8,21 @@
 
         <!-- LEFT SIDE FORM -->
         <div class="account-left">
+            <!-- Personal Info -->
+            <h2 class="register-title">Personal Info</h2>
+            {% include "components/_personal_info_form.html" %}
 
-            <!-- lease form -->
-            {% include "components/_lease_form.html" %}
+            <br><br><br>
 
+            <!-- Emergency Contact Info -->
+            <h2 class="register-title">Emergency Contact</h2>
+            {% include "components/_emergency_info_form.html" %}
+
+            <br><br><br>
+
+            <!-- Apartment Unit Info -->
+            <h2 class="register-title">Apartment Info</h2>
+            {% include "components/_apartment_info_form.html" %}
         </div>
 
         <!-- RIGHT SIDE BUTTONS -->

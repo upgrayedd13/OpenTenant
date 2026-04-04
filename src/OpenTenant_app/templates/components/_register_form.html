@@ -1,0 +1,11 @@
+{% from "macros/form_fields.html" import form_group %}
+
+<div class="register-form">
+    <div class="register-fields">
+        <div class="register-row">
+            {{ form_group(form.register_info.username) }}
+            {{ form_group(form.register_info.password) }}
+            {{ form_group(form.register_info.confirmed_password) }}
+        </div>
+    </div>
+</div>

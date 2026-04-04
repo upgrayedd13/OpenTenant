@@ -12,7 +12,7 @@ pdfInput.addEventListener("change", async () => {
     const formData = new FormData();
     formData.append("pdf", file);
 
-    const response = await fetch("/parse-lease", {
+    const response = await fetch("/upload-lease", {
         method: "POST",
         body: formData
     });
@@ -25,31 +25,35 @@ pdfInput.addEventListener("change", async () => {
     const data = await response.json();
 
     // Autofill fields
-    if (data.residents) {
-        const name = data.residents.split(" ");
-        document.getElementById("first_name").value = name[0];
-        document.getElementById("last_name").value = name[1];
+    if (data.authorized_adults) {
+        document.getElementById("personal_info-given_name").value = data.authorized_adults;
     }
 
     if (data.unit_number) {
-        document.getElementById("unit_number").value = data.unit_number;
+        document.getElementById("apartment_info-unit_number").value = data.unit_number;
     }
 
     if (data.lease_start_date) {
-        document.getElementById("lease_start_date").value = data.lease_start_date;
+        document.getElementById("apartment_info-lease_start_date").value = data.lease_start_date;
     }
 
     if (data.lease_end_date) {
-        document.getElementById("lease_end_date").value = data.lease_end_date;
+        document.getElementById("apartment_info-lease_end_date").value = data.lease_end_date;
     }
 
     if (data.base_rent) {
-        document.getElementById("base_monthly_rent").value = data.base_rent.toFixed(2);
+        document.getElementById("apartment_info-base_monthly_rent").value = data.base_rent.toFixed(2);
     }
 
     if (data.monthly_rent_total) {
-        document.getElementById("monthly_rent_total").value = data.monthly_rent_total.toFixed(2);
+        document.getElementById("apartment_info-monthly_rent_total").value = data.monthly_rent_total.toFixed(2);
     }
 
-    document.getElementById("lease_num_occupants").value = 1;  // TODO: actually parse this value
+    if (data.num_authorized_adults || data.num_authorized_minors) {
+        document.getElementById("apartment_info-num_occupants").value = data.num_authorized_adults + data.num_authorized_minors
+    }
+
+    if (data.address) {
+        document.getElementById("apartment_info-address").value = data.address;
+    }
 });

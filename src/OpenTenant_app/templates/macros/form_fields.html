@@ -1,0 +1,32 @@
+{% macro form_group(field, attrs=None) %}
+
+{% set final_attrs = {} %}
+{% if attrs %}
+    {% for key, value in attrs.items() %}
+        {% set _ = final_attrs.update({key: value}) %}
+    {% endfor %}
+{% endif %}
+
+{# Automatically detect phone fields #}
+{% set field_name_lower = field.name.lower() %}
+{% if 'phone' in field_name_lower %}
+    {% if 'data-phone' not in final_attrs %}
+        {% set _ = final_attrs.update({'data-phone': 'true'}) %}
+    {% endif %}
+{% endif %}
+
+<div class="register-group">
+    <label>
+        {{ field.label.text }}
+
+        {% if field.description %}
+            <span
+                class="info-icon"
+                data-tooltip="Why we collect this: {{ field.description }}"
+            >i</span>
+        {% endif %}
+    </label>
+
+    {{ field(**final_attrs) }}
+</div>
+{% endmacro %}

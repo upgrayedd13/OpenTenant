@@ -1,10 +1,14 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request
 from flask_login import login_required, login_user, logout_user, current_user
+from pprint import pprint
 
+from ..parsers.leaseParser import parse_lease
+from ..models.emergency_contact import EmergencyContact
+from ..models.lease import Lease
 from ..models.user import User
 from ..extensions import db
 
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, SignupForm
 
 account_bp = Blueprint('account', __name__)
 
@@ -15,7 +19,7 @@ def login():
         user: User = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
             remember = request.form.get('remember') == 'on'  # True if checkbox checked
-            login_user(user, remember=remember)  # <-- remember=True keeps session across browser restarts
+            login_user(user, remember=remember)              # remember=True keeps session across browser restarts
             return redirect(url_for('account.account'))
         flash('Invalid credentials')
     return render_template('pages/login.html', form=form)
@@ -23,22 +27,43 @@ def login():
 
 @account_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegisterForm()
+    form = SignupForm()
+
     if form.validate_on_submit():
-        if User.query.filter_by(username=form.username.data).first():
-            flash('Username already exists')
-            return redirect(url_for('register'))
+        # create the objects
+        user: User = form.personal_info.create_user()
+        ec: EmergencyContact = form.emergency_contact.create_emergency_contact()
+        l: Lease = form.apartment_info.create_lease()
 
-        user = User(username=form.username.data)
-        user.set_password(form.password.data)
+        # fill in the username and password
+        user.username = form.register_info.username.data
+        user.set_password(form.register_info.password.data)
 
+        # link the user and emergency contact
+        user.emergency_contact = ec
+        user.leases.append(l)
+
+        # add everything to the database
         db.session.add(user)
         db.session.commit()
 
-        flash('Account created. Please log in.')
+        # take the user to the login page
+        flash('Account created! Please log in.')
         return redirect(url_for('account.login'))
 
+    pprint(form.errors)
     return render_template('pages/register.html', form=form)
+
+
+@account_bp.route("/upload-lease", methods=["POST"])
+def upload_lease():
+    file = request.files.get("pdf")
+    if not file:
+        return jsonify({"error": "No file"}), 400
+
+    # TODO: add a loading icon while lease is being parsed
+    parsed_data = parse_lease(file)
+    return jsonify(parsed_data)
 
 
 @account_bp.route('/logout')
@@ -48,18 +73,8 @@ def logout():
     return redirect(url_for('account.login'))
 
 
-@account_bp.route("/parse-lease", methods=["POST"])
-@login_required
-def parse_lease():
-    file = request.files.get("pdf")
-    if not file:
-        return jsonify({"error": "No file"}), 400
-
-    parsed_data = parse_lease(file)
-    return jsonify(parsed_data)
-
-
 @account_bp.route("/account")
 @login_required
 def account():
-    return render_template("pages/account.html", user=current_user)
+    form = SignupForm()
+    return render_template("pages/account.html", user=current_user, form=form)

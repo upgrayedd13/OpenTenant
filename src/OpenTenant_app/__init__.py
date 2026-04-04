@@ -2,11 +2,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from werkzeug.middleware.proxy_fix import ProxyFix
-from flask import Flask, Response
+from flask import Flask
 import os
 
 from .config import DevelopmentConfig, ProductionConfig
-from .extensions import db, login_manager
+from .extensions import db, login_manager, migrate
 
 from .account.routes import account_bp
 from .admin.routes import admin_bp
@@ -27,6 +27,7 @@ def create_app() -> None:
 
     # Initialize the DB and app
     db.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
 
     # Register blueprints

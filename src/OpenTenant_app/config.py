@@ -15,7 +15,7 @@ class Config:
 
     # database
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI') 
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = env_bool('SQLALCHEMY_TRACK_MODIFICATIONS', False)
 
     # flask login remember me cookie
     REMEMBER_COOKIE_DURATION = timedelta(days=env_int('REMEMEBER_COOKIE_DURATION_DAYS', 7))
