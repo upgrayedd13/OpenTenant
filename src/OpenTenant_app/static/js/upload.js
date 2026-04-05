@@ -48,6 +48,9 @@ pdfInput.addEventListener("change", async () => {
         return;
     }
 
+    const spinner = document.getElementById("uploadSpinner");
+    spinner.classList.remove("hidden");
+
     let data;
     try {
         data = await uploadFile(file);
@@ -55,6 +58,8 @@ pdfInput.addEventListener("change", async () => {
         console.error(err);
         alert(err.message);
         return;
+    } finally {
+        spinner.classList.add("hidden");
     }
 
     // Autofill fields
