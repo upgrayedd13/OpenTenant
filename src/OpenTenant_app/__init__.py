@@ -1,8 +1,9 @@
 from dotenv import load_dotenv
 load_dotenv()
 
+from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.middleware.proxy_fix import ProxyFix
-from flask import Flask
+from flask import Flask, jsonify
 import os
 
 from .config import DevelopmentConfig, ProductionConfig
@@ -25,6 +26,10 @@ def create_app() -> None:
     else:
         app.config.from_object(DevelopmentConfig)
 
+    # Ensure the upload directories exist
+    os.makedirs(app.config['LEASES_DIR'], exist_ok=True)
+    os.makedirs(app.config['FILE_REPOSITORY_DIR'], exist_ok=True)
+
     # Initialize the DB and app
     db.init_app(app)
     migrate.init_app(app, db)
@@ -36,8 +41,16 @@ def create_app() -> None:
     app.register_blueprint(info_bp)
     app.register_blueprint(main_bp)
 
-    # Create the DB tables that don't exist
-    with app.app_context():
-        db.create_all()
+    # Add a handler for requests that exceed the MAX_CONTENT_LENGTH
+    @app.errorhandler(RequestEntityTooLarge)
+    def request_too_large(e):
+        return jsonify({'error': 'Request too large'}), 413
+
+    # Add an endpoint so the JS can get configs from our .env
+    @app.route('/config', methods=['GET'])
+    def config():
+        return jsonify({
+            'maxUploadBytes': app.config['MAX_CONTENT_LENGTH']
+        })
 
     return app
