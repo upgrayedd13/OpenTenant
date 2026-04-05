@@ -27,6 +27,7 @@ def create_app() -> None:
         app.config.from_object(DevelopmentConfig)
 
     # Ensure the upload directories exist
+    os.makedirs(app.config['TMP_DIR'], exist_ok=True)
     os.makedirs(app.config['LEASES_DIR'], exist_ok=True)
     os.makedirs(app.config['FILE_REPOSITORY_DIR'], exist_ok=True)
 

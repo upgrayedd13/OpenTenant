@@ -2,7 +2,7 @@ from wtforms import StringField, TelField, SelectField, EmailField
 from wtforms.validators import DataRequired, Optional, Length
 from flask_wtf import FlaskForm
 
-from ...utils.user_validation import EmailUniqueValidator
+from ...utils.custom_validators import EmailUniqueValidator
 from ...models.user_role import UserRole
 from ...models.user import User
 

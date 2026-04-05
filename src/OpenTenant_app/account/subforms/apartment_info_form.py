@@ -2,7 +2,7 @@ from wtforms import DateField, IntegerField, DecimalField, StringField
 from wtforms.validators import DataRequired, NumberRange, Length
 from flask_wtf import FlaskForm
 
-from ...utils.unit_number_validation import UnitNumberValidator
+from ...utils.custom_validators import UnitNumberValidator
 from ...models.lease import Lease
 
 

@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
-from pprint import pprint
+from shutil import move
+import uuid
 import os
 
-from ..utils.rand_string import genRandomString
 from ..parsers.leaseParser import parse_lease
 from ..utils.get_config import get_config
 from ..models.emergency_contact import EmergencyContact
@@ -43,6 +43,16 @@ def register():
         user.username = form.register_info.username.data
         user.set_password(form.register_info.password.data)
 
+        # TODO: make sure there's enough space for this file
+
+        # move the file to the actual upload directory
+        tmp_path = os.path.join(get_config('TMP_DIR'), form.register_info.upload_token.data)
+        real_path = os.path.join(get_config('LEASES_DIR'), form.register_info.upload_token.data)
+        move(tmp_path, real_path)
+
+        # add the path to the lease
+        l.path = real_path
+
         # link the user and emergency contact
         user.emergency_contact = ec
         user.leases.append(l)
@@ -55,10 +65,12 @@ def register():
         flash('Account created! Please log in.')
         return redirect(url_for('account.login'))
 
+    # flash errors to the user
     for dict in form.errors.values():
         for errors in dict.values():
             for error in errors:
                 flash(error)
+
     return render_template('pages/register.html', form=form)
 
 
@@ -80,14 +92,23 @@ def upload_lease():
         return jsonify({'error': 'Only PDF files are allowed'}), 400
 
     # add a random string of characters to ensure it's unique
-    fname = genRandomString(8) + fname
+    hex_string = uuid.uuid4().hex
+    fname = f'{hex_string}_{fname}'
+
+    # make sure the filename isn't too long
+    tmp_path = get_config('TMP_DIR')
+    if len(fname) > os.pathconf(tmp_path, 'PC_NAME_MAX'):
+        return jsonify({'error': f'Name "{file.filename}" exceeds maximum filename size'}), 400
+
+    # TODO: make sure there's enough space for this file
 
     # write the file to disk
-    full_file_path = os.path.join(get_config('LEASES_DIR'), fname)
+    full_file_path = os.path.join(tmp_path, fname)
     file.save(full_file_path)
 
     # parse the file
     parsed_data = parse_lease(full_file_path)
+    parsed_data['upload_token'] = fname
     return jsonify(parsed_data)
 
 

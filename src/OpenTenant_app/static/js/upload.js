@@ -89,4 +89,8 @@ pdfInput.addEventListener("change", async () => {
     if (data.address) {
         document.getElementById("apartment_info-address").value = data.address;
     }
+
+    if (data.upload_token) {
+        document.getElementById("register_info-upload_token").value = data.upload_token;
+    }
 });

@@ -61,6 +61,7 @@ class Config:
     LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 
     # file and path stuff
+    TMP_DIR               = os.getenv('TMP_DIR',               '/tmp/OpenTenant')
     LEASES_DIR            = os.getenv('LEASES_DIR',            '/tmp/leases')
     FILE_REPOSITORY_DIR   = os.getenv('FILE_REPOSITORY_DIR',   '/tmp/files')
     MAX_CONTENT_LENGTH    = env_bytes('MAX_CONTENT_LENGTH',    '10M')  # largest request size

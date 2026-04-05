@@ -1,8 +1,8 @@
 from wtforms.validators import DataRequired, EqualTo, Length
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, HiddenField
 from flask_wtf import FlaskForm
 
-from ...utils.user_validation import UsernameUniqueValidator
+from ...utils.custom_validators import UploadTokenValidator, UsernameUniqueValidator
 from ...models.user import User
 
 
@@ -26,4 +26,9 @@ class RegisterForm(FlaskForm):
         'Confirm Password',
         validators=[DataRequired(), EqualTo('password', message='Passwords must match!')],
         description='Lorem ipsum dolor sit amet.'
+    )
+    
+    # this is a hidden field so no label or description is needed
+    upload_token = HiddenField(
+        validators=[DataRequired(), UploadTokenValidator()]
     )
