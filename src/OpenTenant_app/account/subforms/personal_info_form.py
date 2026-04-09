@@ -49,6 +49,5 @@ class PersonalInfoForm(FlaskForm):
         user.pronouns = self.pronouns.data if self.pronouns.data else None
         user.email = self.email.data
         user.phone_number = self.phone_number.data if self.phone_number.data else None
-        user.occupation = self.occupation.data if self.occupation.data else None
         user.role = UserRole.USER
         return user
