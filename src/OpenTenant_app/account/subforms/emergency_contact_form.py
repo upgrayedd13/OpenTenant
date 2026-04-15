@@ -3,6 +3,7 @@ from wtforms import StringField, TelField
 from flask_wtf import FlaskForm
 
 from ...models.emergency_contact import EmergencyContact
+from ...models.user import User
 
 
 class EmergencyContactForm(FlaskForm):
@@ -26,3 +27,10 @@ class EmergencyContactForm(FlaskForm):
         ec.name = self.emergency_contact_name.data if self.emergency_contact_name.data else None
         ec.phone_number = self.emergency_contact_phone.data if self.emergency_contact_phone.data else None
         return ec
+
+    @staticmethod
+    def from_user(user: User) -> 'EmergencyContactForm':
+        form = EmergencyContactForm()
+        form.emergency_contact_name.data  = user.emergency_contact.name
+        form.emergency_contact_phone.data = user.emergency_contact.phone_number
+        return form

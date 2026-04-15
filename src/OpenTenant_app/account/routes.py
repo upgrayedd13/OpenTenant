@@ -76,5 +76,6 @@ def logout():
 @account_bp.route("/account")
 @login_required
 def account():
-    form = SignupForm()
+    user: User = User.query.filter_by(username=current_user.username).one()
+    form = SignupForm.from_user(user)
     return render_template("pages/account.html", user=current_user, form=form)

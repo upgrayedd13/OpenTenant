@@ -4,6 +4,7 @@ from flask_wtf import FlaskForm
 
 from ...utils.unit_number_validation import UnitNumberValidator
 from ...models.lease import Lease
+from ...models.user import User
 
 
 class ApartmentInfoForm(FlaskForm):
@@ -65,3 +66,14 @@ class ApartmentInfoForm(FlaskForm):
         l.end_date = self.lease_end_date.data
         l.address = self.address.data
         return l
+
+    @staticmethod
+    def from_user(user: User) -> 'ApartmentInfoForm':
+        form = ApartmentInfoForm()
+        form.base_monthly_rent.data  = user.current_lease.base_monthly_rent
+        form.monthly_rent_total.data = user.current_lease.monthly_rent_total
+        form.unit_number.data        = user.current_lease.unit_number
+        form.lease_start_date.data   = user.current_lease.start_date
+        form.lease_end_date.data     = user.current_lease.end_date
+        form.address.data            = user.current_lease.address
+        return form
