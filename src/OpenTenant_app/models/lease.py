@@ -20,6 +20,7 @@ class Lease(db.Model):
     base_monthly_rent:  Mapped[float]  = mapped_column(Float,       nullable=False)
     monthly_rent_total: Mapped[float]  = mapped_column(Float,       nullable=False)
     unit_number:        Mapped[int]    = mapped_column(Integer,     nullable=False)
+    num_occupants:      Mapped[int]    = mapped_column(Integer,     nullable=False)
     start_date:         Mapped[date]   = mapped_column(Date,        nullable=False)
     end_date:           Mapped[date]   = mapped_column(Date,        nullable=True)   # might not have an end date?
     address:            Mapped[str]    = mapped_column(String(256), nullable=False)

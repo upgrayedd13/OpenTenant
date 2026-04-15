@@ -124,4 +124,5 @@ def logout():
 def account():
     user: User = User.query.filter_by(username=current_user.username).one()
     form = SignupForm.from_user(user)
+    form.disable_editing()
     return render_template("pages/account.html", user=current_user, form=form)

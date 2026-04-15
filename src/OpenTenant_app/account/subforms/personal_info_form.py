@@ -1,16 +1,13 @@
 from wtforms import StringField, TelField, SelectField, EmailField
 from wtforms.validators import DataRequired, Optional, Length
-from flask_wtf import FlaskForm
 
 from ...utils.custom_validators import EmailUniqueValidator
 from ...models.user_role import UserRole
 from ...models.user import User
+from .subform import Subform
 
 
-class PersonalInfoForm(FlaskForm):
-    class Meta:
-        csrf = False
-
+class PersonalInfoForm(Subform):
     given_name = StringField(
         'Name',
         validators=[DataRequired(), Length(max=User.str_field_len('name'))],
@@ -43,6 +40,7 @@ class PersonalInfoForm(FlaskForm):
         description='Lorem ipsum dolor sit amet.'
     )
 
+
     def create_user(self) -> User:
         user = User()
         user.name = self.given_name.data
@@ -52,6 +50,7 @@ class PersonalInfoForm(FlaskForm):
         user.occupation = self.occupation.data if self.occupation.data else None
         user.role = UserRole.USER
         return user
+
 
     @staticmethod
     def from_user(user: User) -> 'PersonalInfoForm':
