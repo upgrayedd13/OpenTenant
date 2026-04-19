@@ -24,7 +24,7 @@ class RegisterForm(Subform):
         validators=[DataRequired(), EqualTo('password', message='Passwords must match!')],
         description='Lorem ipsum dolor sit amet.'
     )
-    
+
     # this is a hidden field so no label or description is needed
     upload_token = HiddenField(
         validators=[DataRequired(), UploadTokenValidator()]
