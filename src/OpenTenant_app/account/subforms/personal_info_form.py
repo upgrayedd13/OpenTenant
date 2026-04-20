@@ -46,3 +46,13 @@ class PersonalInfoForm(FlaskForm):
         user.phone_number = self.phone_number.data if self.phone_number.data else None
         user.role = UserRole.USER
         return user
+
+    @staticmethod
+    def from_user(user: User) -> 'PersonalInfoForm':
+        form = PersonalInfoForm()
+        form.given_name.data = user.name
+        form.pronouns.data = user.pronouns
+        form.email.data = user.email
+        form.phone_number.data = user.phone_number
+        form.occupation.data = user.occupation
+        return form
