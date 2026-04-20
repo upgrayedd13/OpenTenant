@@ -3,7 +3,6 @@ from flask_login import login_required, login_user, logout_user, current_user
 from pprint import pprint
 
 from ..parsers.leaseParser import parse_lease
-from ..models.emergency_contact import EmergencyContact
 from ..models.lease import Lease
 from ..models.user import User
 from ..extensions import db
@@ -32,16 +31,11 @@ def register():
     if form.validate_on_submit():
         # create the objects
         user: User = form.personal_info.create_user()
-        ec: EmergencyContact = form.emergency_contact.create_emergency_contact()
         l: Lease = form.apartment_info.create_lease()
 
         # fill in the username and password
         user.username = form.register_info.username.data
         user.set_password(form.register_info.password.data)
-
-        # link the user and emergency contact
-        user.emergency_contact = ec
-        user.leases.append(l)
 
         # add everything to the database
         db.session.add(user)

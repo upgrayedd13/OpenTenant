@@ -37,11 +37,6 @@ class PersonalInfoForm(FlaskForm):
         description='Lorem ipsum dolor sit amet.'
     )
 
-    occupation = StringField(
-        'Occupation (Optional)',
-        validators=[Optional(), Length(max=User.str_field_len('occupation'))],
-        description='Lorem ipsum dolor sit amet.'
-    )
 
     def create_user(self) -> User:
         user = User()
