@@ -7,7 +7,6 @@ import os
 
 from ..parsers.leaseParser import parse_lease
 from ..utils.get_config import get_config
-from ..models.emergency_contact import EmergencyContact
 from ..models.lease import Lease
 from ..models.user import User
 from ..extensions import db
@@ -36,7 +35,6 @@ def register():
     if form.validate_on_submit():
         # create the objects
         user: User = form.personal_info.create_user()
-        ec: EmergencyContact = form.emergency_contact.create_emergency_contact()
         l: Lease = form.apartment_info.create_lease()
 
         # fill in the username and password
@@ -54,7 +52,6 @@ def register():
         l.path = real_path
 
         # link the user and emergency contact
-        user.emergency_contact = ec
         user.leases.append(l)
 
         # add everything to the database

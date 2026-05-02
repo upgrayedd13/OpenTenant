@@ -48,11 +48,6 @@ class ApartmentInfoForm(Subform):
         description='Lorem ipsum dolor sit amet.'
     )
 
-    address = StringField(
-        'Address',
-        validators=[DataRequired(), Length(max=Lease.str_field_len('address'))],
-        description='Lorem ipsum dolor sit amet.'
-    )
 
 
     def create_lease(self) -> Lease:
@@ -63,7 +58,6 @@ class ApartmentInfoForm(Subform):
         l.unit_number = self.unit_number.data
         l.start_date = self.lease_start_date.data
         l.end_date = self.lease_end_date.data
-        l.address = self.address.data
         return l
 
 

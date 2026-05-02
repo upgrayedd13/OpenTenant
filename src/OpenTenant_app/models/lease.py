@@ -23,7 +23,6 @@ class Lease(db.Model):
     num_occupants:      Mapped[int]    = mapped_column(Integer,     nullable=False)
     start_date:         Mapped[date]   = mapped_column(Date,        nullable=False)
     end_date:           Mapped[date]   = mapped_column(Date,        nullable=True)   # might not have an end date?
-    address:            Mapped[str]    = mapped_column(String(256), nullable=False)
     path:               Mapped[str]    = mapped_column(String(MAX_LEASE_PATH_LEN), nullable=False)
 
     user_id:            Mapped[int]    = mapped_column(ForeignKey('users.id'), nullable=False)
@@ -46,7 +45,7 @@ class Lease(db.Model):
 
 
     @property
-    def unumit(self) -> int:
+    def unit(self) -> int:
         return self.unit_number % 100
 
 

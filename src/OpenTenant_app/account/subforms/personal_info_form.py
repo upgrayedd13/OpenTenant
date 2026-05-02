@@ -34,11 +34,6 @@ class PersonalInfoForm(Subform):
         description='Lorem ipsum dolor sit amet.'
     )
 
-    occupation = StringField(
-        'Occupation (Optional)',
-        validators=[Optional(), Length(max=User.str_field_len('occupation'))],
-        description='Lorem ipsum dolor sit amet.'
-    )
 
 
     def create_user(self) -> User:
@@ -47,7 +42,6 @@ class PersonalInfoForm(Subform):
         user.pronouns = self.pronouns.data if self.pronouns.data else None
         user.email = self.email.data
         user.phone_number = self.phone_number.data if self.phone_number.data else None
-        user.occupation = self.occupation.data if self.occupation.data else None
         user.role = UserRole.USER
         return user
 
