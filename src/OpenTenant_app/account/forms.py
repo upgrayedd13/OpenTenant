@@ -26,7 +26,6 @@ class SignupForm(FlaskForm):
     def from_user(user: User) -> 'SignupForm':
         form = SignupForm()
         form.personal_info = PersonalInfoForm.from_user(user)
-        form.emergency_contact = EmergencyContactForm.from_user(user)
         form.apartment_info = ApartmentInfoForm.from_user(user)
         return form
 
@@ -34,11 +33,9 @@ class SignupForm(FlaskForm):
     def disable_editing(self) -> None:
         self.personal_info.disable_editing()
         self.register_info.disable_editing()
-        self.emergency_contact.disable_editing()
         self.apartment_info.disable_editing()
 
     def enable_editing(self) -> None:
         self.personal_info.enable_editing()
         self.register_info.enable_editing()
-        self.emergency_contact.enable_editing()
         self.apartment_info.enable_editing()

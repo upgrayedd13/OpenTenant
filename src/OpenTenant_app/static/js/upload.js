@@ -91,10 +91,6 @@ pdfInput.addEventListener("change", async () => {
         document.getElementById("apartment_info-num_occupants").value = data.num_authorized_adults + data.num_authorized_minors
     }
 
-    if (data.address) {
-        document.getElementById("apartment_info-address").value = data.address;
-    }
-
     if (data.upload_token) {
         document.getElementById("register_info-upload_token").value = data.upload_token;
     }

@@ -63,10 +63,9 @@ def register():
         return redirect(url_for('account.login'))
 
     # flash errors to the user
-    for dict in form.errors.values():
-        for errors in dict.values():
-            for error in errors:
-                flash(error)
+    for errors in form.errors.values():
+        for error in errors:
+            flash(error)
 
     return render_template('pages/register.html', form=form)
 

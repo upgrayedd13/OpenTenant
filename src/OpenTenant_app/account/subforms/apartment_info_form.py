@@ -70,5 +70,4 @@ class ApartmentInfoForm(Subform):
         form.unit_number.data        = user.current_lease.unit_number
         form.lease_start_date.data   = user.current_lease.start_date
         form.lease_end_date.data     = user.current_lease.end_date
-        form.address.data            = user.current_lease.address
         return form
