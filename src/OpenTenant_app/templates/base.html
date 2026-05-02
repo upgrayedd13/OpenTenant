@@ -11,16 +11,13 @@
     {% include "layout/_header.html" %}
 
     <!-- Handle flashed messages -->
-    {% include "components/_flash_messages.html" %}
+    {% include "account/forms/_flash_messages.html" %}
 
     <!-- Main part of the page -->
     {% block content %}{% endblock %}
 
     <!-- Footer -->
     {% include "layout/_footer.html" %}
-
-    <!-- JS files -->
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 
 </html>

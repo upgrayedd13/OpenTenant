@@ -14,7 +14,7 @@
         <form method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
 
-            {% include "components/_signup_form.html" %}
+            {% include "account/forms/_signup_form.html" %}
 
             <button class="submit-btn">Submit</button>
         </form>
@@ -22,6 +22,6 @@
 </main>
 
 <!-- JS files -->
-<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+<script src="{{ url_for('account.static', filename='js/upload.js') }}"></script>
 
 {% endblock %}

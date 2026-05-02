@@ -8,9 +8,10 @@ import os
 from .config import DevelopmentConfig, ProductionConfig
 from .extensions import db, login_manager, migrate
 
+from .resources.routes import resources_bp
 from .account.routes import account_bp
 from .admin.routes import admin_bp
-from .info.routes import info_bp
+from .about.routes import about_bp
 from .main.routes import main_bp
 
 
@@ -31,9 +32,10 @@ def create_app() -> None:
     login_manager.init_app(app)
 
     # Register blueprints
+    app.register_blueprint(resources_bp)
     app.register_blueprint(account_bp)
     app.register_blueprint(admin_bp)
-    app.register_blueprint(info_bp)
+    app.register_blueprint(about_bp)
     app.register_blueprint(main_bp)
 
     # Create the DB tables that don't exist

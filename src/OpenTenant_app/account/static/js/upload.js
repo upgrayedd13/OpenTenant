@@ -52,8 +52,4 @@ pdfInput.addEventListener("change", async () => {
     if (data.num_authorized_adults || data.num_authorized_minors) {
         document.getElementById("apartment_info-num_occupants").value = data.num_authorized_adults + data.num_authorized_minors
     }
-
-    if (data.address) {
-        document.getElementById("apartment_info-address").value = data.address;
-    }
 });

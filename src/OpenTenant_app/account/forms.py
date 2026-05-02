@@ -25,6 +25,5 @@ class SignupForm(FlaskForm):
     def from_user(user: User) -> 'SignupForm':
         form = SignupForm()
         form.personal_info = PersonalInfoForm.from_user(user)
-        form.emergency_contact = EmergencyContactForm.from_user(user)
         form.apartment_info = ApartmentInfoForm.from_user(user)
         return form

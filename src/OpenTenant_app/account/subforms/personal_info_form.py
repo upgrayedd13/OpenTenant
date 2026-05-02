@@ -54,5 +54,4 @@ class PersonalInfoForm(FlaskForm):
         form.pronouns.data = user.pronouns
         form.email.data = user.email
         form.phone_number.data = user.phone_number
-        form.occupation.data = user.occupation
         return form

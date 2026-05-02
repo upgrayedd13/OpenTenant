@@ -9,7 +9,8 @@ from ..extensions import db
 
 from .forms import LoginForm, SignupForm
 
-account_bp = Blueprint('account', __name__)
+account_bp = Blueprint('account', __name__, url_prefix='/account', template_folder='templates', static_folder='static', static_url_path='/account/static')
+
 
 @account_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -21,7 +22,7 @@ def login():
             login_user(user, remember=remember)              # remember=True keeps session across browser restarts
             return redirect(url_for('account.account'))
         flash('Invalid credentials')
-    return render_template('pages/login.html', form=form)
+    return render_template('account/login.html', form=form)
 
 
 @account_bp.route('/register', methods=['GET', 'POST'])
@@ -46,7 +47,7 @@ def register():
         return redirect(url_for('account.login'))
 
     pprint(form.errors)
-    return render_template('pages/register.html', form=form)
+    return render_template('account/register.html', form=form)
 
 
 @account_bp.route("/upload-lease", methods=["POST"])
@@ -72,4 +73,4 @@ def logout():
 def account():
     user: User = User.query.filter_by(username=current_user.username).one()
     form = SignupForm.from_user(user)
-    return render_template("pages/account.html", user=current_user, form=form)
+    return render_template("account/account.html", user=current_user, form=form)
