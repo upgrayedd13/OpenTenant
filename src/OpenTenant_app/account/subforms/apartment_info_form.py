@@ -1,16 +1,13 @@
 from wtforms import DateField, IntegerField, DecimalField, StringField
 from wtforms.validators import DataRequired, NumberRange, Length
-from flask_wtf import FlaskForm
 
-from ...utils.unit_number_validation import UnitNumberValidator
+from ...utils.custom_validators import UnitNumberValidator
 from ...models.lease import Lease
 from ...models.user import User
+from .subform import Subform
 
 
-class ApartmentInfoForm(FlaskForm):
-    class Meta:
-        csrf = False
-
+class ApartmentInfoForm(Subform):
     unit_number = IntegerField(
         'Unit Number', 
         validators=[DataRequired(), UnitNumberValidator()],
@@ -52,22 +49,25 @@ class ApartmentInfoForm(FlaskForm):
     )
 
 
+
     def create_lease(self) -> Lease:
         l = Lease()
         l.base_monthly_rent = self.base_monthly_rent.data
         l.monthly_rent_total = self.monthly_rent_total.data
+        l.num_occupants = self.num_occupants.data
         l.unit_number = self.unit_number.data
         l.start_date = self.lease_start_date.data
         l.end_date = self.lease_end_date.data
         return l
+
 
     @staticmethod
     def from_user(user: User) -> 'ApartmentInfoForm':
         form = ApartmentInfoForm()
         form.base_monthly_rent.data  = user.current_lease.base_monthly_rent
         form.monthly_rent_total.data = user.current_lease.monthly_rent_total
+        form.num_occupants.data      = user.current_lease.num_occupants
         form.unit_number.data        = user.current_lease.unit_number
         form.lease_start_date.data   = user.current_lease.start_date
         form.lease_end_date.data     = user.current_lease.end_date
-        form.address.data            = user.current_lease.address
         return form

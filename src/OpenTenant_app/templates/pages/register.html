@@ -6,13 +6,14 @@
 <main class="register-main">
     <div class="register-box">
 
-        <button type="button" class="uploadLease-btn" id="uploadLeaseBtn">
-            Upload Lease
-        </button>
-        <input type="file" id="leasePdfInput" name="lease_pdf" accept="application/pdf" hidden>
-
         <form method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
+
+            <button type="button" class="uploadLease-btn" id="uploadLeaseBtn">
+                Upload Lease
+            </button>
+            <input type="file" id="leasePdfInput" name="pdf" accept="application/pdf" hidden>
+            <span id="uploadSpinner" class="spinner hidden"></span>
 
             {% include "components/_signup_form.html" %}
 

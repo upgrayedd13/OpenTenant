@@ -3,6 +3,10 @@
 <div class="register-form">
     <div class="register-fields">
         <div class="register-row">
+            <input type="hidden"
+                name="{{ form.register_info.upload_token.name }}"
+                id="{{ form.register_info.upload_token.id }}">
+
             {{ form_group(form.register_info.username) }}
             {{ form_group(form.register_info.password) }}
             {{ form_group(form.register_info.confirmed_password) }}

@@ -1,6 +1,13 @@
 {% macro form_group(field, attrs=None) %}
 
 {% set final_attrs = {} %}
+
+{% if field.render_kw %}
+    {% for key, value in field.render_kw.items() %}
+        {% set _ = final_attrs.update({key: value}) %}
+    {% endfor %}
+{% endif %}
+
 {% if attrs %}
     {% for key, value in attrs.items() %}
         {% set _ = final_attrs.update({key: value}) %}

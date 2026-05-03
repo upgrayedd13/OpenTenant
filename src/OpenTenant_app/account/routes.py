@@ -1,8 +1,12 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request
 from flask_login import login_required, login_user, logout_user, current_user
-from pprint import pprint
+from werkzeug.utils import secure_filename
+from shutil import move
+import uuid
+import os
 
 from ..parsers.leaseParser import parse_lease
+from ..utils.get_config import get_config
 from ..models.lease import Lease
 from ..models.user import User
 from ..extensions import db
@@ -37,6 +41,19 @@ def register():
         user.username = form.register_info.username.data
         user.set_password(form.register_info.password.data)
 
+        # TODO: make sure there's enough space for this file
+
+        # move the file to the actual upload directory
+        tmp_path = os.path.join(get_config('TMP_DIR'), form.register_info.upload_token.data)
+        real_path = os.path.join(get_config('LEASES_DIR'), form.register_info.upload_token.data)
+        move(tmp_path, real_path)
+
+        # add the path to the lease
+        l.path = real_path
+
+        # link the user and emergency contact
+        user.leases.append(l)
+
         # add everything to the database
         db.session.add(user)
         db.session.commit()
@@ -45,18 +62,49 @@ def register():
         flash('Account created! Please log in.')
         return redirect(url_for('account.login'))
 
-    pprint(form.errors)
+    # flash errors to the user
+    for errors in form.errors.values():
+        for error in errors:
+            flash(error)
+
     return render_template('pages/register.html', form=form)
 
 
-@account_bp.route("/upload-lease", methods=["POST"])
+# TODO: add a loading icon while lease is being parsed
+@account_bp.route('/upload-lease', methods=['POST'])
 def upload_lease():
-    file = request.files.get("pdf")
+    # get the file
+    file = request.files.get('pdf')
     if not file:
-        return jsonify({"error": "No file"}), 400
+        return jsonify({'error': 'No file'}), 400
 
-    # TODO: add a loading icon while lease is being parsed
-    parsed_data = parse_lease(file)
+    # check that the filename wasn't maliciously formed and complain about it if it was
+    fname = secure_filename(file.filename)
+    if fname != file.filename:
+        return jsonify({'error': 'Got malicious filename! This will be logged'}), 400
+
+    # ensure it's a PDF
+    if os.path.splitext(fname)[1] != '.pdf':
+        return jsonify({'error': 'Only PDF files are allowed'}), 400
+
+    # add a random string of characters to ensure it's unique
+    hex_string = uuid.uuid4().hex
+    fname = f'{hex_string}_{fname}'
+
+    # make sure the filename isn't too long
+    tmp_path = get_config('TMP_DIR')
+    if len(fname) > os.pathconf(tmp_path, 'PC_NAME_MAX'):
+        return jsonify({'error': f'Name "{file.filename}" exceeds maximum filename size'}), 400
+
+    # TODO: make sure there's enough space for this file
+
+    # write the file to disk
+    full_file_path = os.path.join(tmp_path, fname)
+    file.save(full_file_path)
+
+    # parse the file
+    parsed_data = parse_lease(full_file_path)
+    parsed_data['upload_token'] = fname
     return jsonify(parsed_data)
 
 
@@ -72,4 +120,5 @@ def logout():
 def account():
     user: User = User.query.filter_by(username=current_user.username).one()
     form = SignupForm.from_user(user)
+    form.disable_editing()
     return render_template("pages/account.html", user=current_user, form=form)

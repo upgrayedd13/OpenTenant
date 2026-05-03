@@ -1,28 +1,66 @@
 const uploadBtn = document.getElementById("uploadLeaseBtn");
 const pdfInput = document.getElementById("leasePdfInput");
+let config = null;
+
+async function getUploadConfig() {
+    const res = await fetch("/config");
+    if (!res.ok) throw new Error("Failed to load config");
+    return res.json();
+}
+
+async function ensureConfigLoaded() {
+    if (!config) {
+        config = await getUploadConfig();
+    }
+}
 
 uploadBtn.addEventListener("click", () => {
     pdfInput.click(); // opens file dialog
 });
 
-pdfInput.addEventListener("change", async () => {
-    const file = pdfInput.files[0];
-    if (!file) return;
-
+async function uploadFile(file) {
     const formData = new FormData();
     formData.append("pdf", file);
 
     const response = await fetch("/upload-lease", {
         method: "POST",
-        body: formData
+        body: formData,
     });
 
     if (!response.ok) {
-        alert("Failed to parse lease");
+        throw new Error(`Upload failed: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+pdfInput.addEventListener("change", async () => {
+    const file = pdfInput.files[0];
+    if (!file) {
+        alert("Didn't get file!");
         return;
     }
 
-    const data = await response.json();
+    await ensureConfigLoaded();
+
+    if (file.size > config.maxUploadBytes) {
+        alert(`File is too large. Max size is ${config.maxUploadBytes / 1024 / 1024} MB`);
+        return;
+    }
+
+    const spinner = document.getElementById("uploadSpinner");
+    spinner.classList.remove("hidden");
+
+    let data;
+    try {
+        data = await uploadFile(file);
+    } catch (err) {
+        console.error(err);
+        alert(err.message);
+        return;
+    } finally {
+        spinner.classList.add("hidden");
+    }
 
     // Autofill fields
     if (data.authorized_adults) {
@@ -53,7 +91,7 @@ pdfInput.addEventListener("change", async () => {
         document.getElementById("apartment_info-num_occupants").value = data.num_authorized_adults + data.num_authorized_minors
     }
 
-    if (data.address) {
-        document.getElementById("apartment_info-address").value = data.address;
+    if (data.upload_token) {
+        document.getElementById("register_info-upload_token").value = data.upload_token;
     }
 });

@@ -2,11 +2,15 @@ from sqlalchemy import Integer, Float, String, Date, CheckConstraint, ForeignKey
 from sqlalchemy.orm import mapped_column, relationship, Mapped
 from typing import TYPE_CHECKING
 from datetime import date
+import os
 
-from ..utils import unit_number_validation as unum
+from ..utils import custom_validators as unum
 from ..extensions import db
 if TYPE_CHECKING:
     from .user import User
+
+
+MAX_LEASE_PATH_LEN = os.pathconf(os.getenv('LEASES_DIR', '/tmp/leases'), 'PC_PATH_MAX')
 
 
 class Lease(db.Model):
@@ -16,8 +20,10 @@ class Lease(db.Model):
     base_monthly_rent:  Mapped[float]  = mapped_column(Float,       nullable=False)
     monthly_rent_total: Mapped[float]  = mapped_column(Float,       nullable=False)
     unit_number:        Mapped[int]    = mapped_column(Integer,     nullable=False)
+    num_occupants:      Mapped[int]    = mapped_column(Integer,     nullable=False)
     start_date:         Mapped[date]   = mapped_column(Date,        nullable=False)
     end_date:           Mapped[date]   = mapped_column(Date,        nullable=True)   # might not have an end date?
+    path:               Mapped[str]    = mapped_column(String(MAX_LEASE_PATH_LEN), nullable=False)
 
     user_id:            Mapped[int]    = mapped_column(ForeignKey('users.id'), nullable=False)
     user:               Mapped['User'] = relationship(back_populates='leases')
