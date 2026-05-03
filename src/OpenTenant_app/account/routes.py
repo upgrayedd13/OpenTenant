@@ -13,7 +13,8 @@ from ..extensions import db
 
 from .forms import LoginForm, SignupForm
 
-account_bp = Blueprint('account', __name__)
+account_bp = Blueprint('account', __name__, url_prefix='/account', template_folder='templates', static_folder='static', static_url_path='/account/static')
+
 
 @account_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -25,7 +26,7 @@ def login():
             login_user(user, remember=remember)              # remember=True keeps session across browser restarts
             return redirect(url_for('account.account'))
         flash('Invalid credentials')
-    return render_template('pages/login.html', form=form)
+    return render_template('account/login.html', form=form)
 
 
 @account_bp.route('/register', methods=['GET', 'POST'])

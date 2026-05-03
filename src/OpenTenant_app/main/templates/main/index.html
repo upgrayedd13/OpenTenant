@@ -5,8 +5,8 @@
     <div class="slideshow">
 
         <div class="slides-wrapper">
-            <img src="{{ url_for('static', filename='images/example1.jpg') }}" class="slide">
-            <img src="{{ url_for('static', filename='images/example2.jpg') }}" class="slide">
+            <img src="{{ url_for('main.static', filename='images/example1.jpg') }}" class="slide">
+            <img src="{{ url_for('main.static', filename='images/example2.jpg') }}" class="slide">
         </div>
 
         <!-- Arrows -->
@@ -20,6 +20,6 @@
 </main>
 
 <!-- JS files -->
-<script src="{{ url_for('static', filename='js/slides.js') }}"></script>
+<script src="{{ url_for('main.static', filename='js/slides.js') }}"></script>
 
 {% endblock %}

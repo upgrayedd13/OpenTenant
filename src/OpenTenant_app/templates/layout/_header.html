@@ -3,18 +3,36 @@
     <a href="{{ url_for('main.homepage') }}" class="logo">LPM Tenants Union</a>
 
     <nav>
-        <!-- <a href="{{ url_for('main.admin') }}" class="admin">Admin</a> -->
-        <a href="{{ url_for('main.about') }}">About</a>
+        <a href="{{ url_for('admin.admin') }}" class="admin">Admin</a>
+
+        <div class="dropdown">
+            <div class="dropdown-btn">About</div>
+            <div class="dropdown-menu">
+                <a href="{{ url_for('about.calendar') }}">Community Calendar</a>
+                <a href="{{ url_for('about.bylaws') }}">Bylaws</a>
+                <a href="{{ url_for('about.who_we_are') }}">Who We Are</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <div class="dropdown-btn">Resources</div>
+            <div class="dropdown-menu">
+                <a href="{{ url_for('resources.know_before_renting') }}">What to Know Before Renting</a>
+                <a href="{{ url_for('resources.legal_resources') }}">Legal Resources</a>
+                <a href="{{ url_for('resources.useful_links') }}">Useful Links</a>
+            </div>
+        </div>
+
         <a href="{{ url_for('account.login') }}" id="loginTab">Login</a>
         <a href="{{ url_for('account.register') }}">Register</a>
 
-        <div class="dropdown">
+        <!-- <div class="dropdown">
             <div class="dropdown-btn">Language</div>
             <div class="dropdown-menu">
                 <a href="#" onclick="setLanguage('English')">English</a>
                 <a href="#" onclick="setLanguage('Español')">Español</a>
                 <a href="#" onclick="setLanguage('Soomaali')">Soomaali</a>
             </div>
-        </div>
+        </div> -->
     </nav>
 </header>
