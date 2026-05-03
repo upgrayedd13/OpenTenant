@@ -18,8 +18,8 @@ def login():
     if form.validate_on_submit():
         user: User = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
-            remember = request.form.get('remember') == 'on'  # True if checkbox checked
-            login_user(user, remember=remember)              # remember=True keeps session across browser restarts
+            remember = request.form.get('remember') == 'y'
+            login_user(user, remember=remember)
             return redirect(url_for('account.account'))
         flash('Invalid credentials')
     return render_template('account/login.html', form=form)
