@@ -47,6 +47,10 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
+    def is_admin(self) -> bool:
+        return self.role >= UserRole.ADMIN
+
+
 @login_manager.user_loader
 def load_user(user_id: int) -> User:
     return User.query.get(int(user_id))
