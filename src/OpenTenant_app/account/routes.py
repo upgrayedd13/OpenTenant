@@ -68,7 +68,7 @@ def register():
         for error in errors:
             flash(error)
 
-    return render_template('pages/register.html', form=form)
+    return render_template('account/register.html', form=form)
 
 
 # TODO: add a loading icon while lease is being parsed
@@ -122,4 +122,4 @@ def account():
     user: User = User.query.filter_by(username=current_user.username).one()
     form = SignupForm.from_user(user)
     form.disable_editing()
-    return render_template("pages/account.html", user=current_user, form=form)
+    return render_template("account/account.html", user=current_user, form=form)
