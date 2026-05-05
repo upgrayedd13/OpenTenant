@@ -10,7 +10,8 @@ if TYPE_CHECKING:
     from .user import User
 
 
-MAX_LEASE_PATH_LEN = os.pathconf(os.getenv('LEASES_DIR', '/tmp/leases'), 'PC_PATH_MAX')
+MAX_LEASE_PATH_LEN = leases_dir = os.getenv('LEASES_DIR', '/tmp/leases')
+os.makedirs(leases_dir, exist_ok=True)
 
 
 class Lease(db.Model):
