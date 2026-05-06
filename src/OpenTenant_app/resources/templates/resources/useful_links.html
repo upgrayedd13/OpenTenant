@@ -6,10 +6,83 @@ Useful Links
 {% endblock %}
 
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('resources.static', filename='css/legal_resources.css') }}">
+{% endblock %}
+
+
 {% block content %}
 
-<main class="center-content">
-    This page is under construction!
+<main>
+  <div class="content-box">
+    <h2 class="page-title">Useful Links</h2>
+
+    <h3 class="subtitle">Report an Issue - City of Minneapolis</h3>
+
+    <ul class="link-list">
+      <li>
+        <a
+          href="https://www.minneapolismn.gov/report-an-issue/#topics-12855"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="external-link"
+        >
+          Report an Issue - All Topics
+        </a>
+      </li>
+
+      <li>
+        <a
+          href="https://www.minneapolismn.gov/report-an-issue/pothole/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="external-link"
+        >
+          Report a Pothole
+        </a>
+      </li>
+
+      <h3 class="subtitle">File a Complaint - Minnesota Attorney General</h3>
+      <li>
+        <a
+          href="https://www.ag.state.mn.us/Office/Forms/TenantReport.asp"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="external-link"
+        >
+          Minnesota Tenant Report Form
+        </a>
+      </li>
+
+      <h3 class="subtitle">
+        File a Complaint for Elevator Issues - MN Dept Licensing and Inspection
+      </h3>
+      <li>
+        <a
+          href="https://www.dli.mn.gov/license-and-registration-lookup"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="external-link"
+        >
+          Minnesota DLI License and Registration Lookup & Complaint Form
+        </a>
+      </li>
+      <br><br>
+
+      <!-- MOVING OUT -->
+      <h3 class="subtitle">Moving Out of LPM</h3>
+      <li>
+        <a
+          href="https://www.revisor.mn.gov/statutes/cite/504B.178"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="external-link"
+        >
+          Return of Security Deposit - Minnesota Statute 504B.178
+        </a>
+      </li>
+    </ul>
+  </div>
 </main>
 
 {% endblock %}
