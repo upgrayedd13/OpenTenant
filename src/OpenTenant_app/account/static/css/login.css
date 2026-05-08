@@ -1,0 +1,30 @@
+.login-main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-color);
+    padding: 20px;
+}
+
+.login-box {
+    background-color: var(--box-background-color);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 250px;
+    box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+.login-box label {
+    font-size: 14px;
+    color: var(--text-color-main);
+}
+
+.login-box input {
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}

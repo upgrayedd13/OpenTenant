@@ -1,5 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Login{% endblock %}
+
+
+{% block title %}
+Login
+{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/login.css') }}">
+{% endblock %}
+
 
 {% block content %}
 

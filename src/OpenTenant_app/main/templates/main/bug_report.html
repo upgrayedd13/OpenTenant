@@ -1,5 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Report a Bug{% endblock %}
+
+
+{% block title %}
+Report a Bug
+{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('main.static', filename='css/bug_report.css') }}">
+{% endblock %}
+
 
 {% block content %}
 

@@ -3,6 +3,9 @@
 
 <!-- Header metadata -->
 <head>
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- CSS -->
     {% include "layout/_head_metadata.html" %}
     {% block extra_css %}{% endblock %}
 </head>

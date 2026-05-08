@@ -62,46 +62,7 @@
     margin-bottom: 40px;
     line-height: 1.6;
     font-size: 15px;
-    color: var(--text-main);
-}
-
-/* HOMEPAGE IMAGES */
-.homepage_images {
-    width: 100%;
-    max-height: 800px;
-    object-fit: cover;
-}
-
-/* LOGIN PAGE */
-.login-main {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--background);
-    padding: 20px;
-}
-
-.login-box {
-    background-color: var(--box-background);
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    min-width: 250px;
-    box-shadow: 0 4px 10px var(--shadow);
-}
-
-.login-box label {
-    font-size: 14px;
-    color: var(--text-main);
-}
-
-.login-box input {
-    padding: 8px 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
+    color: var(--text-color-main);
 }
 
 /* BUTTONS */
@@ -219,20 +180,6 @@ a.login-btn {
     outline: none;
 }
 
-/* RIGHT BUTTONS */
-.account-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: stretch;
-}
-
-.account-btn {
-    padding: 18px;
-    font-size: 16px;
-}
-
 /* TOOLTIP */
 .info-icon {
     display: inline-flex;
@@ -343,92 +290,6 @@ a.login-btn {
     align-items: flex-start;
     padding-top: 40px;
     line-height: 1.5;
-}
-
-main.admin-main {
-    flex: 1;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-}
-
-/* ADMIN PAGE */
-.admin-page {
-    background-color: var(--primary-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 60px;
-    width: 100%;
-    padding: 0;
-}
-
-.admin-panel {
-    background-color: var(--box-background);
-    width: 100%;
-    max-width: 1200px;
-    min-height: 600px;
-    padding: 60px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-}
-
-.admin-left {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-}
-
-.admin-right {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-}
-
-.admin-btn {
-    padding: 25px 40px;
-    font-size: 20px;
-    width: 100%;
-    text-align: center;
-    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.15);
-}
-
-/* BUG PAGE */
-.bug-container {
-    background-color: var(--primary-color);
-    min-height: 80vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px;
-}
-
-.bug-box {
-    background: var(--box-background);
-    padding: 40px;
-    width: 100%;
-    max-width: 500px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-.bug-box h2 {
-    margin-bottom: 25px;
-    color: var(--text-main);
-}
-
-.bug-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    color: var(--text-main);
-}
-
-.bug-form input,
-.bug-form textarea {
-    padding: 10px;
-    border: 1px solid #ccc;
-    font-size: 16px;
 }
 
 /* Base select styling */
