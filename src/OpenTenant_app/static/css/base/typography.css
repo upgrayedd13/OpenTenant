@@ -5,3 +5,5 @@ body {
     flex-direction: column;
     color: var(--text-main-color);
 }
+
+.hidden { display: none; }

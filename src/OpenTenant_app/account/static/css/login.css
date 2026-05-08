@@ -28,3 +28,9 @@
     border: 1px solid #ccc;
     border-radius: 3px;
 }
+
+.login-btn {
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 3px;
+}

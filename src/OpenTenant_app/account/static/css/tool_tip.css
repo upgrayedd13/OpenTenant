@@ -1,0 +1,33 @@
+.info-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    font-size: 12px;
+    border: 1px solid black;
+    border-radius: 50%;
+    margin-left: 6px;
+    cursor: pointer;
+    position: relative;
+}
+
+.info-icon::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #b7c7e6;
+    color: black;
+    padding: 10px;
+    font-size: 12px;
+    width: 200px;
+    border: 1px solid black;
+    display: none;
+    z-index: 20;
+}
+
+.info-icon:hover::after {
+    display: block;
+}

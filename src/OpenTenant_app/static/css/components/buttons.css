@@ -1,0 +1,42 @@
+.login-btn,
+.account-btn,
+.submit-btn,
+.uploadLease-btn,
+.admin-btn,
+.bug-btn {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.login-btn:hover,
+.account-btn:hover,
+.submit-btn:hover,
+.uploadLease-btn:hover,
+.admin-btn:hover,
+.bug-btn:hover {
+    background-color: var(--primary-color-hover);
+}
+
+.submit-btn,
+.uploadLease-btn {
+    padding: 12px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.uploadLease-btn {
+    margin-bottom: 50px;
+}
+
+.submit-btn {
+    margin-top: 30px;
+}
+
+a.account-btn,
+a.login-btn {
+    text-decoration: none;
+    text-align: center;
+}
