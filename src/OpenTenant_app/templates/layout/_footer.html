@@ -1,8 +1,16 @@
 <footer>
-    <div class="row">
-        Placeholder Contact Info
-        <a href="{{ url_for('main.bug') }}">Report a Bug</a>
-    </div>
+    <a href="mailto:example@example.com">Contact Us</a>
+    |
+    <a href="{{ url_for('main.bug') }}">Report a Bug</a>
+    |
+    <a>Privacy Policy</a>
+    |
+    <a>Terms of Use</a>
+    |
+    <a>Legal Disclaimer</a>
 </footer>
 
-<div class="legal">Placeholder Legal BS</div>
+<div class="legal">
+    <p>© {{ current_year }} LPM Tenants Union.</p>
+    <p>Content licensed under CC BY-SA 4.0.</p>
+</div>
