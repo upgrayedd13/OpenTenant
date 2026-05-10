@@ -1,6 +1,9 @@
 from flask import Blueprint, render_template
+import logging
+
 
 about_bp = Blueprint('about', __name__, url_prefix='/about', template_folder='templates', static_folder='static', static_url_path='/about/static')
+logger = logging.getLogger(__name__)
 
 
 @about_bp.route('/calendar')

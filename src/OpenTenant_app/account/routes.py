@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, jsonify,
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
 from shutil import move
+import logging
 import uuid
 import os
 
@@ -13,7 +14,9 @@ from ..extensions import db
 
 from .forms import LoginForm, SignupForm
 
+
 account_bp = Blueprint('account', __name__, url_prefix='/account', template_folder='templates', static_folder='static', static_url_path='/account/static')
+logger = logging.getLogger(__name__)
 
 
 @account_bp.route('/login', methods=['GET', 'POST'])

@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template
+import logging
 
 from ..models.user_role import *
 
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin', template_folder='templates', static_folder='static', static_url_path='/admin/static')
+logger = logging.getLogger(__name__)
 
 
 @admin_bp.route("/admin")
