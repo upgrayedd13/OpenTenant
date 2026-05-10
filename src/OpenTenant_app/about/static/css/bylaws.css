@@ -1,35 +1,55 @@
 main.document {
-    --text-color-main: #000000;
-    --text-color-light: white;
+    --text-color-main: #1a1a1a;
     --text-color-header: rgb(15, 71, 97);
-
-    --shadow-color: rgba(0,0,0,0.1);
+    --page-bg: #e8e8e8;       /* desktop "background" behind the doc */
+    --paper-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
 }
 
+/* Page background — apply to body or a wrapper if needed */
+body {
+    background-color: var(--page-bg);
+}
+
+/* The "paper" */
 main.document {
     display: block;
-    flex-direction: column;
+    width: 816px;           /* 8.5in at 96dpi — standard letter width */
+    max-width: 100%;
+    margin: 2rem auto;      /* centered on the page */
+    padding: 96px 96px;     /* ~1in margins, matching Word defaults */
+    background: #ffffff;
+    box-shadow: var(--paper-shadow);
+    box-sizing: border-box;
+
     color: var(--text-color-main);
-    font-family: Arial, sans-serif;
+    font-family: Arial, serif;
+    font-size: 12pt;
+    line-height: 1.5;
 }
 
+/* Headings */
 main.document h1,
 main.document h2,
 main.document h3,
 main.document h4 {
     color: var(--text-color-header);
     font-weight: bold;
+    line-height: 1.2;
 }
 
-/* Headings */
-main.document h1 {
-    font-size: 28pt;
-    margin: 0 0 1rem 0;
+.anchor-link {
+    opacity: 0;
+    font-size: 0.75em;
+    margin-left: 0.4em;
+    text-decoration: none;
+    color: #aaa;
+    transition: opacity 0.15s;
 }
 
 main.document h2 {
     font-size: 20pt;
-    margin: 2rem 0 1rem 0;
+    margin: 2rem 0 0.75rem 0;
+    padding-bottom: 0.25rem;
 }
 
 main.document h3 {
@@ -39,36 +59,55 @@ main.document h3 {
 
 main.document h4 {
     font-size: 12pt;
-    margin: 1rem 0 0.5rem 0;
+    margin: 1rem 0 0.25rem 0;
     font-style: italic;
     font-weight: normal;
+}
+
+main.document h2:hover .anchor-link,
+main.document h3:hover .anchor-link,
+main.document h4:hover .anchor-link {
+    opacity: 1;
+}
+
+main.document h1 {
+    font-size: 28pt;
+    margin: 0 0 1.5rem 0;
+    text-align: center;
 }
 
 /* Paragraphs */
 main.document p {
     font-size: 12pt;
-    margin: 0 0 1rem 0;
-    text-align: left;
+    margin: 0 0 0.75rem 0;
+    text-align: justify;
 }
 
 /* Lists */
 main.document ul,
 main.document ol {
-    margin: 0 0 1rem 1.5rem;
+    margin: 0 0 0.75rem 1.5rem;
     padding: 0;
 }
 
 main.document li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.35rem;
 }
 
 main.document ol       { list-style-type: decimal; }
 main.document ol ol    { list-style-type: lower-alpha; }
 main.document ol ol ol { list-style-type: lower-roman; }
 
-/* Optional: horizontal rule */
 main.document hr {
     border: none;
-    border-top: 1px solid #000;
+    border-top: 1px solid #ccc;
     margin: 2rem 0;
+}
+
+@media (max-width: 900px) {
+    main.document {
+        padding: 2rem 1.5rem;
+        margin: 0 auto;
+        box-shadow: none;
+    }
 }
