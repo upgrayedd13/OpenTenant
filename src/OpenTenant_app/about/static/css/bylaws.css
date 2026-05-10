@@ -1,0 +1,65 @@
+main.document {
+    display: block;
+    flex-direction: column;
+}
+
+/* Headings */
+main.document h1 {
+    font-size: 20pt;
+    font-weight: bold;
+    margin: 0 0 1rem 0;
+}
+
+main.document h2 {
+    font-size: 16pt;
+    font-weight: bold;
+    margin: 2rem 0 1rem 0;
+}
+
+main.document h3 {
+    font-size: 14pt;
+    font-weight: bold;
+    margin: 1.5rem 0 0.5rem 0;
+}
+
+main.document h4 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin: 1rem 0 0.5rem 0;
+}
+
+/* Paragraphs */
+main.document p {
+    margin: 0 0 1rem 0;
+    text-align: left;
+}
+
+/* Lists */
+main.document ul,
+main.document ol {
+    margin: 0 0 1rem 1.5rem;
+    padding: 0;
+}
+
+main.document li {
+    margin-bottom: 0.5rem;
+}
+
+/* Links (print-friendly) */
+/* a {
+    color: #000;
+    text-decoration: underline;
+} */
+
+/* Optional: block quotes */
+main.document blockquote {
+    margin: 1rem 0 1rem 1.5rem;
+    font-style: italic;
+}
+
+/* Optional: horizontal rule */
+main.document hr {
+    border: none;
+    border-top: 1px solid #000;
+    margin: 2rem 0;
+}
