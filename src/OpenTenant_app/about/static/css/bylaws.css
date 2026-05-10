@@ -1,35 +1,52 @@
 main.document {
+    --text-color-main: #000000;
+    --text-color-light: white;
+    --text-color-header: rgb(15, 71, 97);
+
+    --shadow-color: rgba(0,0,0,0.1);
+}
+
+main.document {
     display: block;
     flex-direction: column;
+    color: var(--text-color-main);
+    font-family: Arial, sans-serif;
+}
+
+main.document h1,
+main.document h2,
+main.document h3,
+main.document h4 {
+    color: var(--text-color-header);
+    font-weight: bold;
 }
 
 /* Headings */
 main.document h1 {
-    font-size: 20pt;
-    font-weight: bold;
+    font-size: 28pt;
     margin: 0 0 1rem 0;
 }
 
 main.document h2 {
-    font-size: 16pt;
-    font-weight: bold;
+    font-size: 20pt;
     margin: 2rem 0 1rem 0;
 }
 
 main.document h3 {
-    font-size: 14pt;
-    font-weight: bold;
+    font-size: 18pt;
     margin: 1.5rem 0 0.5rem 0;
 }
 
 main.document h4 {
     font-size: 12pt;
-    font-weight: bold;
     margin: 1rem 0 0.5rem 0;
+    font-style: italic;
+    font-weight: normal;
 }
 
 /* Paragraphs */
 main.document p {
+    font-size: 12pt;
     margin: 0 0 1rem 0;
     text-align: left;
 }
@@ -45,17 +62,9 @@ main.document li {
     margin-bottom: 0.5rem;
 }
 
-/* Links (print-friendly) */
-/* a {
-    color: #000;
-    text-decoration: underline;
-} */
-
-/* Optional: block quotes */
-main.document blockquote {
-    margin: 1rem 0 1rem 1.5rem;
-    font-style: italic;
-}
+main.document ol       { list-style-type: decimal; }
+main.document ol ol    { list-style-type: lower-alpha; }
+main.document ol ol ol { list-style-type: lower-roman; }
 
 /* Optional: horizontal rule */
 main.document hr {
