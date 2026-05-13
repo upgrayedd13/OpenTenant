@@ -1,22 +1,20 @@
 main.document {
     --text-color-main: #1a1a1a;
     --text-color-header: rgb(15, 71, 97);
-    --page-bg: #e8e8e8;       /* desktop "background" behind the doc */
+    --page-bg: #e8e8e8;
     --paper-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
 }
 
-/* Page background — apply to body or a wrapper if needed */
 body {
     background-color: var(--page-bg);
 }
 
-/* The "paper" */
 main.document {
     display: block;
-    width: 816px;           /* 8.5in at 96dpi — standard letter width */
+    width: 816px;
     max-width: 100%;
-    margin: 2rem auto;      /* centered on the page */
-    padding: 96px 96px;     /* ~1in margins, matching Word defaults */
+    margin: 2rem auto;
+    padding: 96px 96px;
     background: #ffffff;
     box-shadow: var(--paper-shadow);
     box-sizing: border-box;
@@ -27,7 +25,6 @@ main.document {
     line-height: 1.5;
 }
 
-/* Headings */
 main.document h1,
 main.document h2,
 main.document h3,
@@ -76,14 +73,12 @@ main.document h1 {
     text-align: center;
 }
 
-/* Paragraphs */
 main.document p {
     font-size: 12pt;
     margin: 0 0 0.75rem 0;
     text-align: justify;
 }
 
-/* Lists */
 main.document ul,
 main.document ol {
     margin: 0 0 0.75rem 1.5rem;
