@@ -1,0 +1,20 @@
+<link rel="stylesheet" href="{{ url_for('main.static', filename='css/bug_report.css') }}">
+
+<div class="bug-box">
+    <form method="POST" class="bug-form">
+
+        <label for="name">Name</label>
+        <input type="text" name="name" required>
+
+        <label for="email">Email</label>
+        <input type="email" name="email" required>
+
+        <label for="description">Describe the Issue</label>
+        <textarea name="description" rows="5" required></textarea>
+
+        <button type="submit" class="bug-btn">
+            Submit Report
+        </button>
+
+    </form>
+</div>

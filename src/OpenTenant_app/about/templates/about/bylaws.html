@@ -1,8 +1,459 @@
 {% extends "base.html" %}
+
+
+{% block title %}
+Bylaws
+{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('about.static', filename='css/document.css') }}">
+<link rel="stylesheet" href="{{ url_for('about.static', filename='css/sidebar.css') }}">
+{% endblock %}
+
+
 {% block content %}
 
-<main class="center-content">
-    This page is under construction!
-</main>
+<div class="doc-layout">
+    <nav class="doc-toc" id="doc-toc">
+        <p class="toc-title">Contents</p>
+        <ul id="toc-list"></ul>
+    </nav>
+
+    <main class="document">
+
+        <h1 id="lpm-union-bylaws">LPM Union Bylaws</h1>
+
+        <h2>Mission Statement</h2>
+            <p><em>
+                The LPM Residents' Union is a tenants' association organized in accordance with Minnesota Statutes
+                <a href="https://www.revisor.mn.gov/statutes/cite/504B.001">§504B.001</a> and
+                <a href="https://www.revisor.mn.gov/statutes/cite/504B.212">§504B.212</a>. Its purpose is to unite
+                tenants in collective action, promote community vibrancy, and advocate for transparent and accountable
+                property management. The union is independently governed by participating LPM residents, for the
+                benefit of all tenants, and operates in accordance with the terms outlined below.
+            </em></p>
+
+
+        <h2>Meetings</h2>
+            <h3>Annual Meeting</h3> <ol>
+                <li>An annual meeting for all tenants of the building will be organized once per calendar year</li>
+                <li>
+                    The purpose of the meeting is to:
+                    <ol>
+                        <li>Review the activities and financial standing of the union</li>
+                        <li>Hold elections</li>
+                        <li>Vote on proposed bylaw amendments or resolution</li>
+                        <li>Provide space for community discussion and tenant input</li>
+                    </ol>
+                </li>
+                <li>Notice of the Annual Meeting must be provided to all residents at least 30 days in advance,
+                    and absentee ballots and/or remote participation options must be made available</li>
+            </ol>
+
+            <h3>Special Meetings</h3> <ol>
+                <li>
+                    Special meetings of the general membership may be called by:
+                    <ol>
+                        <li>A majority vote of the Tenants' Board</li>
+                        <li>A written petition signed by at least 5% of [estimated] tenants</li>
+                    </ol>
+                </li>
+                <li>Notice must be provided at least 5 days in advance, along with the purpose and agenda of the meeting.</li>
+            </ol>
+
+            <h3>Notice of Meetings</h3>
+                <h4>Method of Notice</h4> <ol>
+                    <li>
+                        Notice of Annual and Special meetings shall be provided using:
+                        <ol>
+                            <li>The most convenient contact method provided by each member, as recorded by the Secretary (e.g. email, phone, or text), and</li>
+                            <li>At least one publicly accessible method, such as flyers posted in common areas, building bulletin boards, or announcements via social media.</li>
+                        </ol>
+                    </li>
+                    <li>The Secretary, or another designated officer, is responsible for ensuring timely and accessible notice is delivered to all members.</li>
+                    <li>
+                        It is the responsibility of each member to ensure that their contact information is provided to the Secretary and kept up to date for
+                        the purposes of receiving Union communications.
+                    </li>
+                </ol>
+
+                <h4>Timing of Notice</h4> <ol>
+                    <li>Notice for Annual Meetings must be given at least 30 days in advance.</li>
+                    <li>Notice for Special Meetings must be given at least 5 days in advance.</li>
+                    <li>Notices must include the date, time, location (or virtual platform link), and a proposed agenda.</li>
+                </ol>
+
+            <h3>Tenants' Board Meetings</h3> <ol>
+                <li>The Tenants' Board shall meet at least once every two months to manage ongoing business and organize union efforts.</li>
+                <li>Meetings may be held in person or virtually.</li>
+                <li>A simple majority of current Tenants' Board members shall constitute a quorum.</li>
+                <li>All tenants are invited to observe board meetings.</li>
+                <li>Meeting minutes shall be made available within two weeks.</li>
+            </ol>
+
+            <h3>Quorum for Annual and Special Meetings</h3> <ol>
+                <li>
+                    A quorum for any meeting requiring the vote of the general membership shall consist of at
+                    least 5% of the [estimated] tenants in the building. Absentee ballots and remote participation
+                    shall count towards a quorum.
+                </li>
+            </ol>
+
+            <h3>Rules of Order</h3>
+                <h4>Meeting Procedure</h4> <ol>
+                    <li>
+                        Meetings shall follow a modified form of <a ref="https://robertsrules.org/robertsrules.pdf">Robert's Rules of Order</a>,
+                        tailored to the size and needs of the Union.
+                    </li>
+                    <li>The Chair is responsible for keeping the meeting on track and recognizing speakers.</li>
+                </ol>
+
+                <h4>Discussion</h4> <ol>
+                    <li>Members must be recognized by the Chair before speaking.</li>
+                    <li>Speakers shall address the group respectfully and stay on topic.</li>
+                    <li>
+                        Members may raise a "Point of Order" if they believe the rules are not being followed.
+                        The Chair shall rule on the point, with the option for the group to vote if disputed.
+                    </li>
+                </ol>
+
+                <h4>Motions and Voting</h4> <ol>
+                    <li>Any member may make a motion. Motions must be seconded to proceed to discussion and vote.</li>
+                    <li>Votes shall be decided by simple majority, unless otherwise specified in the bylaws.</li>
+                    <li>
+                        Voting may occur by voice, show of hands, or ballot, depending on the nature of the
+                        decision and size of the meeting.
+                    </li>
+                </ol>
+
+                <h4>Agenda and Timekeeping</h4> <ol>
+                    <li>The Chair will circulate a proposed agenda prior to the meeting.</li>
+                    <li>Members may propose additions or changes to the agenda at the start of the meeting.</li>
+                    <li>Time limits may be set for discussion of specific items if necessary to stay on schedule.</li>
+                </ol>
+
+                <h4>Flexibility</h4> <ol>
+                    <li>
+                        While the Union values orderly procedure, these rules may be relaxed by consensus for
+                        informal or small meetings, provided all members are treated fairly and given a chance
+                        to participate.
+                    </li>
+                </ol>
+
+
+        <h2>Membership</h2>
+            <h3>Eligibility</h3> <ol>
+                <li>Any current tenant or lawful occupant of LPM Apartments is eligible for membership in the LPM Residents' Union</li>
+                <li>Eligibility is open to lease holders, subletters, roommates, and other long-term residents, regardless of leaseholder status.</li>
+            </ol>
+
+            <h3>Becoming a Member</h3> <ol>
+                <li>
+                    To become a member, eligible tenants must complete a membership form, either digitally or
+                    in writing. Membership forms will be made available at meetings, via email, and through other
+                    accessible channels.
+                </li>
+                <li>
+                    Members are encouraged to provide a contact method (such as email or phone number) to
+                    receive meeting notices, updates, and voting materials.
+                </li>
+            </ol>
+
+            <h3>Dues</h3> <ol>
+                <li>
+                    The Union may, by vote of the Tenants' Board or general membership, establish a nominal
+                    annual due, not to exceed $5, to support outreach, printing, and organizing needs.
+                </li>
+                <li>
+                    No tenant shall be denied membership for inability to pay. A dues waiver will be granted
+                    upon request without explanation.
+                </li>
+            </ol>
+
+            <h3>Rights and Privileges</h3> <ol>
+                <li>
+                    Members in good standing have the right to
+                    <ol>
+                        <li>Vote in union elections and on proposed resolutions</li>
+                        <li>Run for office or serve on committees</li>
+                        <li>Receive timely notice of meetings and union activities</li>
+                        <li>Propose agenda items or call for special meetings (in accordance with bylaws)</li>
+                    </ol>
+                </li>
+                <li>
+                    A member in good standing is any tenant who meets the eligibility criteria outlined in the
+                    Membership section, has completed a membership form, and is current on dues (if applicable).
+                </li>
+            </ol>
+
+            <h3>Membership Record</h3> <ol>
+                <li>
+                    The Secretary shall maintain an up-to-date record of members for the purposes of meeting
+                    notices, voting, and quorum verification. Personal information will be limited, confidential,
+                    and used only for union-related purposes.
+                </li>
+            </ol>
+
+
+        <h2>Tenants' Board</h2>
+            <p><em>
+                The Tenants' Board of the LPM Tenants' Union shall consist of seven (7) members, elected annually
+                by the general membership. These individuals collectively manage the affairs of the Union and
+                represent the interests of all residents.
+            </em></p>
+
+            <h3>Duties</h3> <ol>
+                <li>Coordinates and schedules all Annual, Special, and Tenants' Board meetings of the Union.</li>
+                <li>Prepares and distributes meeting agendas in advance.</li>
+                <li>Oversees nomination procedures, voting processes, and the fair administration of all Union elections.</li>
+                <li>
+                    Serves as the public voice of the Union, representing tenant concerns and
+                    priorities to management, media, elected officials, and partner organizations.
+                </li>
+                <li>Supports, coordinates, and oversees the work of all standing and ad hoc committees of the Union.</li>
+                <li>Oversees the collection, budgeting, and expenditure of Union funds, and ensures transparent financial records.</li>
+                <li>
+                    Ensures that minutes, membership records, decisions, and documents are maintained and
+                    transferred to future boards to preserve institutional memory.
+                </li>
+            </ol>
+
+            <h3>Composition of the Board</h3>
+                <h4>Officer Roles</h4> <ol>
+                    <li>
+                        The following positions shall be filled from among the elected board members:
+                        <ol>
+                            <li>
+                                President – Chairs meetings, represents the Union publicly, and provides
+                                organizational leadership.
+                            </li>
+                            <li>Vice President – Supports the President and assumes leadership duties when needed.</li>
+                            <li>Secretary – Maintains meeting minutes, Union records, and conducts Union elections.</li>
+                            <li>Communications Officer – Develops communication plan, manages social media, flyers, and updates.</li>
+                            <li>
+                                Treasurer (if required) – Manages any financial activities and reporting.
+                                <ol>
+                                    <li>The treasurer role may be filled as needed, depending on the Union's financial activities.</li>
+                                </ol>
+                            </li>
+                        </ol>
+                    </li>
+                    <li>
+                        Officers are chosen by a majority vote of the newly elected Tenants' Board at their first
+                        meeting following the election at the Annual Meeting.
+                    </li>
+                </ol>
+
+                <h4>At-Large Members</h4> <ol>
+                    <li>
+                        All Tenants' Board members who are not elected to officer positions shall serve as At-Large
+                        Members. They contribute equally to board discussions and decision-making, and may take
+                        on special projects or lead committees.
+                    </li>
+                </ol>
+
+            <h3>Requirements and Expectations</h3> <ol>
+                <li>All Board members must be members in good standing.</li>
+                <li>Board members serve one-year terms, renewable by re-election.</li>
+                <li>
+                    Members are expected to attend Tenants' Board meetings, participate
+                    in Union initiatives, and represent the interests of all tenants.
+                </li>
+            </ol>
+
+        <h2>Committees</h2>
+            <h4>Creation and Appointment</h4> <ol>
+                <li>
+                    Committees may be established by:
+                    <ol>
+                        <li>A majority vote of the Tenants' Board, or</li>
+                        <li>A majority vote of members present at an Annual or Special Meeting.</li>
+                    </ol>
+                </li>
+                <li>
+                    Committee members shall be appointed by the Tenants' Board, unless
+                    otherwise determined by vote of the tenants.
+                </li>
+            </ol>
+
+            <h4>Purpose and Scope</h4> <ol>
+                <li>
+                    Committees are formed to carry out specific tasks, projects, or ongoing responsibilities that
+                    support the Union's mission and goals
+                </li>
+                <li>
+                    Each committee shall operate within the scope defined at the time of its formation and shall
+                    report its activities and recommendations to the Tenants' Board.
+                </li>
+            </ol>
+
+            <h4>Reporting and Oversight</h4> <ol>
+                <li>
+                    All committees shall:
+                    <ol>
+                        <li>Report regularly to the Tenants' Board, including updates at Union meetings</li>
+                        <li>Keep brief written records of meetings and activities</li>
+                        <li>Submit proposals, recommendations, or expenditures to the Board for approval as needed</li>
+                    </ol>
+                </li>
+                <li>The Tenants' Board may dissolve a committee if it is inactive or no longer needed.</li>
+            </ol>
+
+            <h4>Officer Support Committees</h4> <ol>
+                    <li>
+                        Union officers may form or lead a committee to assist them in fulfilling their duties. For example:
+                        <ol>
+                            <li>The Communications Officer may lead a team to manage newsletters, flyers, or social media</li>
+                            <li>The Treasurer may work with a Finance Committee to prepare budgets or track expenses</li>
+                        </ol>
+                    </li>
+                    <li>
+                        These officer-led committees shall remain accountable to the Tenants' Board and may
+                        include any members in good standing.
+                    </li>
+                </ol>
+
+        <h2>Elections</h2>
+            <h3>Election of Tenants' Board Members</h3> <ol>
+                <li>Elections held at the Annual Meeting are for Tenant Board seats only (up to seven positions).</li>
+                <li>
+                    Officer positions such as President, Vice-President, Secretary, Communications Officer, and
+                    Treasurer are not elected directly by general membership. Instead, they are appointed by the
+                    newly elected Board at its first meeting following the Annual Election.
+                </li>
+                <li>
+                    All Tenants' Board members shall serve a term of approximately one year, beginning at the
+                    conclusion of the Annual Meeting at which they are elected and ending at the close of the
+                    following Annual Meeting.
+                </li>
+                <li>Board members may be re-elected for additional consecutive terms without limitation.</li>
+            </ol>
+
+            <h3>Annual Elections</h3> <ol>
+                <li>Elections shall be held during the Annual Meeting, open to all tenants in good standing.</li>
+                <li>At least 21 days prior to the Annual Meeting, tenants may submit their names to be added to the ballot.</li>
+                <li>Each nominee may submit a statement to the Secretary for circulation.</li>
+                <li>Tenants may vote for as many candidates as there are open seats.</li>
+                <li>
+                    Absentee Ballots must be submitted by the deadline set in meeting notice. These ballots
+                    count toward quorum and final vote results.
+                </li>
+                <li>Results are announced at the meeting and recorded in the minutes.</li>
+            </ol>
+
+            <h3>Eligibility to Run and Vote</h3> <ol>
+                <li>Only current tenants in good standing may run for office or vote.</li>
+            </ol>
+
+            <h3>Quorum for Elections</h3> <ol>
+                <li>To hold an election, a quorum as defined in the Meetings section must be met.</li>
+                <li>
+                    If quorum is not reached, the meeting shall be adjourned and reconvened within 14 days with
+                    the same agenda; at the reconvened meeting, votes may proceed with any number of
+                    participants present.
+                </li>
+            </ol>
+
+            <h3>Officer Vacancies and Removal</h3> <ol>
+                <li>
+                    If an officer position becomes vacant between elections, the Tenants' Board may appoint a
+                    replacement by majority vote, to serve until the next Annual Meeting.
+                </li>
+                <li>
+                    An officer may be removed for cause by a two-thirds vote of members casting ballots, either
+                    at a General or Special Meeting. A minimum quorum applies.
+                </li>
+            </ol>
+
+            <h3>In the Event of Fewer than 7 Candidates</h3> <ol>
+                <li>All eligible candidates who receive votes shall be seated as Board members.</li>
+                <li>
+                    The remaining seats may be filled later by appointment of the existing Board, subject to a
+                    simple majority vote.
+                </li>
+                <li>
+                    The Board may function with fewer than seven members, provided a quorum is met and
+                    duties are fulfilled.
+                </li>
+            </ol>
+
+            <h3>Transparency and Best Practices</h3> <ol>
+                <li>Elections are to be fair, transparent, and documented.</li>
+                <li>Results shall be posted within one week after the Annual Meeting.</li>
+                <li>The Secretary maintains all election records.</li>
+            </ol>
+
+
+        <h2>Amendments to the Bylaws</h2> <ol>
+            <li>
+                These bylaws may be amended by a majority vote of members in good standing at any Annual
+                Meeting or Special Meeting.
+            </li>
+            <li>Any member in good standing may propose an amendment to the Bylaws.</li>
+            <li>
+                Proposed amendments must be submitted in writing to the Tenants' Board at least 7 days in
+                advance of the Tenants; Board meeting. The proposal should include:
+                <ol>
+                    <li>The proposed language of the amendment.</li>
+                    <li>An explanation of the proposed amendment.</li>
+                    <li>
+                        Whether the vote on the proposed amendment necessitates its own Special Meeting
+                        or can wait until the next scheduled Annual Meeting or Special Meeting.
+                    </li>
+                </ol>
+            </li>
+            <li>
+                The proposed amendment(s) shall be included in the meeting notice, and the full text must
+                be made available to all members prior to the vote.
+            </li>
+            <li>
+                Amendments take effect immediately upon approval, unless otherwise specified in the
+                amendment text.
+            </li>
+        </ol>
+
+        <h2>Dissolution of Union</h2>
+            <h3>Procedure for Dissolution</h3> <ol>
+                <li>
+                    The LPM Residents' Union may be dissolved by a two-thirds (⅔) vote of members in good
+                    standing, provided that:
+                    <ol>
+                        <li>Notice of the proposed dissolution is given to all members at least 30 days in advance, and</li>
+                        <li>The vote is held at a general membership meeting that meets quorum requirements.</li>
+                    </ol>
+                </li>
+                <li>The proposal must clearly state the reasons for dissolution and the intended disposition of assets.</li>
+            </ol>
+
+            <h3>Disposition of Funds</h3> <ol>
+                <li>
+                    Upon dissolution, any remaining Union funds shall be used first to pay any outstanding debts
+                    or financial obligations.
+                </li>
+                <li>
+                    Any surplus funds shall be donated to a local tenants' rights organization, selected by the
+                    Tenants' Board and approved by a majority of members present at the final meeting.
+                </li>
+            </ol>
+
+            <h3>Records and Materials</h3> <ol>
+                <li>
+                    The Tenants' Board shall ensure that all official Union documents, including meeting
+                    minutes, bylaws, financial records, and contact lists, are securely archived and made
+                    available to any future organizing efforts at LPM Apartments.
+                </li>
+            </ol>
+
+            <h3>Reactivation</h3> <ol>
+                <li>Dissolution of the Union should not prevent tenants from forming a new association in the future.</li>
+                <li>Reasonable access to the archived materials may be provided to assist with future tenant organizing.</li>
+            </ol>
+
+    </main>
+</div>
+
+<script src="{{ url_for('about.static', filename='js/generate_header_ids.js') }}"></script>
+<script src="{{ url_for('about.static', filename='js/navbar.js') }}"></script>
 
 {% endblock %}

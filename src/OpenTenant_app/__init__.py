@@ -4,6 +4,7 @@ load_dotenv()
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask import Flask, jsonify
+from datetime import datetime
 import os
 
 from .config import DevelopmentConfig, ProductionConfig
@@ -55,5 +56,12 @@ def create_app() -> None:
         return jsonify({
             'maxUploadBytes': app.config['MAX_CONTENT_LENGTH']
         })
+
+    # Add a context processor so templates get the current year
+    @app.context_processor
+    def inject_current_year():
+        return {
+            "current_year": datetime.now().year
+        }
 
     return app

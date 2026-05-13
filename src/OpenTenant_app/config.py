@@ -11,7 +11,7 @@ class Config:
     def env_int(name: str, default: int=0) -> int:
         return int(os.getenv(name, str(default)))
 
-    # helper function to nicely parse out byte valus
+    # helper function to nicely parse out byte values
     def env_bytes(name: str, default: int|str=0) -> int:
         var = os.getenv(name, str(default)).strip().upper()
 
@@ -48,7 +48,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = env_bool('SQLALCHEMY_TRACK_MODIFICATIONS', False)
 
     # flask login remember me cookie
-    REMEMBER_COOKIE_DURATION = timedelta(days=env_int('REMEMEBER_COOKIE_DURATION_DAYS', 7))
+    REMEMBER_COOKIE_DURATION = timedelta(days=env_int('REMEMBER_COOKIE_DURATION_DAYS', 7))
     REMEMBER_COOKIE_HTTPONLY = env_bool('REMEMBER_COOKIE_HTTPONLY', True)
     REMEMBER_COOKIE_SECURE   = env_bool('REMEMBER_COOKIE_SECURE', False)
 
