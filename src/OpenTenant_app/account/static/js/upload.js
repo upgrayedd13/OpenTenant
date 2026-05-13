@@ -30,7 +30,8 @@ async function uploadFile(file) {
     });
 
     if (!response.ok) {
-        throw new Error(`Upload failed: ${response.status}`);
+        const data = await response.json();
+        throw new Error(`Upload failed: ${data.error}`);
     }
 
     return await response.json();

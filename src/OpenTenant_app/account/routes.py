@@ -76,16 +76,21 @@ def upload_lease():
     # get the file
     file = request.files.get('pdf')
     if not file:
-        return jsonify({'error': 'No file'}), 400
+        return jsonify({'error': "Didn't get a file!"}), 400
+
+    # secure_filename will replace spaces with _ so we'll prematurely
+    # perform that replacement for comparison later so files that have
+    # spaces aren't marked as malicious
+    no_space_fname = file.filename.replace(' ', '_')
 
     # check that the filename wasn't maliciously formed and complain about it if it was
-    fname = secure_filename(file.filename)
-    if fname != file.filename:
-        return jsonify({'error': 'Got malicious filename! This will be logged'}), 400
+    fname = secure_filename(no_space_fname)
+    if fname != no_space_fname:
+        return jsonify({'error': 'Got malicious filename! This will be logged!'}), 400
 
     # ensure it's a PDF
     if os.path.splitext(fname)[1] != '.pdf':
-        return jsonify({'error': 'Only PDF files are allowed'}), 400
+        return jsonify({'error': 'Only PDF files are allowed!'}), 400
 
     # add a random string of characters to ensure it's unique
     hex_string = uuid.uuid4().hex
@@ -94,7 +99,7 @@ def upload_lease():
     # make sure the filename isn't too long
     tmp_path = get_config('TMP_DIR')
     if len(fname) > os.pathconf(tmp_path, 'PC_NAME_MAX'):
-        return jsonify({'error': f'Name "{file.filename}" exceeds maximum filename size'}), 400
+        return jsonify({'error': f'Name "{file.filename}" exceeds maximum filename size!'}), 400
 
     # TODO: make sure there's enough space for this file
 
