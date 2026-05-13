@@ -71,7 +71,6 @@ def register():
     return render_template('account/register.html', form=form)
 
 
-# TODO: add a loading icon while lease is being parsed
 @account_bp.route('/upload-lease', methods=['POST'])
 def upload_lease():
     # get the file
