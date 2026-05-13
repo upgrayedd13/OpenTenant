@@ -1,0 +1,19 @@
+:root {
+    --primary-color: #6aa0b8;
+    --primary-color-hover: #58899d;
+
+    --header-color: #e0e8ec;
+    --header-color-hover: rgba(106,160,184,0.5);
+    --header-color-active: rgba(106,160,184,0.35);
+
+    --background-color: #FCFBFA;
+    --box-background-color: white;
+
+    --sidebar-background-color: #e8f0f2;
+    --about-background-color: #f3f7f9;
+
+    --text-color-main: #1b1b1b;
+    --text-color-light: white;
+
+    --shadow-color: rgba(0,0,0,0.1);
+}

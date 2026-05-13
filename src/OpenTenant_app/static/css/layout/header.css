@@ -1,0 +1,79 @@
+header {
+    background-color: var(--header-color);
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+}
+
+.logo {
+    color: var(--text-color-main);
+    font-size: 20px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+nav a,
+.dropdown-btn {
+    color: var(--text-color-main);
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 10px;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+nav a:hover,
+.dropdown-btn:hover {
+    background-color: var(--header-color-hover);
+    border-radius: 4px;
+}
+
+nav a.active {
+    background-color: var(--header-color-active);
+    border-radius: 4px;
+}
+
+nav a.admin.active {
+    background-color: #4b7c8d;
+    border-radius: 4px;
+    color: var(--text-color-light);
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--background-color);
+    width: 140px;
+    display: none;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.dropdown-menu a {
+    padding: 10px;
+    text-decoration: none;
+    color: var(--text-color-main);
+}
+
+.dropdown-menu a:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+    border-radius: 0;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: flex;
+}

@@ -1,4 +1,16 @@
 {% extends "base.html" %}
+
+
+{% block title %}
+LPM Tenants Union
+{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('main.static', filename='css/slideshow.css') }}">
+{% endblock %}
+
+
 {% block content %}
 
 <main class="center-content">

@@ -1,0 +1,35 @@
+.bug-container {
+    background-color: var(--primary-color);
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.bug-box {
+    background: var(--box-background-color);
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.bug-box h2 {
+    margin-bottom: 25px;
+    color: var(--text-color-main);
+}
+
+.bug-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    color: var(--text-color-main);
+}
+
+.bug-form input,
+.bug-form textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}

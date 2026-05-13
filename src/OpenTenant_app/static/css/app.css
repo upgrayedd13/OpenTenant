@@ -1,0 +1,9 @@
+@import "base/variables.css";
+@import "base/reset.css";
+@import "base/typography.css";
+
+@import "layout/header.css";
+@import "layout/main.css";
+@import "layout/footer.css";
+
+@import "components/buttons.css";

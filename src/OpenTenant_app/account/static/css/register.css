@@ -1,0 +1,91 @@
+.register-main {
+    flex: 1;
+    background-color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.register-box {
+    background-color: var(--box-background-color);
+    width: 95%;
+    max-width: 1050px;
+    min-height: 520px;
+    padding: 20px 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.register-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-color-main);
+    margin-bottom: 25px;
+}
+
+.register-form {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    flex: 1;
+}
+
+.register-fields {
+    flex: 2;
+}
+
+.register-row {
+    display: flex;
+    gap: 35px;
+    margin-bottom: 35px;
+}
+
+.register-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.register-group label {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-color-main);
+}
+
+.register-group input {
+    border: none;
+    border-bottom: 2px solid gray;
+    padding: 6px;
+    font-size: 15px;
+    outline: none;
+    text-align: center;
+}
+
+.register-notes {
+    flex: 1;
+    font-size: 15px;
+    color: var(--text-color-main);
+    display: flex;
+    align-items: flex-start;
+    padding-top: 40px;
+    line-height: 1.5;
+}
+
+.spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #ccc;
+    border-top-color: #333;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+.spinner.hidden { display: none; }
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
