@@ -1,6 +1,9 @@
 from flask import Blueprint, render_template
+import logging
+
 
 resources_bp = Blueprint('resources', __name__, url_prefix='/resources', template_folder='templates', static_folder='static', static_url_path='/resources/static')
+logger = logging.getLogger(__name__)
 
 
 @resources_bp.route('/know_before_renting')

@@ -1,6 +1,11 @@
 from typing import Dict, Any
 import pdfplumber
+import logging
 import re
+
+
+logger = logging.getLogger(__name__)
+
 
 def money_pattern(group_name: str|None=None) -> str:
     if group_name:
@@ -51,7 +56,7 @@ def parse_date(m: re.Match|None, group: str|int) -> str:
 
 
 def parse_terms(text: str) -> Dict[str, Any]:
-    # make a compoiled regex object for this subparser
+    # make a compiled regex object for this subparser
     terms_pattern  = rf'THIS LEASE AGREEMENT is entered into on: {date_pattern("signing_date")}.*?'
     terms_pattern +=  r'by the management of (?P<landlord>.*?) \(“Landlord”\) and the undersigned resident\(s\) covering:.*?'
     terms_pattern +=  r'APT.# (?P<unit_number>\d+) \(“Unit”\) LOCATED AT: (?P<address>.*?) \(“Premises”\).*?'
@@ -165,7 +170,7 @@ def parse_lease(path_to_lease: str) -> Dict[str, Any]:
 
 
 def main() -> None:
-    fname = '/mnt/c/Users/Upgrayedd/Downloads/lpm_lease.pdf'
+    fname = 'lpm_lease.pdf'
     lease_data = parse_lease(fname)
     print(lease_data)
 

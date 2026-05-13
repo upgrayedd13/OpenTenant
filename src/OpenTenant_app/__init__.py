@@ -5,6 +5,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask import Flask, jsonify
 from datetime import datetime
+import logging
 import os
 
 from .config import DevelopmentConfig, ProductionConfig
@@ -64,4 +65,7 @@ def create_app() -> None:
             "current_year": datetime.now().year
         }
 
+    # Log that we're done with setup
+    logger = logging.getLogger(__name__)
+    logger.info('App created!')
     return app
