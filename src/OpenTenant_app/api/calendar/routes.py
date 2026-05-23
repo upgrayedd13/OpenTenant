@@ -16,17 +16,17 @@ logger = logging.getLogger(__name__)
 def get_calendar_events() -> tuple[dict, int]:
     year = int(request.args["year"])
     month = int(request.args["month"])
-    tz = int(request.args["tz"]) / 60
+    tz = int(request.args["tz"])
 
     # sanity check inputs
     if not (0 < month < 12):
         return jsonify({'error': f'Got bad month ({month})'}), 400
-    elif -24 < tz < 24:
+    elif not (-24 < tz / 60 < 24):
         return jsonify({'error': f'Got bad timezone offset ({tz})'}), 400
 
     print(tz)
     print(request.args['tz'])
-    tz_info = timezone(timedelta(hours=tz))
+    tz_info = timezone(timedelta(minutes=tz))
     start = datetime(year, month, 1, tzinfo=tz_info)
     end = datetime(year, month + 1, 1, 23, 59, 59, tzinfo=tz_info)
 

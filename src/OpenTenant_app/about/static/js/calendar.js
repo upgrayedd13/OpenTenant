@@ -25,7 +25,16 @@ function renderCalendar() {
     }
 
     fetch(`/api/calendar/events?year=${year}&month=${month + 1}&tz=${tzOffset}`)
-        .then(r => r.json())
+        .then(async response => {
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.error || "Unknown server error!");
+                throw new Error(data.error);
+            }
+
+            return data;
+        })
         .then(events => {
             // const byDate = {};
             // events.forEach(e => {
@@ -50,7 +59,11 @@ function renderCalendar() {
                 // cell.onclick = () => createEvent(dateStr);
                 calendarEl.appendChild(cell);
             }
-        });
+        })
+        .catch(err => {
+            console.error(err);
+        }
+    );
 }
 
 function createEvent(date) {
