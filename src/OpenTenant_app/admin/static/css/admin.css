@@ -26,16 +26,11 @@ main.admin-main {
     gap: 80px;
 }
 
-.admin-left {
+.admin-column {
     display: flex;
     flex-direction: column;
-    gap: 40px;
-}
-
-.admin-right {
-    display: flex;
-    justify-content: center;
     align-items: flex-start;
+    gap: 40px;
 }
 
 .admin-btn {
@@ -44,4 +39,5 @@ main.admin-main {
     width: 100%;
     text-align: center;
     box-shadow: inset 0 0 0 2px rgba(0,0,0,0.15);
+    text-decoration: none;
 }

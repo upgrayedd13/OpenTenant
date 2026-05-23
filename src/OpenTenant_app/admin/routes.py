@@ -8,7 +8,13 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin', template_folder='te
 logger = logging.getLogger(__name__)
 
 
-@admin_bp.route("/admin")
+@admin_bp.route('/admin')
 @minimum_user_role(UserRole.ADMIN)
 def admin():
-    return render_template("admin/admin.html")
+    return render_template('admin/admin.html')
+
+
+@admin_bp.route('/admin/modify-calendar')
+@minimum_user_role(UserRole.ADMIN)
+def modify_calendar():
+    return render_template('admin/modify_calendar.html')

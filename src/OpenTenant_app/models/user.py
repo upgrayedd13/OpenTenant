@@ -19,14 +19,14 @@ logger = logging.getLogger(__name__)
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
-    id:                Mapped[int]       = mapped_column(Integer,     primary_key=True)
-    role:              Mapped[int]       = mapped_column(Integer,     nullable=False, default=UserRole.USER)
-    username:          Mapped[str]       = mapped_column(String(50),  unique=True, nullable=False)
-    email:             Mapped[str]       = mapped_column(String(254), unique=True, nullable=False)
-    password_hash:     Mapped[str]       = mapped_column(String(256), nullable=False)
-    name:              Mapped[str]       = mapped_column(String(150), nullable=False)
-    phone_number:      Mapped[str|None]  = mapped_column(String(20),  nullable=True)
-    pronouns:          Mapped[str|None]  = mapped_column(String(20),  nullable=True)
+    id:                Mapped[int]           = mapped_column(Integer,     primary_key=True)
+    role:              Mapped[int]           = mapped_column(Integer,     nullable=False, default=UserRole.USER)
+    username:          Mapped[str]           = mapped_column(String(50),  unique=True, nullable=False)
+    email:             Mapped[str]           = mapped_column(String(254), unique=True, nullable=False)
+    password_hash:     Mapped[str]           = mapped_column(String(256), nullable=False)
+    name:              Mapped[str]           = mapped_column(String(150), nullable=False)
+    phone_number:      Mapped[str|None]      = mapped_column(String(20),  nullable=True)
+    pronouns:          Mapped[str|None]      = mapped_column(String(20),  nullable=True)
     leases:            Mapped[list['Lease']] = relationship(back_populates='user', order_by='Lease.start_date')
 
     @hybrid_property

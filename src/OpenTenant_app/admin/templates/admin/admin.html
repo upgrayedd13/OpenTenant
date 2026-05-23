@@ -15,13 +15,14 @@ Admin
 <main class="admin-main">
     <div class="admin-page">
         <div class="admin-panel">
-            <div class="admin-left">
+            <div class="admin-column">
                 <button class="admin-btn">View Property Map</button>
                 <button class="admin-btn">Approve User Accounts</button>
             </div>
 
-            <div class="admin-right">
-                <button class="admin-btn wide">Data Visualizations</button>
+            <div class="admin-column">
+                <button class="admin-btn">Data Visualizations</button>
+                <a class="admin-btn" href="{{ url_for('admin.modify_calendar') }}">Modify Calendar</a>
             </div>
         </div>
     </div>
