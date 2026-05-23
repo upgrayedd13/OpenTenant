@@ -24,8 +24,6 @@ def get_calendar_events() -> tuple[dict, int]:
     elif not (-24 < tz / 60 < 24):
         return jsonify({'error': f'Got bad timezone offset ({tz})'}), 400
 
-    print(tz)
-    print(request.args['tz'])
     tz_info = timezone(timedelta(minutes=tz))
     start = datetime(year, month, 1, tzinfo=tz_info)
     end = datetime(year, month + 1, 1, 23, 59, 59, tzinfo=tz_info)
