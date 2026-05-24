@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Database
+{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/layout/modal.css') }}">
+{% endblock %}
+
+
+{% block content %}
+
+<main class="db-edit-main">
+    <div id="overlay" class="overlay">
+        <div class="modal" role="dialog">
+            <div class="modal-header">
+                <h1 id="modalTitle"></h1>
+                <button id="closeModal" class="close-btn" aria-label="Close">&#10006;</button>
+            </div>
+
+            <div id="modalContent" class="modal-content"></div>
+        </div>
+    </div>
+
+    
+
+    <script type="module" src="{{ url_for('admin.static', filename='js/db_edit_warning.js') }}"></script>
+    <script type="module" src="{{ url_for('admin.static', filename='js/db_edit_on_close.js') }}"></script>
+</main>
+
+{% endblock %}
