@@ -1,9 +1,13 @@
-const overlay = document.getElementById("overlay");
-const titleEl = document.getElementById("modalTitle");
+const overlay   = document.getElementById("overlay");
+const titleEl   = document.getElementById("modalTitle");
 const contentEl = document.getElementById("modalContent");
-const closeBtn = document.getElementById("closeModal");
+const closeBtn  = document.getElementById("closeModal");
 
-document.addEventListener("click", async (e) => {
+document.addEventListener("click", handleOpen);
+closeBtn.addEventListener("click", closeModal);
+document.addEventListener("keydown", handleEsc);
+
+async function handleOpen(e) {
     const btn = e.target.closest(".openModal");
     if (!btn) {
         return;
@@ -11,27 +15,27 @@ document.addEventListener("click", async (e) => {
 
     titleEl.textContent = btn.dataset.title;
     contentEl.innerHTML = "Loading...";
-
+    overlay.removeAttribute("hidden");
     overlay.classList.add("active");
 
     try {
-        const response = await fetch(btn.dataset.src);
-        if (!response.ok) {
-            throw new Error("Failed to load");
+        const res = await fetch(btn.dataset.src);
+        if (!res.ok) {
+            throw new Error();
         }
-
-        contentEl.innerHTML = await response.text();
-    } catch (err) {
+        contentEl.innerHTML = await res.text();
+    } catch {
         contentEl.innerHTML = "<p>Error loading content.</p>";
     }
-});
+}
 
-closeBtn.addEventListener("click", () => {
+function closeModal() {
     overlay.classList.remove("active");
-});
+    overlay.setAttribute("hidden", "");
+}
 
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-        overlay.classList.remove("active");
+function handleEsc(e) {
+    if (e.key === "Escape" && !overlay.hasAttribute("hidden")) {
+        closeModal();
     }
-});
+}
