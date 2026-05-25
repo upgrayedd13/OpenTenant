@@ -49,7 +49,6 @@ async function selectTable(name) {
     }
 
     activeTable = name;
-    editedCells.clear();
 
     document.querySelectorAll('.table-item').forEach(el => {
         el.classList.toggle('active', el.dataset.table === name);
@@ -85,6 +84,7 @@ async function fetchTableData(tableName) {
 // ── Render editable table ─────────────────────────────────────
 function renderTable(rows) {
     originalData = Object.fromEntries(rows.map(r => [parseInt(r.id), { ...r }]));
+    editedCells.clear();
     const body = document.getElementById('panel-body');
 
     if (!rows.length) {
@@ -92,6 +92,7 @@ function renderTable(rows) {
         return;
     }
 
+    // draw the table
     const cols = Object.keys(rows[0]);
     body.innerHTML = `
         <table class="data-table">
@@ -117,6 +118,22 @@ function renderTable(rows) {
         </tbody>
         </table>
     `;
+
+    // reapply any pending changes for this table
+    const tablePending = pendingChanges[activeTable];
+    if (tablePending) {
+        document.querySelectorAll('.cell-input').forEach(inp => {
+            const id = parseInt(inp.dataset.id);
+            const col = inp.dataset.col;
+            if (tablePending[id]?.[col] !== undefined) {
+                inp.value = tablePending[id][col];
+                inp.classList.add('modified');
+                editedCells.add(`${id}:${col}`);
+            }
+        });
+    }
+
+    document.getElementById('edit-actions').style.display = editedCells.size > 0 ? 'flex' : 'none';
 }
 
 // ── Cell edit tracking ────────────────────────────────────────
