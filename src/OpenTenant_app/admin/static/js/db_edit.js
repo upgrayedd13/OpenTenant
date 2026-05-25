@@ -120,25 +120,27 @@ function renderTable(rows) {
 
 // ── Cell edit tracking ────────────────────────────────────────
 function onCellInput(input, rowIdx, col) {
-    const original = String(originalData[rowIdx][col] ?? '');
+    const row = originalData[rowIdx];
+    const original = String(row[col] ?? '');
     const key = `${rowIdx}:${col}`;
+    const id = row.id;
 
     if (!pendingChanges[activeTable]) {
         pendingChanges[activeTable] = {};
     }
 
-    if (!pendingChanges[activeTable][rowIdx]) {
-        pendingChanges[activeTable][rowIdx] = {};
+    if (!pendingChanges[activeTable][id]) {
+        pendingChanges[activeTable][id] = {};
     }
 
     if (input.value !== original) {
         input.classList.add('modified');
         editedCells.add(key);
-        pendingChanges[activeTable][rowIdx][col] = input.value;
+        pendingChanges[activeTable][id][col] = input.value;
     } else {
         input.classList.remove('modified');
         editedCells.delete(key);
-        delete pendingChanges[activeTable][rowIdx][col];
+        delete pendingChanges[activeTable][id][col];
     }
 
     const totalPending = Object.values(pendingChanges)
@@ -163,10 +165,10 @@ async function saveChanges() {
         const ri = parseInt(inp.dataset.row);
         const col = inp.dataset.col;
         changes.push({
-        row: ri,
-        col,
-        oldValue: originalData[ri][col],
-        newValue: inp.value,
+            id: originalData[ri].id,
+            col,
+            oldValue: originalData[ri][col],
+            newValue: inp.value,
         });
         originalData[ri][col] = inp.value;
         inp.classList.remove('modified');
@@ -175,38 +177,40 @@ async function saveChanges() {
     editedCells.clear();
     document.getElementById('edit-actions').style.display = 'none';
 
-    // TODO: send changes to your backend
-    //
-    // await fetch(`/api/table/${activeTable}/update`, {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(changes),
-    // });
+    await fetch(TABLE_DATA_ENDPOINT(activeTable), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(changes),
+    });
 
     console.log('Changes saved (stub):', changes);
     setStatus(`Saved ${changes.length} change(s)`);
 }
 
 async function commitAll() {
-    if (!Object.keys(pendingChanges).length) return;
+    if (!Object.keys(pendingChanges).length) {
+        return;
+    }
 
     try {
-        const res = await fetch('/api/db/commit', {
+        const res = await fetch(TABLES_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ changes: pendingChanges }),
         });
+
         const data = await res.json();
         if (!res.ok) {
             setStatus(data.error, 'error');
-        } else {
-            setStatus(`Committed changes to ${Object.keys(pendingChanges).length} table(s)`, 'success');
-            pendingChanges = {};
-            document.getElementById('commit-btn').disabled = true;
-            document.querySelectorAll('.cell-input.modified').forEach(el => el.classList.remove('modified'));
-            editedCells.clear();
-            document.getElementById('edit-actions').style.display = 'none';
+            return;
         }
+
+        setStatus(`Committed changes to ${Object.keys(pendingChanges).length} table(s)`, 'success');
+        pendingChanges = {};
+        document.getElementById('commit-btn').disabled = true;
+        document.querySelectorAll('.cell-input.modified').forEach(el => el.classList.remove('modified'));
+        editedCells.clear();
+        document.getElementById('edit-actions').style.display = 'none';
     } catch (err) {
         setStatus(err.message, 'error');
     }
@@ -240,7 +244,9 @@ function setStatus(msg, type = 'info') {
 async function runSql() {
     const input = document.getElementById('sql-input');
     const query = input.value.trim();
-    if (!query) return;
+    if (!query) {
+        return;
+    }
 
     setStatus(query);
     input.value = '';
@@ -251,14 +257,15 @@ async function runSql() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ query }),
         });
+
         const data = await res.json();
         if (!res.ok) {
             setStatus(data.error, 'error');
-        } else {
-            setStatus(`${data.rows.length} row(s) returned`, 'success');
-            // optionally render results in the main panel:
-            renderTable(data.rows);
+            return;
         }
+
+        setStatus(`${data.rows.length} row(s) returned`, 'success');
+        renderTable(data.rows);
     } catch (err) {
         setStatus(err.message, 'error');
     }

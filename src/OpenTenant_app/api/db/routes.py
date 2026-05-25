@@ -1,14 +1,17 @@
 from flask import Blueprint, jsonify, Response, request
-from sqlalchemy import inspect, Table, MetaData
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import inspect
 import logging
 
-from ...extensions import db
 from ...models.user_role import minimum_user_role, UserRole
+from ...utils.log_and_abort import log_and_abort
+from ...extensions import db
 
+from .db_management import update_table_worker, load_table
+from .types import UpdateRequest
 
 db_api_bp = Blueprint('db_api', __name__, url_prefix='/api/db')
 logger = logging.getLogger(__name__)
-
 
 
 @db_api_bp.route('/tables', methods=['GET'])
@@ -28,13 +31,36 @@ def get_tables() -> Response:
 @db_api_bp.route('/table/<string:table_name>', methods=['GET'])
 @minimum_user_role(UserRole.SUPER_ADMIN)
 def get_table_content(table_name: str) -> Response | tuple[Response, int]:
-    inspector = inspect(db.engine)
-    if table_name not in inspector.get_table_names():
-        return jsonify({'error': f'{table_name} is not in database'}), 400
-
-    table = Table(table_name, MetaData(), autoload_with=db.engine)
+    table = load_table(table_name)
     with db.engine.connect() as conn:
         rows = conn.execute(table.select()).fetchall()
 
     logger.debug(f'rows: {rows}')
     return jsonify({'rows': [dict(row._mapping) for row in rows]})
+
+
+@db_api_bp.route('/tables', methods=['POST'])
+@minimum_user_role(UserRole.SUPER_ADMIN)
+def update_tables() -> Response | tuple[Response, int]:
+    # get the changes in the request JSON
+    payload: dict = request.get_json(force=True)
+    changes: dict|None = payload.get('changes')
+    if changes is None:
+        log_and_abort(400, 'Bad payload')
+    logger.info(f'Requested changes: {changes}')
+
+    # convert the raw JSON to an UpdateRequest object
+    update_req = UpdateRequest.json_to_update_request(changes)
+    if update_req is None:
+        log_and_abort(400, "Failed to parse raw JSON")
+
+    try:
+        # update each table in the DB
+        with db.engine.begin() as conn:
+            for table_update in update_req.tables:
+                update_table_worker(conn, table_update)
+
+    except SQLAlchemyError as e:
+        log_and_abort(500, str(e))
+
+    return jsonify({'status': 'ok'})
