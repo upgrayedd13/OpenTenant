@@ -7,6 +7,8 @@ let editedCells = new Set();
 let pendingChanges = {};
 let prevPending = 0;
 let typeData = {};
+let sqlHistory = [];
+let sqlHistoryIndex = -1;
 
 // ── Fetch table list ──────────────────────────────────────────
 async function fetchTables() {
@@ -247,7 +249,13 @@ async function runSql() {
         return;
     }
 
-    setStatus(query);
+    // Add to history, avoiding consecutive duplicates
+    if (sqlHistory[sqlHistory.length - 1] !== query) {
+        sqlHistory.push(query);
+    }
+    sqlHistoryIndex = sqlHistory.length;
+
+    setStatus(query, 'command');
     input.value = '';
 
     try {
@@ -263,8 +271,20 @@ async function runSql() {
             return;
         }
 
-        setStatus(`${data.rows.length} row(s) returned`, 'success');
-        renderTable(data.rows);
+        if (data.rows.length > 0) {
+            activeTable = '__query__';
+            document.getElementById('panel-title').textContent = 'Query Result';
+            typeData['__query__'] = data.types;
+            renderTable(data.rows);
+            setStatus(`${data.rows.length} row(s) returned`, 'success');
+        } else {
+            setStatus('Query OK', 'success');
+            // Re-fetch the active table if one is open, since a write may have changed it
+            if (activeTable && activeTable !== '__query__') {
+                const rows = await fetchTableData(activeTable);
+                renderTable(rows);
+            }
+        }
     } catch (err) {
         setStatus(err.message, 'error');
     }
@@ -291,11 +311,6 @@ document.getElementById('table-list').addEventListener('click', (e) => {
 });
 
 document.getElementById('sql-run-btn').addEventListener('click', runSql);
-document.getElementById('sql-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        runSql();
-    }
-});
 
 document.getElementById('panel-body').addEventListener('input', (e) => {
     const input = e.target.closest('.cell-input');
@@ -315,7 +330,7 @@ document.getElementById('panel-body').addEventListener('mouseover', (e) => {
 
     const id = parseInt(input.dataset.id);
     const col = input.dataset.col;
-    const type = typeData[activeTable][col] ?? 'unknown';
+    const type = typeData[activeTable]?.[col] ?? 'unknown';
     const original = String(originalData[id]?.[col] ?? '');
     const isChanged = input.classList.contains('modified');
 
@@ -339,6 +354,79 @@ document.getElementById('panel-body').addEventListener('mouseout', (e) => {
         return;
     }
     tooltip.style.display = 'none';
+});
+
+document.getElementById('sql-input').addEventListener('keydown', (e) => {
+    const input = e.target;
+
+    if (e.key === 'Enter') {
+        runSql();
+        return;
+    }
+
+    if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (sqlHistoryIndex > 0) {
+            sqlHistoryIndex--;
+            input.value = sqlHistory[sqlHistoryIndex];
+        }
+        return;
+    }
+
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (sqlHistoryIndex < sqlHistory.length - 1) {
+            sqlHistoryIndex++;
+            input.value = sqlHistory[sqlHistoryIndex];
+        } else {
+            sqlHistoryIndex = sqlHistory.length;
+            input.value = '';
+        }
+        return;
+    }
+
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        const val = input.value.trimStart();
+        const words = val.split(/\s+/);
+        const lastWord = words[words.length - 1].toUpperCase();
+        if (!lastWord) return;
+
+        // Build completion candidates from SQL keywords + known table/column names
+        const keywords = [
+            'SELECT', 'FROM', 'WHERE', 'INSERT', 'INTO', 'VALUES', 'UPDATE',
+            'SET', 'DELETE', 'JOIN', 'LEFT', 'RIGHT', 'INNER', 'OUTER', 'ON',
+            'AND', 'OR', 'NOT', 'NULL', 'IS', 'IN', 'LIKE', 'BETWEEN', 'ORDER',
+            'BY', 'GROUP', 'HAVING', 'LIMIT', 'OFFSET', 'DISTINCT', 'AS',
+            'CREATE', 'DROP', 'ALTER', 'TABLE', 'INDEX', 'COUNT', 'SUM', 'AVG',
+            'MIN', 'MAX',
+        ];
+        const tableNames = [...document.querySelectorAll('.table-item')].map(el => el.dataset.table.toUpperCase());
+        const colNames = Object.keys(typeData[activeTable] ?? {}).map(c => c.toUpperCase());
+        const candidates = [...new Set([...keywords, ...tableNames, ...colNames])];
+
+        const matches = candidates.filter(c => c.startsWith(lastWord));
+        if (matches.length === 1) {
+            // Unambiguous — complete it
+            words[words.length - 1] = matches[0];
+            input.value = words.join(' ') + ' ';
+        } else if (matches.length > 1) {
+            // Show options in the log
+            setStatus(`Completions: ${matches.join(', ')}`, 'info');
+
+            // Fill in the longest common prefix
+            const prefix = matches.reduce((a, b) => {
+                let i = 0;
+                while (i < a.length && a[i] === b[i]) i++;
+                return a.slice(0, i);
+            });
+            if (prefix.length > lastWord.length) {
+                words[words.length - 1] = prefix;
+                input.value = words.join(' ');
+            }
+        }
+        return;
+    }
 });
 
 // TODO: still getting layout issues from type="module"

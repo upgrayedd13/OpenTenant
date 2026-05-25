@@ -1,8 +1,15 @@
 from dataclasses import dataclass
+from flask import Response
 from typing import Any
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+class WorkerException(Exception):
+    def __init__(self, response: tuple[Response, int]) -> None:
+        self.response = response
+
 
 
 @dataclass(frozen=True)

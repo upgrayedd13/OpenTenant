@@ -241,6 +241,8 @@
 .log-entry.error   { color: #f87171; }
 .log-entry.success { color: #4ade80; }
 .log-entry.info    { color: #60a5fa; }
+.log-entry.command { color: #cba6f7; }
+.log-entry.command::before { content: '> '; opacity: 0.5; }
 
 .console-input-row {
     display: flex;
