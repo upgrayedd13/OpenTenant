@@ -52,7 +52,7 @@ async function selectTable(name) {
     editedCells.clear();
 
     document.querySelectorAll('.table-item').forEach(el => {
-        el.classList.toggle('active', el.textContent === name);
+        el.classList.toggle('active', el.dataset.table === name);
     });
 
     document.getElementById('panel-title').textContent = name;
@@ -74,7 +74,8 @@ async function selectTable(name) {
 async function fetchTableData(tableName) {
     const res = await fetch(TABLE_DATA_ENDPOINT(tableName));
     if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.json().error}`);
+        const err = await res.json().catch(() => ({}));
+        throw new Error(`HTTP ${res.status}: ${errBody.error ?? 'Unknown error'}`)
     }
 
     const data = await res.json();
@@ -83,7 +84,7 @@ async function fetchTableData(tableName) {
 
 // ── Render editable table ─────────────────────────────────────
 function renderTable(rows) {
-    originalData = rows.map(r => ({ ...r }));
+    originalData = Object.fromEntries(rows.map(r => [parseInt(r.id), { ...r }]));
     const body = document.getElementById('panel-body');
 
     if (!rows.length) {
@@ -103,11 +104,11 @@ function renderTable(rows) {
                 ${cols.map(col => `
                 <td>
                     <input
-                    class="cell-input"
-                    data-row="${ri}"
-                    data-col="${col}"
-                    value="${escHtml(String(row[col] ?? ''))}"
-                    aria-label="${col}, row ${ri + 1}"
+                        class="cell-input"
+                        data-id="${row.id}"
+                        data-col="${col}"
+                        value="${escHtml(String(row[col] ?? ''))}"
+                        aria-label="${col}, row ${ri + 1}"
                     />
                 </td>
                 `).join('')}
@@ -119,11 +120,9 @@ function renderTable(rows) {
 }
 
 // ── Cell edit tracking ────────────────────────────────────────
-function onCellInput(input, rowIdx, col) {
-    const row = originalData[rowIdx];
-    const original = String(row[col] ?? '');
-    const key = `${rowIdx}:${col}`;
-    const id = row.id;
+function onCellInput(input, id, col) {
+    const original = String(originalData[id][col] ?? '');
+    const key = `${id}:${col}`;
 
     if (!pendingChanges[activeTable]) {
         pendingChanges[activeTable] = {};
@@ -150,41 +149,10 @@ function onCellInput(input, rowIdx, col) {
     document.getElementById('commit-btn').disabled = totalPending === 0;
     document.getElementById('edit-actions').style.display = editedCells.size > 0 ? 'flex' : 'none';
 
-    if (totalPending > 0 && totalPending != prevPending) {
+    if (totalPending != prevPending) {
         setStatus(`${totalPending} uncommitted change(s)`);
     }
     prevPending = totalPending;
-}
-
-// ── Save ──────────────────────────────────────────────────────
-async function saveChanges() {
-    const inputs = document.querySelectorAll('.cell-input.modified');
-    const changes = [];
-
-    inputs.forEach(inp => {
-        const ri = parseInt(inp.dataset.row);
-        const col = inp.dataset.col;
-        changes.push({
-            id: originalData[ri].id,
-            col,
-            oldValue: originalData[ri][col],
-            newValue: inp.value,
-        });
-        originalData[ri][col] = inp.value;
-        inp.classList.remove('modified');
-    });
-
-    editedCells.clear();
-    document.getElementById('edit-actions').style.display = 'none';
-
-    await fetch(TABLE_DATA_ENDPOINT(activeTable), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(changes),
-    });
-
-    console.log('Changes saved (stub):', changes);
-    setStatus(`Saved ${changes.length} change(s)`);
 }
 
 async function commitAll() {
@@ -205,8 +173,16 @@ async function commitAll() {
             return;
         }
 
+        // at this point, we know the commit worked, so we need to re-fetch the data to sync our copies
+        document.querySelectorAll('.cell-input.modified').forEach(inp => {
+            const id = parseInt(inp.dataset.id);
+            originalData[id][inp.dataset.col] = inp.value;
+            inp.classList.remove('modified');
+        });
+
         setStatus(`Committed changes to ${Object.keys(pendingChanges).length} table(s)`, 'success');
         pendingChanges = {};
+        prevPending = 0;
         document.getElementById('commit-btn').disabled = true;
         document.querySelectorAll('.cell-input.modified').forEach(el => el.classList.remove('modified'));
         editedCells.clear();
@@ -219,8 +195,8 @@ async function commitAll() {
 // ── Discard ───────────────────────────────────────────────────
 function discardChanges() {
     document.querySelectorAll('.cell-input.modified').forEach(inp => {
-        const ri = parseInt(inp.dataset.row);
-        inp.value = String(originalData[ri][inp.dataset.col] ?? '');
+        const id = parseInt(inp.dataset.id);
+        inp.value = String(originalData[id][inp.dataset.col] ?? '');
         inp.classList.remove('modified');
     });
 
@@ -300,10 +276,11 @@ document.getElementById('sql-input').addEventListener('keydown', (e) => {
 
 document.getElementById('panel-body').addEventListener('input', (e) => {
     const input = e.target.closest('.cell-input');
-    if (!input) return;
-    const rowIdx = parseInt(input.dataset.row);
-    const col = input.dataset.col;
-    onCellInput(input, rowIdx, col);
+    if (!input) {
+        return;
+    }
+
+    onCellInput(input, parseInt(input.dataset.id), input.dataset.col);
 });
 
 // TODO: still getting layout issues from type="module"
