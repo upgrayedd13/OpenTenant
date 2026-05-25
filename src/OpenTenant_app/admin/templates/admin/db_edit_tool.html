@@ -7,12 +7,14 @@ Edit Database
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/layout/modal.css') }}">
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='css/db_edit.css') }}">
 {% endblock %}
 
 
 {% block content %}
 
 <main class="db-edit-main">
+    <!-- Modal popup -->
     <div id="overlay" class="overlay">
         <div class="modal" role="dialog">
             <div class="modal-header">
@@ -24,10 +26,52 @@ Edit Database
         </div>
     </div>
 
-    
+    <!-- Main content -->
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                Tables <button id="refresh-btn" title="Refresh">&#8634;</button>
+            </div>
+
+            <div id="table-list">
+                <div class="state-msg" style="height:80px;">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Main panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <span id="panel-title">Select a table</span>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <div class="edit-actions" id="edit-actions">
+                        <button id="discard-btn" class="btn">Discard</button>
+                    </div>
+                    <button id="commit-btn" class="btn btn-primary" disabled>Commit all</button>
+                </div>
+            </div>
+
+            <div id="panel-body">
+                <div class="state-msg">
+                    <span class="icon">👆</span>
+                    <span>Choose a table from the left</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="console">
+        <div id="message-log"></div>
+        <div class="console-input-row">
+            <span class="console-prompt">SQL&gt;</span>
+            <input type="text" id="sql-input" placeholder="SELECT * FROM users LIMIT 10" autocomplete="off" spellcheck="false" />
+            <button id="sql-run-btn" class="btn btn-primary">Run</button>
+        </div>
+    </div>
 
     <script type="module" src="{{ url_for('admin.static', filename='js/db_edit_warning.js') }}"></script>
     <script type="module" src="{{ url_for('admin.static', filename='js/db_edit_on_close.js') }}"></script>
+    <script type="module" src="{{ url_for('admin.static', filename='js/db_edit.js') }}"></script>
 </main>
 
 {% endblock %}
