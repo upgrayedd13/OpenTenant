@@ -1,4 +1,6 @@
-/* * { box-sizing: border-box; margin: 0; padding: 0; } */
+* {
+    --font: monospace;
+}
 
 .db-edit-main {
     font-family: system-ui, sans-serif;
@@ -58,7 +60,7 @@
 
 #table-list {
     padding: 6px;
-    font-family: monospace;
+    font-family: var(--font);
 }
 
 .table-item {
@@ -72,8 +74,15 @@
     text-overflow: ellipsis;
 }
 
-.table-item:hover { background: #f0f0f0; }
-.table-item.active { background: #e8f0fe; color: #1a56db; font-weight: 500; }
+.table-item:hover {
+    background: #f0f0f0;
+}
+
+.table-item.active {
+    background: #e8f0fe;
+    color: #1a56db;
+    font-weight: 500;
+}
 
 /* ── Main panel ── */
 .panel {
@@ -90,7 +99,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-family: monospace;
+    font-family: var(--font);
 }
 
 #panel-title {
@@ -125,7 +134,10 @@
 .btn-primary:hover { background: #1447c0; }
 
 /* ── Table ── */
-#panel-body { overflow-x: auto; }
+#panel-body {
+    overflow-x: auto;
+    font-family: var(--font);
+}
 
 .data-table {
     width: 100%;
@@ -142,14 +154,14 @@
     background: #fafafa;
     border-bottom: 1px solid #e0e0e0;
     white-space: nowrap;
-    font-family: monospace;
+    font-family: var(--font);
     flex: 1;
 }
 
 .data-table td {
     padding: 0;
     border-bottom: 1px solid #f0f0f0;
-    font-family: monospace;
+    font-family: var(--font);
 }
 
 .data-table tr:last-child td {
@@ -206,7 +218,7 @@
     background: #1a1a1a;
     border-radius: 8px;
     overflow: hidden;
-    font-family: monospace;
+    font-family: var(--font);
     font-size: 12px;
     flex-shrink: 0;
 }
@@ -249,7 +261,7 @@
     border: none;
     outline: none;
     color: #fff;
-    font-family: monospace;
+    font-family: var(--font);
     font-size: 12px;
 }
 

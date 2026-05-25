@@ -4,7 +4,8 @@ const TABLE_DATA_ENDPOINT = (name) => `/api/db/table/${name}`;
 let activeTable = null;
 let originalData = [];
 let editedCells = new Set();
-let pendingChanges = {};  // { tableName: { rowIdx: { col: newValue, ... }, ... } }
+let pendingChanges = {};
+let prevPending = 0;
 
 // ── Fetch table list ──────────────────────────────────────────
 async function fetchTables() {
@@ -65,11 +66,11 @@ async function selectTable(name) {
         setStatus(`${rows.length} row(s) — click any cell to edit`);
     } catch (err) {
         document.getElementById('panel-body').innerHTML = `<div class="error-msg">Error: ${err.message}</div>`;
-        setStatus('Failed to load table data');
+        setStatus(`Failed to load table data for table ${name}`);
     }
 }
 
-// ── STUB: replace with real fetch when endpoint exists ────────
+// ── Fetch table contents ─────────────────────────────────────
 async function fetchTableData(tableName) {
     const res = await fetch(TABLE_DATA_ENDPOINT(tableName));
     if (!res.ok) {
@@ -118,7 +119,6 @@ function renderTable(rows) {
 }
 
 // ── Cell edit tracking ────────────────────────────────────────
-let prevPending = 0;
 function onCellInput(input, rowIdx, col) {
     const original = String(originalData[rowIdx][col] ?? '');
     const key = `${rowIdx}:${col}`;
@@ -298,3 +298,5 @@ document.getElementById('panel-body').addEventListener('input', (e) => {
     const col = input.dataset.col;
     onCellInput(input, rowIdx, col);
 });
+
+// TODO: still getting layout issues from type="module"
