@@ -17,13 +17,7 @@ logger = logging.getLogger(__name__)
 @db_api_bp.route('/tables', methods=['GET'])
 @minimum_user_role(UserRole.SUPER_ADMIN)
 def get_tables() -> Response:
-    inspector = inspect(db.engine)
-    tables = dict()
-
-    for table_name in inspector.get_table_names():
-        columns = inspector.get_columns(table_name)
-        tables[table_name] = [{'name': col['name'], 'type': str(col['type'])} for col in columns]
-
+    tables = inspect(db.engine).get_table_names()
     logger.debug(f'tables: {tables}')
     return jsonify({'tables': tables})
 
@@ -31,12 +25,20 @@ def get_tables() -> Response:
 @db_api_bp.route('/table/<string:table_name>', methods=['GET'])
 @minimum_user_role(UserRole.SUPER_ADMIN)
 def get_table_content(table_name: str) -> Response | tuple[Response, int]:
+    # load this table
     table = load_table(table_name)
+
+    # get the rows
     with db.engine.connect() as conn:
         rows = conn.execute(table.select()).fetchall()
+    rowData = [dict(row._mapping) for row in rows]
+    
+    # get the types of the columns
+    typeData = {col.name: str(col.type.__class__.__name__) for col in table.columns}
 
-    logger.debug(f'rows: {rows}')
-    return jsonify({'rows': [dict(row._mapping) for row in rows]})
+    # return everything
+    logger.info(f'rows: {rows}')
+    return jsonify({'rows': rowData, 'types': typeData})
 
 
 @db_api_bp.route('/tables', methods=['POST'])

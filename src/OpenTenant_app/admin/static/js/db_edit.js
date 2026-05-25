@@ -6,6 +6,7 @@ let originalData = [];
 let editedCells = new Set();
 let pendingChanges = {};
 let prevPending = 0;
+let typeData = {};
 
 // ── Fetch table list ──────────────────────────────────────────
 async function fetchTables() {
@@ -28,9 +29,8 @@ async function fetchTables() {
     }
 }
 
-function renderTableList(tables) {
+function renderTableList(tableNames) {
     const list = document.getElementById('table-list');
-    const tableNames = Object.keys(tables);
 
     if (tableNames.length === 0) {
         list.innerHTML = '<div class="state-msg" style="height:80px;">No tables found</div>';
@@ -77,7 +77,13 @@ async function fetchTableData(tableName) {
         throw new Error(`HTTP ${res.status}: ${errBody.error ?? 'Unknown error'}`)
     }
 
+    // get the JSON data from the response
     const data = await res.json();
+
+    // save off the type data
+    typeData[tableName] = data.types;
+
+    // return the row data
     return data.rows;
 }
 
@@ -298,6 +304,41 @@ document.getElementById('panel-body').addEventListener('input', (e) => {
     }
 
     onCellInput(input, parseInt(input.dataset.id), input.dataset.col);
+});
+
+const tooltip = document.getElementById('cell-tooltip');
+document.getElementById('panel-body').addEventListener('mouseover', (e) => {
+    const input = e.target.closest('.cell-input');
+    if (!input) {
+        return;
+    }
+
+    const id = parseInt(input.dataset.id);
+    const col = input.dataset.col;
+    const type = typeData[activeTable][col] ?? 'unknown';
+    const original = String(originalData[id]?.[col] ?? '');
+    const isChanged = input.classList.contains('modified');
+
+    tooltip.innerHTML = `
+        <div class="tooltip-type">type: ${escHtml(type)}</div>
+        <div class="tooltip-original ${isChanged ? 'changed' : ''}">
+            original: ${escHtml(original)}
+        </div>
+    `;
+    tooltip.style.display = 'block';
+});
+
+document.getElementById('panel-body').addEventListener('mousemove', (e) => {
+    tooltip.style.left = `${e.clientX + 12}px`;
+    tooltip.style.top  = `${e.clientY + 12}px`;
+});
+
+document.getElementById('panel-body').addEventListener('mouseout', (e) => {
+    const input = e.target.closest('.cell-input');
+    if (!input) {
+        return;
+    }
+    tooltip.style.display = 'none';
 });
 
 // TODO: still getting layout issues from type="module"
