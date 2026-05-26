@@ -9,6 +9,7 @@ let prevPending = 0;
 let typeData = {};
 let sqlHistory = [];
 let sqlHistoryIndex = -1;
+let navigatingAway = false;
 
 // ── Fetch table list ──────────────────────────────────────────
 async function fetchTables() {
@@ -181,7 +182,7 @@ function onCellInput(input, id, col) {
 }
 
 async function commitAll() {
-    if (!Object.keys(pendingChanges).length) {
+    if (!hasPendingChanges()) {
         return;
     }
 
@@ -296,6 +297,12 @@ function escHtml(str) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
+}
+
+function hasPendingChanges() {
+    return Object.values(pendingChanges)
+        .flatMap(t => Object.values(t))
+        .flatMap(r => Object.values(r)).length > 0;
 }
 
 // ── Init ──────────────────────────────────────────────────────
@@ -428,5 +435,106 @@ document.getElementById('sql-input').addEventListener('keydown', (e) => {
         return;
     }
 });
+
+window.addEventListener('beforeunload', (e) => {
+    if (!navigatingAway && hasPendingChanges()) {
+        e.preventDefault();
+    }
+});
+
+document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href]');
+    if (!link || !hasPendingChanges()) {
+        return;
+    }
+
+    e.preventDefault();
+    showConfirmModal(
+        'Uncommitted changes',
+        'You have uncommitted changes that will be lost if you navigate away.',
+        () => {
+            navigatingAway = true;
+            window.location.href = link.href;
+        }
+    );
+});
+
+const overlay = document.getElementById("overlay");
+const titleEl = document.getElementById("modalTitle");
+const contentEl = document.getElementById("modalContent");
+const closeBtn = document.getElementById("closeModal");
+
+let modalClosed = false;
+
+document.addEventListener("DOMContentLoaded", async () => {
+    if (modalClosed) return;
+
+    titleEl.textContent = "Read before continuing!";
+    contentEl.innerHTML = "Loading...";
+
+    overlay.classList.add("active");
+
+    try {
+        const response = await fetch("/modal/db_edit_notice");
+        if (!response.ok) {
+            throw new Error("Failed to load");
+        }
+
+        contentEl.innerHTML = await response.text();
+    } catch {
+        contentEl.innerHTML = "<p>Error loading content.</p>";
+    }
+});
+
+function closeModal() {
+    overlay.classList.remove("active");
+    modalClosed = true;
+}
+
+closeBtn.addEventListener("click", closeModal);
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("active")) {
+        closeModal();
+    }
+});
+
+function showModal(title, content, onConfirm = null) {
+    titleEl.textContent = title;
+    contentEl.innerHTML = content;
+    overlay.classList.add('active');
+
+    if (onConfirm) {
+        closeBtn.textContent = 'Stay';
+        const leaveBtn = document.createElement('button');
+        leaveBtn.textContent = 'Leave anyway';
+        leaveBtn.addEventListener('click', () => {
+            closeModal();
+            onConfirm();
+        });
+        closeBtn.parentElement.appendChild(leaveBtn);
+    } else {
+        closeBtn.textContent = 'Close';
+        closeBtn.parentElement.querySelector('button:last-child')?.remove();
+    }
+}
+
+function showConfirmModal(title, message, onConfirm) {
+    titleEl.textContent = title;
+    contentEl.innerHTML = `
+        <p>${message}</p>
+        <div style="display:flex;gap:8px;margin-top:16px;">
+            <button id="modal-stay-btn" class="btn">Stay</button>
+            <button id="modal-leave-btn" class="btn btn-primary">Leave anyway</button>
+        </div>
+    `;
+    overlay.classList.add('active');
+
+    document.getElementById('modal-stay-btn').addEventListener('click', closeModal);
+    document.getElementById('modal-leave-btn').addEventListener('click', () => {
+        closeModal();
+        onConfirm();
+    });
+}
 
 // TODO: still getting layout issues from type="module"
