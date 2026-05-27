@@ -9,7 +9,7 @@ let modalClosed = false;
 let navigatingAway = false;
 
 export function initModal() {
-    document.addEventListener('DOMContentLoaded', modalWarning);
+    modalWarning();
 
     closeBtn.addEventListener('click', closeModal);
 

@@ -10,6 +10,3 @@ initEditor();
 initConsole();
 initTooltip();
 initModal();
-
-
-// TODO: still getting layout issues from type="module"

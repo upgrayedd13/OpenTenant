@@ -31,7 +31,6 @@ export function initTooltip() {
     });
 
     panelBody.addEventListener('mouseout', (e) => {
-        if (!e.target.closest('.cell-input')) return;
         tooltip.style.display = 'none';
     });
 }

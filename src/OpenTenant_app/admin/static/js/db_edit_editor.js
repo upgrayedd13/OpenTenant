@@ -23,14 +23,10 @@ function onCellInput(input, id, col) {
     const key = `${id}:${col}`;
 
     // ensure there's an entry for this table
-    if (!state.pendingChanges[state.activeTable]) {
-        state.pendingChanges[state.activeTable] = {};
-    }
+    state.pendingChanges[state.activeTable] ??= {};
 
     // ensure there's an entry for this ID
-    if (!state.pendingChanges[state.activeTable][id]) {
-        state.pendingChanges[state.activeTable][id] = {};
-    }
+    state.pendingChanges[state.activeTable][id] ??= {};
 
     if (input.value !== original) {
         input.classList.add('modified');

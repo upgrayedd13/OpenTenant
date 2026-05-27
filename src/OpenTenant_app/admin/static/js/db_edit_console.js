@@ -112,7 +112,9 @@ function handleTabComplete(input) {
         'MIN', 'MAX',
     ];
     const tableNames = [...document.querySelectorAll('.table-item')].map(el => el.dataset.table.toUpperCase());
-    const colNames = Object.keys(state.typeData[state.activeTable] ?? {}).map(c => c.toUpperCase());
+    const colNames = Object.values(state.typeData)
+        .flatMap(t => Object.keys(t))
+        .map(c => c.toUpperCase());
     const candidates = [...new Set([...keywords, ...tableNames, ...colNames])];
     const matches = candidates.filter(c => c.startsWith(lastWord));
 
