@@ -28,6 +28,8 @@ export async function fetchTableData(tableName) {
 
     const data = await res.json();
     state.typeData[tableName] = data.types;
+    state.columnInfo[tableName] = data.columns;
+    state.constraints[tableName] = data.constraints;
     return data.rows;
 }
 

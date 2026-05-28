@@ -5,6 +5,8 @@ export const state = {  // NOTE: const in JS only prevents reassignment and does
     pendingChanges: {},
     prevPending: 0,
     typeData: {},
+    columnInfo: {},
+    constraints: {},
 };
 
 export function hasPendingChanges() {

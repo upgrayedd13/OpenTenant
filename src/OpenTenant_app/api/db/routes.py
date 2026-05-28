@@ -1,6 +1,6 @@
 from sqlalchemy.exc import SQLAlchemyError, ResourceClosedError
+from sqlalchemy import inspect, text, Table, CheckConstraint
 from flask import Blueprint, jsonify, Response, request
-from sqlalchemy import inspect, text
 import logging
 
 from ...models.user_role import minimum_user_role, UserRole
@@ -31,17 +31,48 @@ def get_table_content(table_name: str) -> Response | tuple[Response, int]:
     except WorkerException as e:
         return e.response
 
+    # get the types of the columns
+    info = get_column_info(table)
+
     # get the rows
     with db.engine.connect() as conn:
         rows = conn.execute(table.select()).fetchall()
-    rowData = [dict(row._mapping) for row in rows]
-    
-    # get the types of the columns
-    typeData = {col.name: str(col.type.__class__.__name__) for col in table.columns}
+    info['rows'] = [dict(row._mapping) for row in rows]
+
+    info['types'] = {col.name: str(col.type.__class__.__name__) for col in table.columns}
 
     # return everything
-    logger.debug(f'rows: {rows}')
-    return jsonify({'rows': rowData, 'types': typeData})
+    logger.debug(info)
+    return jsonify(info)
+
+
+def get_column_info(table: Table) -> dict:
+    cols = dict()
+    for col in table.columns:
+        if col.default is None:
+            default = None
+        elif callable(col.default.arg):
+            default = '<dynamic>'
+        else:
+            try:
+                default = str(col.default.arg)
+            except Exception:
+                default = '<unknown>'
+        
+        cols[col.name] = {
+            'type': col.type.__class__.__name__,
+            'nullable': col.nullable,
+            'primary_key': col.primary_key,
+            'default': default,
+            'foreign_keys': [str(fk.target_fullname) for fk in col.foreign_keys],
+        }
+
+    constraints = []
+    for constraint in table.constraints:
+        if isinstance(constraint, CheckConstraint):
+            constraints.append({'name': constraint.name, 'sqltext': str(constraint.sqltext)})
+
+    return {'columns': cols, 'constraints': constraints}
 
 
 @db_api_bp.route('/tables', methods=['POST'])
