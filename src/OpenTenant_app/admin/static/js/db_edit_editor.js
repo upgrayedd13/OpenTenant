@@ -1,6 +1,6 @@
-import { state, hasPendingChanges } from './db_edit_state.js';
-import { TABLES_ENDPOINT }          from './db_edit_table.js';
-import { setStatus }                from './db_edit_utils.js';
+import { TABLES_ENDPOINT, updateTableListHighlights } from './db_edit_table.js';
+import { state, hasPendingChanges }                   from './db_edit_state.js';
+import { setStatus }                                  from './db_edit_utils.js';
 
 
 export function initEditor() {
@@ -49,6 +49,7 @@ function onCellInput(input, id, col) {
         setStatus(`${totalPending} uncommitted change(s)`);
     }
     state.prevPending = totalPending;
+    updateTableListHighlights();
 }
 
 async function commitAll() {
@@ -82,6 +83,7 @@ async function commitAll() {
         document.getElementById('commit-btn').disabled = true;
         state.editedCells.clear();
         document.getElementById('edit-actions').style.display = 'none';
+        updateTableListHighlights();
     } catch (err) {
         setStatus(err.message, 'error');
     }
@@ -98,5 +100,6 @@ function discardChanges() {
     delete state.pendingChanges[state.activeTable];
     document.getElementById('edit-actions').style.display = 'none';
     document.getElementById('commit-btn').disabled = !hasPendingChanges();
+    updateTableListHighlights();
     setStatus('Changes discarded');
 }

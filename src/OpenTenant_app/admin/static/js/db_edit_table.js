@@ -87,6 +87,15 @@ export function renderTable(rows) {
     document.getElementById('edit-actions').style.display = state.editedCells.size > 0 ? 'flex' : 'none';
 }
 
+export function updateTableListHighlights() {
+    document.querySelectorAll('.table-item').forEach(el => {
+        const tableName = el.dataset.table;
+        const hasChanges = Object.values(state.pendingChanges[tableName] ?? {})
+            .flatMap(r => Object.values(r)).length > 0;
+        el.classList.toggle('has-changes', hasChanges);
+    });
+}
+
 async function fetchTables() {
     const list = document.getElementById('table-list');
     list.innerHTML = '<div class="state-msg" style="height:80px;">Loading...</div>';
