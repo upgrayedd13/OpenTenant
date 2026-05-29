@@ -1,5 +1,5 @@
-import { escHtml, setStatus } from './db_edit_utils.js';
-import { state }              from './db_edit_state.js';
+import { state, updateButtons } from './db_edit_state.js';
+import { escHtml, setStatus }   from './db_edit_utils.js';
 
 const TABLES_ENDPOINT = '/api/db/tables';
 const TABLE_DATA_ENDPOINT = (name) => `/api/db/table/${name}`;
@@ -36,6 +36,7 @@ export async function fetchTableData(tableName) {
 export function renderTable(rows) {
     state.originalData = Object.fromEntries(rows.map(r => [parseInt(r.id), { ...r }]));
     state.editedCells.clear();
+    updateButtons();
 
     const body = document.getElementById('panel-body');
 
@@ -84,7 +85,7 @@ export function renderTable(rows) {
         });
     }
 
-    document.getElementById('edit-actions').style.display = state.editedCells.size > 0 ? 'flex' : 'none';
+    updateButtons();
 }
 
 export function updateTableListHighlights() {
@@ -140,8 +141,8 @@ async function selectTable(name) {
         el.classList.toggle('active', el.dataset.table === name);
     });
 
+    updateButtons();
     document.getElementById('panel-title').textContent = name;
-    document.getElementById('edit-actions').style.display = 'none';
     document.getElementById('panel-body').innerHTML = '<div class="state-msg"><span>Loading...</span></div>';
     setStatus(`Loading ${name}...`);
 

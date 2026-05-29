@@ -14,3 +14,12 @@ export function hasPendingChanges() {
         .flatMap(t => Object.values(t))
         .flatMap(r => Object.values(r)).length > 0
 }
+
+export function updateButtons() {
+    const hasLocal = state.editedCells.size > 0;
+    const hasAny = hasPendingChanges();
+    document.getElementById('discard-btn').classList.toggle('visible', hasLocal);
+    document.getElementById('discard-all-btn').classList.toggle('visible', hasAny);
+    document.getElementById('commit-btn').disabled = !hasLocal;
+    document.getElementById('commit-all-btn').disabled = !hasAny;
+}
