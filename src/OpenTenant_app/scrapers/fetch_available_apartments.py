@@ -1,15 +1,9 @@
-from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from typing import Any
 import requests
 
-
-@dataclass(frozen=True)
-class AvailableApartmentUnit:
-    unit_num:       int
-    price:          float
-    available_now:  bool
-    date_available: date|None
+from ..models.apartment_inventory_snapshot import ApartmentInventorySnapshot
+from ..models.apartment_unit_snapshot import ApartmentUnitSnapshot
 
 
 def fetch_raw_apartment_data() -> Any:
@@ -75,17 +69,17 @@ def fetch_raw_apartment_data() -> Any:
     return response.json()
 
 
-def parse_unit_data(data: dict[str, Any]) -> AvailableApartmentUnit:
-    available_now = data['display_available_on'] == 'Available Now'
-    return AvailableApartmentUnit(
-        int(data['unit_number']),
-        float(data['price']),
-        available_now,
-        None if available_now else date.strptime(data['available_on'], '%Y-%m-%d')
+def parse_unit_data(data: dict[str, Any]) -> ApartmentUnitSnapshot:
+    return ApartmentUnitSnapshot(
+        unit_id=data['id'],
+        unit_num=data['unit_number'] if 'unit_number' in data else None,
+        price=int(data['price']) if 'price' in data else None,
+        sq_footage=int(data['area']) if 'area' in data else None,
+        date_available=date.strptime(data['available_on'], '%Y-%m-%d') if 'available_on' in data else None,
     )
 
 
-def get_apartment_data() -> dict:
+def get_apartment_snapshot() -> ApartmentInventorySnapshot:
     # make the request
     raw_data = fetch_raw_apartment_data()
 
@@ -93,29 +87,37 @@ def get_apartment_data() -> dict:
     if not isinstance(raw_data, dict):
         raise TypeError(f'Expected a dictionary from the request;, but got a {type(raw_data)}')
 
+    snapshot = ApartmentInventorySnapshot(
+        snapshot_time=datetime.now(),
+        raw_data=raw_data,
+    )
+
     # parse the raw data
-    parsed_data = list()
     for unit in raw_data['data']['units']:
-        parsed_data.append(parse_unit_data(unit))
+        snapshot.units.append(parse_unit_data(unit))
 
     # return data
-    return {'raw': raw_data, 'parsed': parsed_data}
+    return snapshot
 
 
 def main() -> None:
-    from flask_sqlalchemy import SQLAlchemy
-    from flask_migrate import Migrate
-    from pprint import pprint
-    import sqlite3
+    from sqlalchemy.orm import sessionmaker
+    from sqlalchemy import create_engine
 
-    conn = sqlite3.connect('lease_info.db')
+    from ..models.model_base import ModelBase
 
-    # TODO: finish
-    db.init_app(app)
-    migrate.init_app(app, db)
+    # expected to be called from the OpenTenant root directory with "uv run -m src.OpenTenant_app.scrapers.fetch_available_apartments"
+    db_file = 'sqlite:///instance/app.db'
+    engine = create_engine(db_file, future=True)
+    ModelBase.metadata.create_all(engine)
 
-    data = get_apartment_data()
-    pprint(data['parsed'])
+    data = get_apartment_snapshot()
+
+    SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
+
+    with SessionLocal() as session:
+        session.add(data)
+        session.commit()
 
 
 if __name__ == "__main__":
