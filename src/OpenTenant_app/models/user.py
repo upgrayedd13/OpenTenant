@@ -7,7 +7,8 @@ from typing import TYPE_CHECKING
 from datetime import date
 import logging
 
-from ..extensions import db, login_manager
+from ..extensions import login_manager
+from .model_base import ModelBase
 from .user_role import UserRole
 if TYPE_CHECKING:
     from .lease import Lease
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class User(UserMixin, db.Model):
+class User(UserMixin, ModelBase):
     __tablename__ = 'users'
 
     id:                Mapped[int]       = mapped_column(Integer,     primary_key=True)

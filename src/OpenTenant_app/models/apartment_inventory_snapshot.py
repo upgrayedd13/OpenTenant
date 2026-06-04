@@ -3,12 +3,12 @@ from sqlalchemy.orm import mapped_column, relationship, Mapped
 from typing import TYPE_CHECKING
 from datetime import datetime
 
-from ..extensions import db
+from .model_base import ModelBase
 if TYPE_CHECKING:
     from .apartment_unit_snapshot import ApartmentUnitSnapshot
 
 
-class ApartmentInventorySnapshot(db.Model):
+class ApartmentInventorySnapshot(ModelBase):
     __tablename__ = 'apartment_inventory_snapshots'
 
     id:                 Mapped[int]      = mapped_column(Integer,  primary_key=True)
