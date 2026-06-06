@@ -1,13 +1,12 @@
 from sqlalchemy.orm import mapped_column, relationship, Mapped
 from sqlalchemy import Integer, String, DateTime, or_, and_
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any
 from dateutil.rrule import rrulestr
+from typing import Any
 
+from .calendar_event_exception import CalendarEventException
+from .calendar_event_constants import TIME_FORMAT
 from ..extensions import db
-if TYPE_CHECKING:
-    from .calendar_event_exception import CalendarEventException
-
 
 class CalendarEvent(db.Model):
     __tablename__ = 'calendar_events'
@@ -27,6 +26,79 @@ class CalendarEvent(db.Model):
 
     # exceptions to the RRULE
     exceptions:    Mapped[list['CalendarEventException']] = relationship(back_populates='event', cascade='all, delete-orphan')
+
+
+    @staticmethod
+    def from_dict(data: dict) -> 'CalendarEvent':
+        # helper function to get values out of JSON data
+        def get_val(k: str, *, type_: type|tuple[type, ...]|None=None, nullable: bool=False) -> Any:
+            if k not in data:
+                if nullable:
+                    return None
+                else:
+                    raise ValueError(f'Missing field {k}')
+
+            v = data[k]
+            if v is None:
+                if nullable:
+                    return None
+                raise ValueError(f'Missing value for field {k}')
+
+            if type_ is not None and not isinstance(v, type_):
+                type_name = type_.__name__ if isinstance(type_, type) else " or ".join(t.__name__ for t in type_)
+                raise ValueError(f'Field {k} must be {type_name}')
+
+            return v
+
+        # ensure we were given a dictionary
+        if not isinstance(data, dict):
+            raise ValueError('Expected an object')
+
+        # get the raw values
+        title       = get_val('title',       type_=str)
+        start_time  = get_val('start_time',  type_=str)
+        end_time    = get_val('end_time',    type_=str)
+        location    = get_val('location',    type_=str,  nullable=True)
+        description = get_val('description', type_=str,  nullable=True)
+        rrule       = get_val('rrule',       type_=str,  nullable=True)
+        exceptions  = get_val('exceptions',  type_=list, nullable=True)
+
+        # parse the start and stop times
+        try:
+            start_time = datetime.strptime(start_time, TIME_FORMAT)
+        except ValueError:
+            raise ValueError('Failed to parse start_time string')
+
+        try:
+            end_time = datetime.strptime(end_time, TIME_FORMAT)
+        except ValueError:
+            raise ValueError('Failed to parse end_time string')
+
+        if end_time <= start_time:
+            raise ValueError('end_time must be after start_time')
+
+        # check that the rrule is valid
+        if rrule is not None:
+            CalendarEvent.validate_rrule(rrule)
+
+        # parse exceptions
+        if exceptions is None:
+            exceptions = []
+        elif not all(isinstance(e, dict) for e in exceptions):
+            raise ValueError('All date exceptions must be objects')
+        else:
+            exceptions = [CalendarEventException.from_dict(exception) for exception in exceptions]
+
+        # generate the event object
+        return CalendarEvent(
+            title=title,
+            start_time=start_time,
+            end_time=end_time,
+            location=location,
+            description=description,
+            rrule=rrule,
+            exceptions=exceptions,
+        )
 
 
     @staticmethod

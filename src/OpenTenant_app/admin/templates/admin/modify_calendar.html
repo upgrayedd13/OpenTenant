@@ -7,14 +7,22 @@ Modify Calendar
 
 
 {% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('about.static', filename='css/calendar.css') }}">
 {% endblock %}
 
 
 {% block content %}
 
 <main class="modify-calendar">
+    <div class="calendar-header">
+        <button id="prev">&lt;</button>
+        <h2 id="monthLabel"></h2>
+        <button id="next">&gt;</button>
+    </div>
 
+    <div class="calendar-grid" id="calendar"></div>
+
+    <script type="module" src="{{ url_for('about.static', filename='js/calendar.js') }}"></script>
 </main>
-
 
 {% endblock %}
