@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from datetime import date
 import logging
 
-from ..extensions import login_manager
+from ..extensions import login_manager, db
 from .model_base import ModelBase
 from .user_role import UserRole
 if TYPE_CHECKING:
@@ -57,5 +57,5 @@ class User(UserMixin, ModelBase):
 
 
 @login_manager.user_loader
-def load_user(user_id: int) -> User:
-    return User.query.get(int(user_id))
+def load_user(user_id: int) -> User | None:
+    return db.session.get(User, int(user_id))
