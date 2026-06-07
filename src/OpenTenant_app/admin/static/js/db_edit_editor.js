@@ -1,6 +1,7 @@
-import { TABLES_ENDPOINT, updateTableListHighlights } from './db_edit_table.js';
-import { state, hasPendingChanges, updateButtons }    from './db_edit_state.js';
-import { setStatus }                                  from './db_edit_utils.js';
+import { state, hasPendingChanges, updateButtons } from './db_edit_state.js';
+import { updateTableListHighlights }               from './db_edit_table.js';
+import { TABLES_ENDPOINT }                         from './db_endpoints.js';
+import { setStatus }                               from './db_edit_utils.js';
 
 
 export function initEditor() {
