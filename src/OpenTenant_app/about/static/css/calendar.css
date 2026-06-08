@@ -1,14 +1,18 @@
 .calendar-main {
     display: flex;
-    justify-content: center;
     flex-direction: column;
+    justify-content: center;
 }
 
 .calendar-header {
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     gap: 1rem;
+    position: relative;
+    margin: 0;
+    padding: 1rem 1rem 0.75rem 1rem;
 }
 
 .calendar-grid {
@@ -16,6 +20,175 @@
     grid-template-columns: repeat(7, 1fr);
     gap: 1px;
     flex: auto;
+    margin: 0;
+    padding: 0 1rem 1rem 1rem;
+}
+
+.cal-nav-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    transition: background 0.15s, color 0.15s;
+    padding: 0;
+}
+
+.cal-nav-btn:hover {
+    background: #f5f5f5;
+    color: #111;
+}
+
+.cal-nav-btn:active {
+    background: #eee;
+}
+
+.month-label-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1.05rem;
+    font-weight: bold;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    color: inherit;
+    transition: background 0.15s, border-color 0.15s;
+    user-select: none;
+}
+
+.month-label-btn span {
+    pointer-events: none;
+}
+
+.month-label-btn:hover {
+    background: #f5f5f5;
+    border-color: #ddd;
+}
+
+.month-label-caret {
+    font-size: 10px;
+    color: #aaa;
+    transition: transform 0.2s;
+}
+
+.month-label-btn[aria-expanded="true"] .month-label-caret {
+    transform: rotate(180deg);
+}
+
+.month-picker {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 1rem;
+    width: 260px;
+    z-index: 100;
+}
+
+.month-picker[hidden] {
+    display: none;
+}
+
+.month-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.month-picker-year {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.year-step-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.year-step-btn:hover {
+    background: #f5f5f5;
+}
+
+.year-input {
+    width: 60px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 2px 4px;
+    -moz-appearance: textfield;
+}
+
+.year-input::-webkit-outer-spin-button,
+.year-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.picker-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #aaa;
+    padding: 0 4px;
+}
+
+.picker-close-btn:hover {
+    color: #333;
+}
+
+.month-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+}
+
+.month-pick-btn {
+    padding: 6px 4px;
+    border-radius: 6px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #555;
+    transition: background 0.12s, color 0.12s;
+}
+
+.month-pick-btn:hover {
+    background: #f5f5f5;
+    color: #111;
+}
+
+.month-pick-btn.active {
+    background: #3174ad;
+    color: white;
+    font-weight: 500;
 }
 
 .day {
@@ -36,4 +209,12 @@
     margin-top: 4px;
     border-radius: 4px;
     font-size: 0.8em;
+}
+
+.day--clickable {
+    cursor: pointer;
+}
+
+.day--clickable:hover {
+    background-color: #f0f4ff;
 }

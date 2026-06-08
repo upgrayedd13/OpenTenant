@@ -8,21 +8,37 @@ Modify Calendar
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('about.static', filename='css/calendar.css') }}">
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin_calendar.css') }}">
 {% endblock %}
 
 
 {% block content %}
 
-<main class="modify-calendar">
-    <div class="calendar-header">
-        <button id="prev">&lt;</button>
-        <h2 id="monthLabel"></h2>
-        <button id="next">&gt;</button>
-    </div>
+<main class="admin-main">
+    <section class="admin-calendar-pane">
+        {% include "about/calendar_content.html" %}
+    </section>
 
-    <div class="calendar-grid" id="calendar"></div>
+    <aside class="admin-event-pane" id="eventPane">
+        <div class="event-pane-inner">
+            <div class="event-pane-header">
+                <span id="eventPaneDate"></span>
+                <button id="eventPaneClose" aria-label="Close panel">&times;</button>
+            </div>
 
-    <script type="module" src="{{ url_for('about.static', filename='js/calendar.js') }}"></script>
+            <form id="eventForm" class="event-form">
+                <label for="eventTitle">Title</label>
+                <input type="text" id="eventTitle" placeholder="e.g. Team standup" required>
+                <label for="eventTime">Time</label>
+                <input type="time" id="eventTime">
+                <label for="eventDesc">Description</label>
+                <textarea id="eventDesc" rows="3" placeholder="Optional notes..."></textarea>
+                <button type="submit" class="event-submit">Add Event</button>
+            </form>
+        </div>
+    </aside>
 </main>
+
+<script type="module" src="{{ url_for('about.static', filename='js/admin_calendar.js') }}"></script>
 
 {% endblock %}
