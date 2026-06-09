@@ -67,12 +67,12 @@ class CalendarEvent(db.Model):
         try:
             start_time = datetime.strptime(start_time, TIME_FORMAT)
         except ValueError:
-            raise ValueError('Failed to parse start_time string')
+            raise ValueError(f'Failed to parse start_time string "{start_time}"')
 
         try:
             end_time = datetime.strptime(end_time, TIME_FORMAT)
         except ValueError:
-            raise ValueError('Failed to parse end_time string')
+            raise ValueError(f'Failed to parse end_time string "{end_time}"')
 
         if end_time <= start_time:
             raise ValueError('end_time must be after start_time')

@@ -9,6 +9,7 @@ Modify Calendar
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('about.static', filename='css/calendar.css') }}">
 <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin_calendar.css') }}">
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='css/add_event.css') }}">
 {% endblock %}
 
 
@@ -20,22 +21,7 @@ Modify Calendar
     </section>
 
     <aside class="admin-event-pane" id="eventPane">
-        <div class="event-pane-inner">
-            <div class="event-pane-header">
-                <span id="eventPaneDate"></span>
-                <button id="eventPaneClose" aria-label="Close panel">&times;</button>
-            </div>
-
-            <form id="eventForm" class="event-form">
-                <label for="eventTitle">Title</label>
-                <input type="text" id="eventTitle" placeholder="e.g. Team standup" required>
-                <label for="eventTime">Time</label>
-                <input type="time" id="eventTime">
-                <label for="eventDesc">Description</label>
-                <textarea id="eventDesc" rows="3" placeholder="Optional notes..."></textarea>
-                <button type="submit" class="event-submit">Add Event</button>
-            </form>
-        </div>
+        {% include "admin/add_event_pane.html" %}
     </aside>
 </main>
 

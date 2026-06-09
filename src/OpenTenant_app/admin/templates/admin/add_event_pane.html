@@ -1,0 +1,94 @@
+<div class="event-pane-inner">
+    <div class="event-pane-header">
+        <span id="eventPaneDate"></span>
+        <button id="eventPaneClose" aria-label="Close panel">&times;</button>
+    </div>
+    <form id="eventForm" class="event-form">
+
+        <label for="eventTitle">Title</label>
+        <input type="text" id="eventTitle" placeholder="e.g. Team standup" required>
+
+        <div class="time-row">
+            <div class="time-col">
+                <label for="eventStartTime">Start time</label>
+                <input type="time" id="eventStartTime">
+            </div>
+            <div class="time-col">
+                <label for="eventEndTime">End time</label>
+                <input type="time" id="eventEndTime">
+            </div>
+        </div>
+
+        <label for="eventTimezone">Timezone</label>
+        <select id="eventTimezone"></select>
+
+        <label for="eventLocation">Location</label>
+        <input type="text" id="eventLocation" placeholder="e.g. Room 4B or https://meet.example.com">
+
+        <label for="eventDesc">Description</label>
+        <textarea id="eventDesc" rows="3" placeholder="Optional notes..."></textarea>
+
+        <!-- Recurrence -->
+        <label for="eventRepeat">Repeat</label>
+        <select id="eventRepeat">
+            <option value="none">Does not repeat</option>
+            <option value="daily">Every day</option>
+            <option value="weekly">Every week</option>
+            <option value="monthly">Every month</option>
+            <option value="custom">Custom (RRULE)…</option>
+        </select>
+
+        <!-- Weekly day picker — shown only when repeat=weekly -->
+        <div id="weekdayPicker" class="recurrence-sub hidden">
+            <label class="sub-label">On</label>
+            <div class="weekday-btns">
+                <button type="button" class="wd-btn" data-day="MO">M</button>
+                <button type="button" class="wd-btn" data-day="TU">T</button>
+                <button type="button" class="wd-btn" data-day="WE">W</button>
+                <button type="button" class="wd-btn" data-day="TH">T</button>
+                <button type="button" class="wd-btn" data-day="FR">F</button>
+                <button type="button" class="wd-btn" data-day="SA">S</button>
+                <button type="button" class="wd-btn" data-day="SU">S</button>
+            </div>
+        </div>
+
+        <!-- End condition — shown when repeat != none -->
+        <div id="repeatEndRow" class="recurrence-sub hidden">
+            <label class="sub-label">Ends</label>
+            <div class="repeat-end-options">
+                <label class="radio-label">
+                    <input type="radio" name="repeatEnd" value="never" checked> Never
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="repeatEnd" value="until"> On
+                    <input type="date" id="repeatUntil" class="inline-date" disabled>
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="repeatEnd" value="count"> After
+                    <input type="number" id="repeatCount" min="1" max="365" value="10" class="inline-num" disabled>
+                    occurrences
+                </label>
+            </div>
+        </div>
+
+        <!-- Custom RRULE text input — shown when repeat=custom -->
+        <div id="customRruleRow" class="recurrence-sub hidden">
+            <label for="customRrule" class="sub-label">RRULE string</label>
+            <input type="text" id="customRrule" placeholder="RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR">
+            <span class="field-hint">Enter a valid RFC 5545 RRULE string.</span>
+        </div>
+
+        <!-- Exceptions list — shown when repeat != none -->
+        <div id="exceptionsSection" class="recurrence-sub hidden">
+            <div class="exceptions-header">
+                <label class="sub-label">Skip dates</label>
+                <button type="button" id="addExceptionBtn" class="link-btn">
+                    + Add date
+                </button>
+            </div>
+            <ul id="exceptionList" class="exception-list"></ul>
+        </div>
+
+        <button type="submit" class="event-submit">Add Event</button>
+    </form>
+</div>
