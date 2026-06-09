@@ -1,5 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Account{% endblock %}
+
+
+{% block title %}
+Account
+{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/account.css') }}">
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/register.css') }}">
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/tool_tip.css') }}">
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/forms.css') }}">
+{% endblock %}
+
 
 {% block content %}
 

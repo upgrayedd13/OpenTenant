@@ -5,11 +5,15 @@ from sqlalchemy import Integer, String
 from flask_login import UserMixin
 from typing import TYPE_CHECKING
 from datetime import date
+import logging
 
 from ..extensions import db, login_manager
 from .user_role import UserRole
 if TYPE_CHECKING:
     from .lease import Lease
+
+
+logger = logging.getLogger(__name__)
 
 
 class User(UserMixin, db.Model):

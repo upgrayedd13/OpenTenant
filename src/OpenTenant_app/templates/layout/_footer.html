@@ -1,8 +1,45 @@
 <footer>
-    <div class="row">
-        Placeholder Contact Info
-        <a href="{{ url_for('main.bug') }}">Report a Bug</a>
+    <a href="mailto:example@example.com">Contact Us</a>
+    |
+    <a class="openModal"
+       data-title="Report a Bug"
+        data-src="{{ url_for('main.modal_content', name='bug_report') }}">
+        Report a Bug
+    </a>
+    |
+    <a class="openModal"
+       data-title="Privacy Policy"
+       data-src="{{ url_for('main.modal_content', name='privacy_policy') }}">
+        Privacy Policy
+    </a>
+    |
+    <a class="openModal"
+       data-title="Terms of Use"
+       data-src="{{ url_for('main.modal_content', name='terms_of_use') }}">
+        Terms of Use
+    </a>
+    |
+    <a class="openModal"
+       data-title="Legal Disclaimer"
+       data-src="{{ url_for('main.modal_content', name='legal_disclaimer') }}">
+        Legal Disclaimer
+    </a>
+
+    <div id="overlay" class="overlay">
+        <div class="modal" role="dialog">
+            <div class="modal-header">
+                <h1 id="modalTitle"></h1>
+                <button id="closeModal" class="close-btn" aria-label="Close">&#10006;</button>
+            </div>
+
+            <div id="modalContent" class="modal-content"></div>
+        </div>
     </div>
 </footer>
 
-<div class="legal">Placeholder Legal BS</div>
+<div class="legal">
+    <p>© {{ current_year }} LPM Tenants Union.</p>
+    <p>Content licensed under CC BY-SA 4.0.</p>
+</div>
+
+<script src="{{ url_for('static', filename='js/modal.js') }}"></script>

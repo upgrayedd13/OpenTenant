@@ -1,5 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Admin{% endblock %}
+
+{% block title %}
+Admin
+{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin.css') }}">
+{% endblock %}
+
 
 {% block content %}
 

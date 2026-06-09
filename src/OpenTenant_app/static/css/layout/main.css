@@ -1,0 +1,13 @@
+main {
+    flex: 1;
+    background-color: var(--background-color);
+    padding: 30px 50px;
+    display: flex;
+    gap: 40px;
+    color: var(--text-color-main);
+}
+
+.center-content {
+    justify-content: center;
+    align-items: center;
+}

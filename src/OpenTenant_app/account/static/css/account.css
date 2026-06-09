@@ -1,0 +1,42 @@
+.account-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+}
+
+.account-btn {
+    padding: 18px;
+    font-size: 16px;
+}
+
+.account-main {
+    flex: 1;
+    background-color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.account-box {
+    background-color: var(--box-background-color);
+    width: 90%;
+    max-width: 1200px;
+    min-height: 500px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.account-left {
+    flex: 3;
+}
+
+.account-left h2 {
+    color: var(--text-color-main);
+    font-size: 18px;
+    margin-bottom: 20px;
+}

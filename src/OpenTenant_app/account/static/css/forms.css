@@ -1,0 +1,52 @@
+.form-row {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: var(--text-color-main);
+    font-weight: 500;
+}
+
+.form-group input {
+    border: none;
+    border-bottom: 2px solid gray;
+    padding: 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: var(--box-background-color);
+    color: var(--text-color-main);
+    font-size: 16px;
+    padding: 10px 14px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: border 0.2s, box-shadow 0.2s;
+    width: 100%;
+    outline: none;
+}
+
+/* Hover and focus states */
+select:hover {
+    border-color: var(--primary-color);
+}
+
+select:focus {
+    border-color: var(--primary-color-hover);
+    box-shadow: 0 0 0 3px rgba(106, 160, 184, 0.2);
+}

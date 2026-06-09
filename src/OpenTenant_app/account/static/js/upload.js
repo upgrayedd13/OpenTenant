@@ -4,7 +4,9 @@ let config = null;
 
 async function getUploadConfig() {
     const res = await fetch("/config");
-    if (!res.ok) throw new Error("Failed to load config");
+    if (!res.ok) {
+        throw new Error("Failed to load config");
+    }
     return res.json();
 }
 
@@ -15,20 +17,21 @@ async function ensureConfigLoaded() {
 }
 
 uploadBtn.addEventListener("click", () => {
-    pdfInput.click(); // opens file dialog
+    pdfInput.click();  // opens file dialog
 });
 
 async function uploadFile(file) {
     const formData = new FormData();
     formData.append("pdf", file);
 
-    const response = await fetch("/upload-lease", {
+    const response = await fetch("/account/upload-lease", {
         method: "POST",
         body: formData,
     });
 
     if (!response.ok) {
-        throw new Error(`Upload failed: ${response.status}`);
+        const data = await response.json();
+        throw new Error(`Upload failed: ${data.error}`);
     }
 
     return await response.json();
