@@ -12,6 +12,7 @@ from .config import DevelopmentConfig, ProductionConfig
 from .extensions import db, login_manager, migrate
 
 from .api.calendar.routes import calendar_api_bp
+from .api.db.routes import db_api_bp
 from .resources.routes import resources_bp
 from .account.routes import account_bp
 from .admin.routes import admin_bp
@@ -42,6 +43,7 @@ def create_app() -> None:
 
     # Register blueprints
     app.register_blueprint(calendar_api_bp)
+    app.register_blueprint(db_api_bp)
     app.register_blueprint(resources_bp)
     app.register_blueprint(account_bp)
     app.register_blueprint(admin_bp)

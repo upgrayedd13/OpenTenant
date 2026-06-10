@@ -18,3 +18,9 @@ def admin():
 @minimum_user_role(UserRole.ADMIN)
 def modify_calendar():
     return render_template('admin/modify_calendar.html')
+
+
+@admin_bp.route('/db-edit-tool')
+@minimum_user_role(UserRole.SUPER_ADMIN)
+def db_edit_tool():
+    return render_template('admin/db_edit_tool.html')
