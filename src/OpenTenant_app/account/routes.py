@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user: User = User.query.filter_by(username=form.username.data).first()
+        user = User.get_by(username=form.username.data)
         if user and user.check_password(form.password.data):
             remember = request.form.get('remember') == 'y'
             login_user(user, remember=remember)

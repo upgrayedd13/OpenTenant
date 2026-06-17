@@ -255,10 +255,7 @@ function tzOffset(ianaZone, dateStr, timeStr) {
  * If no time is given we default to midnight / 23:59.
  */
 function buildDatetime(date, time, fallback = "00:00") {
-    const t      = (time || fallback).replace(":", "");  // "HH:MM" → "HHMM"
-    const d      = date.replace(/-/g, "");               // "YYYY-MM-DD" → "YYYYMMDD"
-    const offset = tzOffset(eventTimezone.value, date, time || fallback);
-    return `${d}-${t}-${offset}`;
+    return `${date}T${time || fallback}:00`
 }
 
 eventForm.onsubmit = async (e) => {
@@ -289,7 +286,8 @@ eventForm.onsubmit = async (e) => {
     const rrule = buildRrule(selectedDateStr);
 
     const exceptions = getExceptionDates().map(d => ({
-        exception_date: buildDatetime(d, "00:00")
+        exception_date: `${d}T00:00:00`,
+        timezone: eventTimezone.value
     }));
 
     const payload = {
@@ -299,6 +297,7 @@ eventForm.onsubmit = async (e) => {
         location,
         description,
         rrule,
+        timezone: eventTimezone.value,
         exceptions: exceptions.length ? exceptions : null,
     };
 

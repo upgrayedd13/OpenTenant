@@ -28,7 +28,6 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
         calendarEl.innerHTML = "";
         const year = current.getFullYear();
         const month = current.getMonth();
-        const tzOffset = current.getTimezoneOffset();
 
         monthLabelText.textContent = current.toLocaleString("default", {
             month: "long", year: "numeric"
@@ -42,7 +41,7 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
             calendarEl.appendChild(document.createElement("div"));
         }
 
-        fetch(`/api/calendar/events?year=${year}&month=${month + 1}&tz=${tzOffset}`)
+        fetch(`/api/calendar/events?year=${year}&month=${month + 1}`)
             .then(async response => {
                 const data = await response.json();
                 if (!response.ok) {
@@ -54,8 +53,9 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
             .then(events => {
                 const byDate = {};
                 events.forEach(e => {
-                    byDate[e.date] = byDate[e.date] || [];
-                    byDate[e.date].push(e);
+                    const localDate = new Date(e.start_time).toISOString().slice(0, 10);  // YYYY-MM-DD
+                    byDate[localDate] = byDate[localDate] || [];
+                    byDate[localDate].push(e);
                 });
 
                 for (let day = 1; day <= daysInMonth; day++) {

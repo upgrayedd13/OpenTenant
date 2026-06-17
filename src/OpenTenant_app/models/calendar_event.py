@@ -1,14 +1,16 @@
 from sqlalchemy.orm import mapped_column, relationship, Mapped
-from sqlalchemy import Integer, String, DateTime, or_, and_
+from sqlalchemy import Integer, String, or_, and_
 from datetime import datetime, timezone
 from dateutil.rrule import rrulestr
+from zoneinfo import ZoneInfo
 from typing import Any
 
 from .calendar_event_exception import CalendarEventException
-from .calendar_event_constants import TIME_FORMAT
+from .utc_date_time import UTCDateTime
+from .model_base import ModelBase
 from ..extensions import db
 
-class CalendarEvent(db.Model):
+class CalendarEvent(ModelBase):
     __tablename__ = 'calendar_events'
 
     id:            Mapped[int]      = mapped_column(Integer,  primary_key=True)
@@ -18,8 +20,8 @@ class CalendarEvent(db.Model):
 
     # start and end datetime *of the first event*
     # if repeated, only the time portion of the object is used
-    start_time:    Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    end_time:      Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    start_time:    Mapped[datetime] = mapped_column(UTCDateTime, nullable=False)
+    end_time:      Mapped[datetime] = mapped_column(UTCDateTime, nullable=False)
 
     # RFC 5545 RRULE string (nullable means the event is non-repeating)
     rrule:         Mapped[str|None] = mapped_column(String,   nullable=True)
@@ -28,8 +30,8 @@ class CalendarEvent(db.Model):
     exceptions:    Mapped[list['CalendarEventException']] = relationship(back_populates='event', cascade='all, delete-orphan')
 
 
-    @staticmethod
-    def from_dict(data: dict) -> 'CalendarEvent':
+    @classmethod
+    def from_dict(cls, data: dict) -> 'CalendarEvent':
         # helper function to get values out of JSON data
         def get_val(k: str, *, type_: type|tuple[type, ...]|None=None, nullable: bool=False) -> Any:
             if k not in data:
@@ -54,46 +56,58 @@ class CalendarEvent(db.Model):
         if not isinstance(data, dict):
             raise ValueError('Expected an object')
 
-        # get the raw values
-        title       = get_val('title',       type_=str)
-        start_time  = get_val('start_time',  type_=str)
-        end_time    = get_val('end_time',    type_=str)
-        location    = get_val('location',    type_=str,  nullable=True)
-        description = get_val('description', type_=str,  nullable=True)
-        rrule       = get_val('rrule',       type_=str,  nullable=True)
-        exceptions  = get_val('exceptions',  type_=list, nullable=True)
+        # parse all the values
+        title          = get_val('title',       type_=str)
+        tz_name        = get_val('timezone',    type_=str)
+        start_time_str = get_val('start_time',  type_=str)
+        end_time_str   = get_val('end_time',    type_=str)
+        location       = get_val('location',    type_=str,  nullable=True)
+        description    = get_val('description', type_=str,  nullable=True)
+        rrule          = get_val('rrule',       type_=str,  nullable=True)
+        exceptions     = get_val('exceptions',  type_=list, nullable=True) or []
 
-        # parse the start and stop times
+        # convert the timezone name to a ZoneInfo object
         try:
-            start_time = datetime.strptime(start_time, TIME_FORMAT)
-        except ValueError:
-            raise ValueError(f'Failed to parse start_time string "{start_time}"')
+            tz = ZoneInfo(tz_name)
+        except Exception:
+            raise ValueError(f'Invalid timezone "{tz_name}"')
 
+        # parse the start time strings as ISO8601
         try:
-            end_time = datetime.strptime(end_time, TIME_FORMAT)
-        except ValueError:
-            raise ValueError(f'Failed to parse end_time string "{end_time}"')
+            start_naive = datetime.fromisoformat(start_time_str)
+            end_naive   = datetime.fromisoformat(end_time_str)
+        except Exception:
+            raise ValueError('Invalid datetime format (expected ISO 8601)')
 
-        if end_time <= start_time:
+        # update the naive times with timezone info
+        start = start_naive.replace(tzinfo=tz)
+        end   = end_naive.replace(tzinfo=tz)
+
+        # normalize the start/end times to UTC
+        start = start.astimezone(timezone.utc)
+        end   = end.astimezone(timezone.utc)
+
+        # ensure the end time is after the start time
+        if end <= start:
             raise ValueError('end_time must be after start_time')
 
         # check that the rrule is valid
         if rrule is not None:
             CalendarEvent.validate_rrule(rrule)
 
-        # parse exceptions
+        # parse exceptions to the recurrences
         if exceptions is None:
             exceptions = []
         elif not all(isinstance(e, dict) for e in exceptions):
             raise ValueError('All date exceptions must be objects')
         else:
-            exceptions = [CalendarEventException.from_dict(exception) for exception in exceptions]
+            exceptions = [CalendarEventException.from_dict(exception, tz) for exception in exceptions]
 
-        # generate the event object
-        return CalendarEvent(
+        # return the constructed object
+        return cls(
             title=title,
-            start_time=start_time,
-            end_time=end_time,
+            start_time=start,
+            end_time=end,
             location=location,
             description=description,
             rrule=rrule,
@@ -129,12 +143,13 @@ class CalendarEvent(db.Model):
             raise ValueError(f'Window 2 is invalid ({w2[0]}, {w2[1]})!')
 
         # normalize to UTC
-        for window in [w1, w2]:
-            for i in range(len(window)):
-                window[i] = CalendarEvent.to_utc(window[i])
+        w1_start = CalendarEvent.to_utc(w1[0])
+        w1_end   = CalendarEvent.to_utc(w1[1])
+        w2_start = CalendarEvent.to_utc(w2[0])
+        w2_end   = CalendarEvent.to_utc(w2[1])
 
         # check for overlap
-        return w1[0] < w2[1] and w1[1] > w2[0]
+        return w1_start < w2_end and w1_end > w2_start
 
 
     @staticmethod
@@ -144,14 +159,16 @@ class CalendarEvent(db.Model):
         end   = CalendarEvent.to_utc(end)
 
         # get all events in the DB that either:
-        #  - don't have a rrule and are within the time window
+        #  - don't have an rrule and are within the time window
         #  - do have an rrule and start before the end of the window
-        events: list[CalendarEvent] = CalendarEvent.query.filter(
-            or_(
-                and_(CalendarEvent.rrule.is_(None), CalendarEvent.start_time >= start, CalendarEvent.end_time < end),
-                and_(CalendarEvent.rrule.isnot(None), CalendarEvent.start_time < end)
+        events: list[CalendarEvent] = db.session.execute(
+            db.select(CalendarEvent).filter(
+                or_(
+                    and_(CalendarEvent.rrule.is_(None), CalendarEvent.start_time < end, CalendarEvent.end_time > start),
+                    and_(CalendarEvent.rrule.isnot(None), CalendarEvent.start_time < end)
+                )
             )
-        ).all()
+        ).scalars().all()
 
         # list of dictionaries representing events that we'll return
         event_list: list[dict[str, Any]] = list()
@@ -168,9 +185,6 @@ class CalendarEvent(db.Model):
 
         # for each event left
         for event in events:
-            if CalendarEvent.windows_overlap((event.start_time, event.end_time), (start, end)):
-                add_event_dict(event, event.start_time, event.end_time)
-
             # get all occurrences that fall in our timeframe
             occurrences = event.get_occurrences(start, end)
 
@@ -188,20 +202,36 @@ class CalendarEvent(db.Model):
         end         = CalendarEvent.to_utc(end)
         event_start = CalendarEvent.to_utc(self.start_time)
         event_end   = CalendarEvent.to_utc(self.end_time)
+        duration    = event_end - event_start
 
-        # if no rrule, just return if our event is within the range
+        # if no rrule, just return if our event overlaps the window
         if self.rrule is None:
-            if start <= event_start <= end:
+            if CalendarEvent.windows_overlap((event_start, event_end), (start, end)):
                 return [(event_start, event_end)]
             return []
 
-        # generate the datetimes in our range that follow the rrule
+        # widen the lower bound by the event's duration so we also catch
+        # occurrences that started before `start` but whose end overlaps
+        # into the window
         rule = rrulestr(self.rrule, dtstart=event_start)
-        datetimes = rule.between(start, end, inc=True)
+        datetimes = rule.between(start - duration, end, inc=True)
 
         # set of exception dates
-        exception_dates = {ex.exception_date for ex in self.exceptions}
+        exception_dates = {CalendarEvent.to_utc(ex.exception_date) for ex in self.exceptions}
 
-        # filter the exceptions out and return a list of (start_time, endtime) datetime objects
-        duration = event_end - event_start
-        return [(dt, dt + duration) for dt in datetimes if dt not in exception_dates]
+        # build (start, end) pairs, drop exceptions, then keep only the
+        # occurrences that actually overlap the requested window
+        occurrences = [(dt, dt + duration) for dt in datetimes if dt not in exception_dates]
+        return [occ for occ in occurrences if CalendarEvent.windows_overlap(occ, (start, end))]
+
+
+    def to_dict(self) -> dict:
+        return {
+            'title':       self.title,
+            'location':    self.location,
+            'description': self.description,
+            'start_time':  self.start_time.isoformat(),
+            'end_time':    self.end_time.isoformat(),
+            'rrule':       self.rrule,
+            "exceptions":  [ex.exception_date.isoformat() for ex in self.exceptions] if self.exceptions else [],
+        }

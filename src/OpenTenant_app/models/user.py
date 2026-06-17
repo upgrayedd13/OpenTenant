@@ -30,6 +30,7 @@ class User(UserMixin, ModelBase):
     pronouns:          Mapped[str|None]      = mapped_column(String(20),  nullable=True)
     leases:            Mapped[list['Lease']] = relationship(back_populates='user', order_by='Lease.start_date')
 
+
     @hybrid_property
     def current_lease(self) -> 'Lease | None':
         today = date.today()
@@ -37,6 +38,11 @@ class User(UserMixin, ModelBase):
             if lease.start_date <= today and (lease.end_date is None or lease.end_date >= today):
                 return lease
         return None
+
+
+    @classmethod
+    def get_by(cls, **kwargs) -> 'User' | None:
+        return db.session.execute(db.select(cls).filter_by(**kwargs)).scalar_one_or_none()
 
 
     @staticmethod
