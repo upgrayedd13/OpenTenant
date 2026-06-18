@@ -101,7 +101,7 @@ class CalendarEvent(ModelBase):
         elif not all(isinstance(e, dict) for e in exceptions):
             raise ValueError('All date exceptions must be objects')
         else:
-            exceptions = [CalendarEventException.from_dict(exception, tz) for exception in exceptions]
+            exceptions = [CalendarEventException.from_dict(exception) for exception in exceptions]
 
         # return the constructed object
         return cls(

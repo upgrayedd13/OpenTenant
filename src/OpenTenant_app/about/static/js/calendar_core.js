@@ -2,6 +2,10 @@ const monthLabelText = document.getElementById("monthLabelText");
 const monthPicker = document.getElementById("monthPicker");
 const yearInput = document.getElementById("yearInput");
 const monthPickerGrid = document.getElementById("monthPickerGrid");
+const eventModal = document.getElementById("eventModal");
+const eventModalTitle = document.getElementById("eventModalTitle");
+const eventModalBody = document.getElementById("eventModalBody");
+const eventModalClose = document.getElementById("eventModalClose");
 const months = ["Jan", "Feb", "Mar" ,"Apr" ,"May" ,"Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export function initCalendar(calendarEl, monthLabelBtn, options={}) {
@@ -69,6 +73,10 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
                         const el = document.createElement("div");
                         el.className = "event";
                         el.textContent = ev.title;
+                        el.onclick = (e) => {
+                            e.stopPropagation();
+                            openEventModal(ev);
+                        };
                         cell.appendChild(el);
                     });
 
@@ -80,6 +88,52 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
                 }
             })
             .catch(err => console.error(err));
+    }
+
+    function formatEventTime(ev) {
+        const start = new Date(ev.start_time);
+        const startStr = start.toLocaleString("default", {
+            weekday: "short", month: "short", day: "numeric",
+            hour: "numeric", minute: "2-digit"
+        });
+        if (ev.end_time) {
+            const end = new Date(ev.end_time);
+            const endStr = end.toLocaleString("default", {
+                hour: "numeric", minute: "2-digit"
+            });
+            return `${startStr} – ${endStr}`;
+        }
+        return startStr;
+    }
+
+    function openEventModal(ev) {
+        eventModalTitle.textContent = ev.title || "Untitled event";
+        eventModalBody.innerHTML = "";
+
+        const time = document.createElement("p");
+        time.className = "event-modal-time";
+        time.textContent = formatEventTime(ev);
+        eventModalBody.appendChild(time);
+
+        if (ev.location) {
+            const loc = document.createElement("p");
+            loc.className = "event-modal-location";
+            loc.textContent = ev.location;
+            eventModalBody.appendChild(loc);
+        }
+
+        if (ev.description) {
+            const desc = document.createElement("p");
+            desc.className = "event-modal-description";
+            desc.textContent = ev.description;
+            eventModalBody.appendChild(desc);
+        }
+
+        eventModal.hidden = false;
+    }
+
+    function closeEventModal() {
+        eventModal.hidden = true;
     }
 
     function openPicker() {
@@ -139,6 +193,17 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
             e.target !== monthLabelBtn) {
             closePicker();
         }
+    });
+
+    eventModalClose.onclick = closeEventModal;
+
+    // Close event modal when clicking the backdrop (outside the content box)
+    eventModal.addEventListener("click", (e) => {
+        if (e.target === eventModal) closeEventModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !eventModal.hidden) closeEventModal();
     });
 
     return { renderCalendar, getCurrent: () => current };
