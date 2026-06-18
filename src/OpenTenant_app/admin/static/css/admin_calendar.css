@@ -130,3 +130,41 @@
     background: #eef4fb;
     border-color: #3174ad;
 }
+
+/* Delete controls inside the event detail modal (admin only) */
+.event-modal-recurring-note {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+}
+
+.event-delete-btn-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.event-delete-btn {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    color: #333;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.event-delete-btn:hover {
+    background: #f5f5f5;
+}
+
+.event-delete-btn--danger {
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+.event-delete-btn--danger:hover {
+    background: #dc2626;
+    color: white;
+}

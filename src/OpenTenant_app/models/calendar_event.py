@@ -176,11 +176,13 @@ class CalendarEvent(ModelBase):
         # function to make event dictionary
         def add_event_dict(event: CalendarEvent, start_time: datetime, end_time: datetime) -> None:
             event_list.append({
+                'id': event.id,
                 'title': event.title,
                 'location': event.location,
                 'description': event.description,
                 'start_time': start_time,
-                'end_time': end_time
+                'end_time': end_time,
+                'rrule': event.rrule,
             })
 
         # for each event left
@@ -227,6 +229,7 @@ class CalendarEvent(ModelBase):
 
     def to_dict(self) -> dict:
         return {
+            'id':          self.id,
             'title':       self.title,
             'location':    self.location,
             'description': self.description,

@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request, Response
 from datetime import datetime, timezone, timedelta
 import logging
 
+from ...models.calendar_event_exception import CalendarEventException
 from ...models.user_role import minimum_user_role, UserRole
 from ...models.calendar_event import CalendarEvent
 from ...utils.log_and_exit import log_and_jsonify
@@ -46,4 +47,37 @@ def add_calendar_event() -> Response | tuple[Response, int]:
     except Exception as e:
         return log_and_jsonify(str(e), 400)
 
+    return jsonify()
+
+
+@calendar_api_bp.route('/events/<int:event_id>', methods=['DELETE'])
+@minimum_user_role(UserRole.ADMIN)
+def delete_calendar_event(event_id: int) -> Response | tuple[Response, int]:
+    data = request.get_json(silent=True) or {}
+    scope = data.get('scope')
+    if scope not in ('single', 'series'):
+        return log_and_jsonify(f'Invalid or missing scope "{scope}" (expected "single" or "series")', 400)
+
+    event = db.session.get(CalendarEvent, event_id)
+    if event is None:
+        return log_and_jsonify(f'No event with id {event_id}', 404)
+
+    # A non-repeating event only has one occurrence, so "single" and
+    # "series" both just mean deleting the event outright.
+    if scope == 'series' or event.rrule is None:
+        db.session.delete(event)
+    else:
+        occurrence_start = data.get('occurrence_start')
+        if not occurrence_start:
+            return log_and_jsonify('Missing occurrence_start for single-occurrence delete', 400)
+
+        try:
+            occ_dt = datetime.fromisoformat(str(occurrence_start).replace('Z', '+00:00'))
+            if occ_dt.tzinfo is None:
+                raise ValueError('occurrence_start must include timezone info')
+        except Exception:
+            return log_and_jsonify('Invalid occurrence_start format', 400)
+        event.exceptions.append(CalendarEventException(exception_date=occ_dt.astimezone(timezone.utc)))
+
+    db.session.commit()
     return jsonify()

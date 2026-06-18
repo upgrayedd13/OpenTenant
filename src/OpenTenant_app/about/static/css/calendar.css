@@ -292,3 +292,16 @@
     margin: 0.5rem 0 0 0;
     white-space: pre-wrap;
 }
+
+.event-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.event-modal-actions:empty {
+    display: none;
+}

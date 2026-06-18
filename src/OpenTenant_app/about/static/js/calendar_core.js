@@ -5,11 +5,12 @@ const monthPickerGrid = document.getElementById("monthPickerGrid");
 const eventModal = document.getElementById("eventModal");
 const eventModalTitle = document.getElementById("eventModalTitle");
 const eventModalBody = document.getElementById("eventModalBody");
+const eventModalActions = document.getElementById("eventModalActions");
 const eventModalClose = document.getElementById("eventModalClose");
 const months = ["Jan", "Feb", "Mar" ,"Apr" ,"May" ,"Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export function initCalendar(calendarEl, monthLabelBtn, options={}) {
-    const { onDayClick } = options;
+    const { onDayClick, renderEventActions } = options;
     let current = new Date();
 
     // Build month buttons once
@@ -127,6 +128,11 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
             desc.className = "event-modal-description";
             desc.textContent = ev.description;
             eventModalBody.appendChild(desc);
+        }
+
+        eventModalActions.innerHTML = "";
+        if (renderEventActions) {
+            renderEventActions(ev, eventModalActions, { closeEventModal, renderCalendar });
         }
 
         eventModal.hidden = false;

@@ -36,7 +36,9 @@ const eventTimezone     = document.getElementById("eventTimezone");
             "Asia/Dubai", "Asia/Kolkata", "Asia/Shanghai", "Asia/Tokyo",
             "Australia/Sydney", "Pacific/Auckland",
         ];
-        if (!zones.includes(local)) zones.unshift(local);
+        if (!zones.includes(local)) {
+            zones.unshift(local);
+        }
     }
 
     zones.forEach(tz => {
@@ -286,7 +288,7 @@ eventForm.onsubmit = async (e) => {
     const rrule = buildRrule(selectedDateStr);
 
     const exceptions = getExceptionDates().map(d => ({
-        exception_date: `${d}T00:00:00`,
+        exception_date: buildDatetime(d, startTime, "00:00"),
         timezone: eventTimezone.value
     }));
 
@@ -318,10 +320,71 @@ eventForm.onsubmit = async (e) => {
 
 
 /////////////////////////////////////////////////////////////////
+//////////////////////// Delete an Event /////////////////////////
+/////////////////////////////////////////////////////////////////
+function makeDeleteBtn(label, onClick, danger = false) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "event-delete-btn" + (danger ? " event-delete-btn--danger" : "");
+    btn.textContent = label;
+    btn.onclick = onClick;
+    return btn;
+}
+
+async function deleteEvent(ev, scope, closeEventModal, renderCalendar) {
+    const confirmMsg = scope === "series"
+        ? "Delete this event and every occurrence in its series? This cannot be undone."
+        : "Delete this one date from the series? This cannot be undone.";
+    if (!window.confirm(confirmMsg)) return;
+
+    const payload = { scope };
+    if (scope === "single") {
+        // Round-trip through Date so we send an unambiguous ISO 8601 string
+        // regardless of how the server formatted ev.start_time.
+        payload.occurrence_start = new Date(ev.start_time).toISOString();
+    }
+
+    try {
+        const res  = await fetch(`/api/calendar/events/${ev.id}`, {
+            method:  "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Unknown error");
+        closeEventModal();
+        renderCalendar();
+    } catch (err) {
+        alert(err.message || "Failed to delete event");
+    }
+}
+
+// Hook passed to initCalendar: builds the delete controls shown at the
+// bottom of the (read-only) event detail modal.
+function renderEventDeleteActions(ev, container, { closeEventModal, renderCalendar }) {
+    if (ev.rrule) {
+        const note = document.createElement("p");
+        note.className = "event-modal-recurring-note";
+        note.textContent = "This event repeats.";
+        container.appendChild(note);
+
+        const btnRow = document.createElement("div");
+        btnRow.className = "event-delete-btn-row";
+        btnRow.appendChild(makeDeleteBtn("Delete just this date", () => deleteEvent(ev, "single", closeEventModal, renderCalendar)));
+        btnRow.appendChild(makeDeleteBtn("Delete entire series", () => deleteEvent(ev, "series", closeEventModal, renderCalendar), true));
+        container.appendChild(btnRow);
+    } else {
+        container.appendChild(makeDeleteBtn("Delete event", () => deleteEvent(ev, "series", closeEventModal, renderCalendar), true));
+    }
+}
+
+
+/////////////////////////////////////////////////////////////////
 ///////////////////////// Calendar Init /////////////////////////
 /////////////////////////////////////////////////////////////////
 const { renderCalendar, getCurrent } = initCalendar(calendarEl, monthLabel, {
     onDayClick: (dateStr, cell) => openPanel(dateStr, cell),
+    renderEventActions: renderEventDeleteActions,
 });
 
 document.getElementById("prev").onclick = () => {
