@@ -1,12 +1,11 @@
+from sqlalchemy import Integer, String, DateTime, select, or_, and_
 from sqlalchemy.orm import mapped_column, relationship, Mapped
-from sqlalchemy import Integer, String, or_, and_
 from datetime import datetime, timezone
 from dateutil.rrule import rrulestr
 from zoneinfo import ZoneInfo
 from typing import Any
 
 from .calendar_event_exception import CalendarEventException
-from .utc_date_time import UTCDateTime
 from .model_base import ModelBase
 from ..extensions import db
 
@@ -21,8 +20,8 @@ class CalendarEvent(ModelBase):
 
     # start and end datetime *of the first event*
     # if repeated, only the time portion of the object is used
-    start_time:    Mapped[datetime] = mapped_column(UTCDateTime, nullable=False)
-    end_time:      Mapped[datetime] = mapped_column(UTCDateTime, nullable=False)
+    start_time:    Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    end_time:      Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
     # RFC 5545 RRULE string (nullable means the event is non-repeating)
     rrule:         Mapped[str|None] = mapped_column(String,   nullable=True)
@@ -162,14 +161,14 @@ class CalendarEvent(ModelBase):
         # get all events in the DB that either:
         #  - don't have an rrule and are within the time window
         #  - do have an rrule and start before the end of the window
-        events: list[CalendarEvent] = db.session.execute(
-            db.select(CalendarEvent).filter(
+        events: list[CalendarEvent] = list(db.session.execute(
+            select(CalendarEvent).filter(
                 or_(
                     and_(CalendarEvent.rrule.is_(None), CalendarEvent.start_time < end, CalendarEvent.end_time > start),
                     and_(CalendarEvent.rrule.isnot(None), CalendarEvent.start_time < end)
                 )
             )
-        ).scalars().all()
+        ).scalars().all())
 
         # list of dictionaries representing events that we'll return
         event_list: list[dict[str, Any]] = list()

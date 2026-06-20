@@ -1,21 +1,20 @@
 from sqlalchemy.orm import mapped_column, relationship, Mapped
-from sqlalchemy import Integer, ForeignKey
+from sqlalchemy import Integer, ForeignKey, DateTime
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
-from .utc_date_time import UTCDateTime
-from ..extensions import db
+from .model_base import ModelBase
 if TYPE_CHECKING:
     from .calendar_event import CalendarEvent
 
 
-class CalendarEventException(db.Model):
+class CalendarEventException(ModelBase):
     __tablename__ = 'calendar_event_exceptions'
 
     id:             Mapped[int]             = mapped_column(Integer, primary_key=True)
     event_id:       Mapped[int]             = mapped_column(ForeignKey('calendar_events.id'), nullable=False)
-    exception_date: Mapped[datetime]        = mapped_column(UTCDateTime, nullable=False)
+    exception_date: Mapped[datetime]        = mapped_column(DateTime, nullable=False)
     event:          Mapped['CalendarEvent'] = relationship(back_populates='exceptions')
 
     @staticmethod
