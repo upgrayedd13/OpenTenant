@@ -209,11 +209,50 @@
     margin-top: 4px;
     border-radius: 4px;
     font-size: 0.8em;
+    min-height: 1.4em;
     cursor: pointer;
     transition: background 0.12s;
 }
 
-.event:hover {
+/* Multi-day spanning.
+   Each cell's right extension (margin-right: -11px) bridges exactly to the NEXT
+   cell's content-left: right-pad(4) + right-border(1) + gap(1) + left-border(1) +
+   left-pad(4) = 11px. Mid/end segments start at content-left (no left margin) —
+   the previous segment's right extension lands there perfectly. */
+.event--span-start {
+    border-radius: 4px 0 0 4px;
+    margin-right: -11px;
+}
+
+.event--span-mid {
+    border-radius: 0;
+    padding-left: 0;
+    margin-right: -11px;
+}
+
+.event--span-end {
+    border-radius: 0 4px 4px 0;
+    padding-left: 0;
+}
+
+/* Week-row right boundary (Saturday): stop bleed, cap right corners */
+.event--span-start.event--row-end,
+.event--span-mid.event--row-end {
+    margin-right: 0;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+/* Week-row left boundary (Sunday): no previous extension, so add left rounding + indent */
+.event--span-mid.event--row-start,
+.event--span-end.event--row-start {
+    padding-left: 4px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+/* Hover state coordinated across all segments by JS */
+.event--hovered {
     background: #285d8a;
 }
 

@@ -56,28 +56,89 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
                 return data;
             })
             .then(events => {
+                // Spread each event across every calendar day it covers,
+                // tagging each entry with its position in the span.
                 const byDate = {};
                 events.forEach(e => {
-                    const localDate = new Date(e.start_time).toISOString().slice(0, 10);  // YYYY-MM-DD
-                    byDate[localDate] = byDate[localDate] || [];
-                    byDate[localDate].push(e);
+                    const startDateStr = new Date(e.start_time).toISOString().slice(0, 10);
+                    const endDateStr   = new Date(e.end_time).toISOString().slice(0, 10);
+                    const isMultiDay   = startDateStr !== endDateStr;
+
+                    let cur  = new Date(startDateStr + "T00:00:00Z");
+                    const last = new Date(endDateStr   + "T00:00:00Z");
+                    while (cur <= last) {
+                        const dateStr = cur.toISOString().slice(0, 10);
+                        byDate[dateStr] = byDate[dateStr] || [];
+                        byDate[dateStr].push({
+                            ...e,
+                            _isMultiDay: isMultiDay,
+                            _isStart:    dateStr === startDateStr,
+                            _isEnd:      dateStr === endDateStr,
+                        });
+                        cur = new Date(cur.getTime() + 86400000);
+                    }
                 });
 
+                // Map from occurrence key → [segment elements], used to
+                // coordinate hover highlight across all segments of one occurrence.
+                // Key = id + start_time to scope to this occurrence, not all
+                // instances of a recurring event.
+                const segmentMap = new Map();
+
+                function addSegment(key, el) {
+                    if (!segmentMap.has(key)) segmentMap.set(key, []);
+                    segmentMap.get(key).push(el);
+                    el.addEventListener("mouseenter", () => {
+                        segmentMap.get(key).forEach(s => s.classList.add("event--hovered"));
+                    });
+                    el.addEventListener("mouseleave", () => {
+                        segmentMap.get(key).forEach(s => s.classList.remove("event--hovered"));
+                    });
+                }
+
                 for (let day = 1; day <= daysInMonth; day++) {
-                    const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+                    const dateStr  = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+                    const colIndex = (startOffset + day - 1) % 7;  // 0=Sun … 6=Sat
+
                     const cell = document.createElement("div");
                     cell.className = "day";
                     if (onDayClick) cell.classList.add("day--clickable");
                     cell.innerHTML = `<div class="day-number">${day}</div>`;
 
-                    (byDate[dateStr] || []).forEach(ev => {
+                    // Multi-day events first so they stack above single-day ones
+                    const dayEvents = [...(byDate[dateStr] || [])].sort(
+                        (a, b) => (b._isMultiDay ? 1 : 0) - (a._isMultiDay ? 1 : 0)
+                    );
+
+                    dayEvents.forEach(ev => {
                         const el = document.createElement("div");
-                        el.className = "event";
-                        el.textContent = ev.title;
-                        el.onclick = (e) => {
-                            e.stopPropagation();
-                            openEventModal(ev);
-                        };
+                        const segKey = `${ev.id}-${ev.start_time}`;
+
+                        if (ev._isMultiDay) {
+                            const isRowStart = colIndex === 0;
+                            const isRowEnd   = colIndex === 6;
+                            let cls = "event";
+                            if (ev._isStart)    cls += " event--span-start";
+                            else if (ev._isEnd) cls += " event--span-end";
+                            else                cls += " event--span-mid";
+
+                            if (!ev._isEnd   && isRowEnd)   cls += " event--row-end";
+                            if (!ev._isStart && isRowStart) cls += " event--row-start";
+                            el.className = cls;
+
+                            // Show title on the first visible segment in each row
+                            if (ev._isStart || (!ev._isStart && isRowStart)) {
+                                el.textContent = ev.title;
+                            } else {
+                                el.setAttribute("aria-label", ev.title);
+                            }
+                        } else {
+                            el.className = "event";
+                            el.textContent = ev.title;
+                        }
+
+                        el.onclick = (e) => { e.stopPropagation(); openEventModal(ev); };
+                        addSegment(segKey, el);
                         cell.appendChild(el);
                     });
 
@@ -92,19 +153,33 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
     }
 
     function formatEventTime(ev) {
-        const start = new Date(ev.start_time);
-        const startStr = start.toLocaleString("default", {
-            weekday: "short", month: "short", day: "numeric",
-            hour: "numeric", minute: "2-digit"
-        });
-        if (ev.end_time) {
-            const end = new Date(ev.end_time);
-            const endStr = end.toLocaleString("default", {
-                hour: "numeric", minute: "2-digit"
-            });
-            return `${startStr} – ${endStr}`;
+        const start        = new Date(ev.start_time);
+        const end          = new Date(ev.end_time);
+        const startDateStr = start.toISOString().slice(0, 10);
+        const endDateStr   = end.toISOString().slice(0, 10);
+        const isMultiDay   = startDateStr !== endDateStr;
+
+        // All-day events are stored as 00:00 → 23:59 UTC
+        const isAllDay     = start.getUTCHours() === 0 && start.getUTCMinutes() === 0 &&
+                             end.getUTCHours() === 23   && end.getUTCMinutes() >= 59;
+        const dateOpts     = { weekday: "short", month: "short", day: "numeric" };
+        const timeOpts     = { hour: "numeric", minute: "2-digit" };
+
+        if (isAllDay) {
+            const s = start.toLocaleString("default", dateOpts);
+            return isMultiDay ? `${s} - ${end.toLocaleString("default", dateOpts)}` : s;
         }
-        return startStr;
+
+        const s = start.toLocaleString("default", { ...dateOpts, ...timeOpts });
+        if (isMultiDay) {
+            return `${s} - ${end.toLocaleString("default", { ...dateOpts, ...timeOpts })}`;
+        }
+
+        if (ev.end_time) {
+            return `${s} - ${end.toLocaleString("default", timeOpts)}`;
+        }
+
+        return s;
     }
 
     function openEventModal(ev) {

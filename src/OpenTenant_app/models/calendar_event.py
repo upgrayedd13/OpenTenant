@@ -10,6 +10,7 @@ from .utc_date_time import UTCDateTime
 from .model_base import ModelBase
 from ..extensions import db
 
+
 class CalendarEvent(ModelBase):
     __tablename__ = 'calendar_events'
 

@@ -1,17 +1,21 @@
 import { initCalendar } from "./calendar_core.js";
 
-const calendarEl     = document.getElementById("calendar");
-const monthLabel     = document.getElementById("monthLabel");
-const adminMain      = document.querySelector(".admin-main");
-const eventPaneDate  = document.getElementById("eventPaneDate");
-const eventForm      = document.getElementById("eventForm");
-const eventPaneClose = document.getElementById("eventPaneClose");
-const eventTitle     = document.getElementById("eventTitle");
-const eventRepeat    = document.getElementById("eventRepeat");
-const weekdayPicker  = document.getElementById("weekdayPicker");
-const repeatEndRow   = document.getElementById("repeatEndRow");
-const customRruleRow = document.getElementById("customRruleRow");
-const customRrule    = document.getElementById("customRrule");
+const calendarEl        = document.getElementById("calendar");
+const monthLabel        = document.getElementById("monthLabel");
+const adminMain         = document.querySelector(".admin-main");
+const eventPaneDate     = document.getElementById("eventPaneDate");
+const eventForm         = document.getElementById("eventForm");
+const eventPaneClose    = document.getElementById("eventPaneClose");
+const eventTitle        = document.getElementById("eventTitle");
+const eventAllDay       = document.getElementById("eventAllDay");
+const eventStartDate    = document.getElementById("eventStartDate");
+const eventEndDate      = document.getElementById("eventEndDate");
+const timeRow           = document.getElementById("timeRow");
+const eventRepeat       = document.getElementById("eventRepeat");
+const weekdayPicker     = document.getElementById("weekdayPicker");
+const repeatEndRow      = document.getElementById("repeatEndRow");
+const customRruleRow    = document.getElementById("customRruleRow");
+const customRrule       = document.getElementById("customRrule");
 const exceptionsSection = document.getElementById("exceptionsSection");
 const addExceptionBtn   = document.getElementById("addExceptionBtn");
 const exceptionList     = document.getElementById("exceptionList");
@@ -27,7 +31,6 @@ const eventTimezone     = document.getElementById("eventTimezone");
     try {
         zones = Intl.supportedValuesOf("timeZone");
     } catch {
-        // Fallback: common zones only
         zones = [
             "UTC",
             "America/New_York", "America/Chicago", "America/Denver", "America/Los_Angeles",
@@ -40,7 +43,6 @@ const eventTimezone     = document.getElementById("eventTimezone");
             zones.unshift(local);
         }
     }
-
     zones.forEach(tz => {
         const opt = document.createElement("option");
         opt.value = tz;
@@ -58,9 +60,7 @@ let selectedCell    = null;
 //////////////////////// Panel Open/Close ///////////////////////
 /////////////////////////////////////////////////////////////////
 function openPanel(dateStr, cell) {
-    if (selectedCell) {
-        selectedCell.classList.remove("selected");
-    }
+    if (selectedCell) selectedCell.classList.remove("selected");
     selectedDateStr = dateStr;
     selectedCell    = cell;
     cell.classList.add("selected");
@@ -71,7 +71,12 @@ function openPanel(dateStr, cell) {
     });
 
     eventForm.reset();
-    eventTimezone.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // Set after reset() so these aren't cleared back to empty
+    eventStartDate.value = dateStr;
+    eventEndDate.value   = dateStr;
+    eventTimezone.value  = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    timeRow.classList.remove("hidden");
+    weekdayPicker.querySelectorAll(".wd-btn").forEach(b => b.classList.remove("active"));
     clearExceptions();
     syncRepeatUI();
     adminMain.classList.add("panel-open");
@@ -87,26 +92,54 @@ function closePanel() {
 
 eventPaneClose.onclick = closePanel;
 
+// All-day toggle: hide/show the time inputs
+eventAllDay.onchange = () => {
+    timeRow.classList.toggle("hidden", eventAllDay.checked);
+};
+
+// Keep end date >= start date when start date changes; re-sync weekday pick
+eventStartDate.onchange = () => {
+    if (eventEndDate.value && eventEndDate.value < eventStartDate.value) {
+        eventEndDate.value = eventStartDate.value;
+    }
+
+    if (eventRepeat.value === "weekly") {
+        autoSelectWeekday(eventStartDate.value);
+    }
+};
+
 
 /////////////////////////////////////////////////////////////////
 ///////////////////////// Recurrence UI /////////////////////////
 /////////////////////////////////////////////////////////////////
+function autoSelectWeekday(dateStr) {
+    if (!dateStr) return;
+    const dayNames = ["SU","MO","TU","WE","TH","FR","SA"];
+    const [y, m, d] = dateStr.split("-").map(Number);
+    const dayCode = dayNames[new Date(y, m - 1, d).getDay()];
+    weekdayPicker.querySelectorAll(".wd-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.day === dayCode);
+    });
+}
+
 function syncRepeatUI() {
     const mode = eventRepeat.value;
     const repeating = mode !== "none";
 
     weekdayPicker.classList.toggle("hidden", mode !== "weekly");
+    if (mode === "weekly") {
+        autoSelectWeekday(eventStartDate.value || selectedDateStr);
+    }
+
     repeatEndRow.classList.toggle("hidden", !repeating);
     customRruleRow.classList.toggle("hidden", mode !== "custom");
     exceptionsSection.classList.toggle("hidden", !repeating);
 
-    // keep end-condition inputs in sync with selected radio
     syncEndConditionInputs();
 }
 
 eventRepeat.onchange = syncRepeatUI;
 
-// Radio buttons controlling end condition enable/disable their sibling inputs
 repeatEndRow.addEventListener("change", e => {
     if (e.target.name === "repeatEnd") syncEndConditionInputs();
 });
@@ -117,7 +150,6 @@ function syncEndConditionInputs() {
     document.getElementById("repeatCount").disabled = selected !== "count";
 }
 
-// Weekday toggle buttons
 weekdayPicker.querySelectorAll(".wd-btn").forEach(btn => {
     btn.addEventListener("click", () => btn.classList.toggle("active"));
 });
@@ -164,10 +196,6 @@ function getExceptionDates() {
 /////////////////////////////////////////////////////////////////
 /////////////////////// Build RRULE String //////////////////////
 /////////////////////////////////////////////////////////////////
-/**
- * Returns an RFC 5545 RRULE string based on the current form state,
- * or null if the event does not repeat.
- */
 function buildRrule(eventDate) {
     const mode = eventRepeat.value;
     if (mode === "none") {
@@ -175,19 +203,15 @@ function buildRrule(eventDate) {
     }
 
     if (mode === "custom") {
-        const raw = customRrule.value.trim();
-        return raw || null;
+        return customRrule.value.trim() || null;
     }
 
     const freqMap = { daily: "DAILY", weekly: "WEEKLY", monthly: "MONTHLY" };
     let rule = `RRULE:FREQ=${freqMap[mode]}`;
 
-    // BYDAY for weekly
     if (mode === "weekly") {
         const days = Array.from(weekdayPicker.querySelectorAll(".wd-btn.active"))
             .map(b => b.dataset.day);
-
-        // Fall back to the day-of-week of the selected date
         if (days.length === 0) {
             const dayNames = ["SU","MO","TU","WE","TH","FR","SA"];
             const [y, m, d] = eventDate.split("-").map(Number);
@@ -196,7 +220,6 @@ function buildRrule(eventDate) {
         rule += `;BYDAY=${days.join(",")}`;
     }
 
-    // End condition
     const endMode = repeatEndRow.querySelector('input[name="repeatEnd"]:checked')?.value;
     if (endMode === "until") {
         const until = document.getElementById("repeatUntil").value;
@@ -217,75 +240,41 @@ function buildRrule(eventDate) {
 /////////////////////////////////////////////////////////////////
 ////////////////////////// Submit Form //////////////////////////
 /////////////////////////////////////////////////////////////////
-/**
- * Returns a UTC-offset string like "+0530" or "-0500" for the given IANA
- * timezone at the given local date/time, accounting for DST.
- */
-function tzOffset(ianaZone, dateStr, timeStr) {
-    // Build a Date that represents the wall-clock time in the chosen zone.
-    // We do this by formatting a known UTC instant in that zone and comparing.
-    const [y, mo, d] = dateStr.split("-").map(Number);
-    const [h, mi]    = (timeStr || "00:00").split(":").map(Number);
-
-    // Use the Intl API to find what UTC instant corresponds to this local time.
-    // Strategy: format an approximate UTC Date in the target zone and measure drift.
-    const approxUtc = Date.UTC(y, mo - 1, d, h, mi);
-    const fmt = new Intl.DateTimeFormat("en-CA", {
-        timeZone: ianaZone,
-        year: "numeric", month: "2-digit", day: "2-digit",
-        hour: "2-digit", minute: "2-digit", hour12: false,
-    });
-
-    // Parse what the zone thinks the local time is for our approx UTC instant
-    const parts = Object.fromEntries(fmt.formatToParts(new Date(approxUtc)).map(p => [p.type, p.value]));
-    const localMs = Date.UTC(
-        Number(parts.year), Number(parts.month) - 1, Number(parts.day),
-        Number(parts.hour === "24" ? 0 : parts.hour), Number(parts.minute)
-    );
-
-    const offsetMin = Math.round((approxUtc - localMs) / 60000);
-    const sign  = offsetMin <= 0 ? "+" : "-";
-    const abs   = Math.abs(offsetMin);
-    const hh    = String(Math.floor(abs / 60)).padStart(2, "0");
-    const mm    = String(abs % 60).padStart(2, "0");
-    return `${sign}${hh}${mm}`;
-}
-
-/**
- * Combine a date string (YYYY-MM-DD) and time string (HH:MM) into the
- * format the backend expects: "YYYY-MM-DD HH:MM:SS" (TIME_FORMAT).
- * If no time is given we default to midnight / 23:59.
- */
 function buildDatetime(date, time, fallback = "00:00") {
-    return `${date}T${time || fallback}:00`
+    return `${date}T${time || fallback}:00`;
 }
 
 eventForm.onsubmit = async (e) => {
     e.preventDefault();
-    if (!selectedDateStr) {
-        return;
-    }
+    if (!selectedDateStr) return;
 
-    const title       = eventTitle.value.trim();
-    const startTime   = document.getElementById("eventStartTime").value;
-    const endTime     = document.getElementById("eventEndTime").value;
-    const location    = document.getElementById("eventLocation").value.trim() || null;
-    const description = document.getElementById("eventDesc").value.trim() || null;
+    const title        = eventTitle.value.trim();
+    const startDateVal = eventStartDate.value || selectedDateStr;
+    const endDateVal   = eventEndDate.value   || startDateVal;
+    const isAllDay     = eventAllDay.checked;
+    const startTime    = document.getElementById("eventStartTime").value;
+    const endTime      = document.getElementById("eventEndTime").value;
+    const location     = document.getElementById("eventLocation").value.trim() || null;
+    const description  = document.getElementById("eventDesc").value.trim() || null;
 
     if (!title) {
         return;
     }
 
-    const startDatetime = buildDatetime(selectedDateStr, startTime, "00:00");
-    const endDatetime   = buildDatetime(selectedDateStr, endTime,   "23:59");
+    if (endDateVal < startDateVal) {
+        alert("End date must be on or after the start date.");
+        return;
+    }
 
-    // Basic client-side guard: end must be after start
-    if (endTime && startTime && endTime <= startTime) {
+    if (!isAllDay && startTime && endTime && startDateVal === endDateVal && endTime <= startTime) {
         alert("End time must be after start time.");
         return;
     }
 
-    const rrule = buildRrule(selectedDateStr);
+    const startDatetime = buildDatetime(startDateVal, isAllDay ? null : startTime, "00:00");
+    const endDatetime   = buildDatetime(endDateVal,   isAllDay ? null : endTime,   "23:59");
+
+    const rrule = buildRrule(startDateVal);
 
     const exceptions = getExceptionDates().map(d => ({
         exception_date: buildDatetime(d, startTime, "00:00"),
@@ -296,11 +285,12 @@ eventForm.onsubmit = async (e) => {
         title,
         start_time:  startDatetime,
         end_time:    endDatetime,
+        all_day:     isAllDay,
         location,
         description,
         rrule,
-        timezone: eventTimezone.value,
-        exceptions: exceptions.length ? exceptions : null,
+        timezone:    eventTimezone.value,
+        exceptions:  exceptions.length ? exceptions : null,
     };
 
     try {
@@ -320,7 +310,7 @@ eventForm.onsubmit = async (e) => {
 
 
 /////////////////////////////////////////////////////////////////
-//////////////////////// Delete an Event /////////////////////////
+///////////////////////// Delete Event //////////////////////////
 /////////////////////////////////////////////////////////////////
 function makeDeleteBtn(label, onClick, danger = false) {
     const btn = document.createElement("button");
@@ -339,8 +329,6 @@ async function deleteEvent(ev, scope, closeEventModal, renderCalendar) {
 
     const payload = { scope };
     if (scope === "single") {
-        // Round-trip through Date so we send an unambiguous ISO 8601 string
-        // regardless of how the server formatted ev.start_time.
         payload.occurrence_start = new Date(ev.start_time).toISOString();
     }
 
@@ -359,8 +347,6 @@ async function deleteEvent(ev, scope, closeEventModal, renderCalendar) {
     }
 }
 
-// Hook passed to initCalendar: builds the delete controls shown at the
-// bottom of the (read-only) event detail modal.
 function renderEventDeleteActions(ev, container, { closeEventModal, renderCalendar }) {
     if (ev.rrule) {
         const note = document.createElement("p");
@@ -370,8 +356,8 @@ function renderEventDeleteActions(ev, container, { closeEventModal, renderCalend
 
         const btnRow = document.createElement("div");
         btnRow.className = "event-delete-btn-row";
-        btnRow.appendChild(makeDeleteBtn("Delete just this date", () => deleteEvent(ev, "single", closeEventModal, renderCalendar)));
-        btnRow.appendChild(makeDeleteBtn("Delete entire series", () => deleteEvent(ev, "series", closeEventModal, renderCalendar), true));
+        btnRow.appendChild(makeDeleteBtn("Delete just this date",  () => deleteEvent(ev, "single", closeEventModal, renderCalendar)));
+        btnRow.appendChild(makeDeleteBtn("Delete entire series",   () => deleteEvent(ev, "series", closeEventModal, renderCalendar), true));
         container.appendChild(btnRow);
     } else {
         container.appendChild(makeDeleteBtn("Delete event", () => deleteEvent(ev, "series", closeEventModal, renderCalendar), true));
@@ -383,7 +369,7 @@ function renderEventDeleteActions(ev, container, { closeEventModal, renderCalend
 ///////////////////////// Calendar Init /////////////////////////
 /////////////////////////////////////////////////////////////////
 const { renderCalendar, getCurrent } = initCalendar(calendarEl, monthLabel, {
-    onDayClick: (dateStr, cell) => openPanel(dateStr, cell),
+    onDayClick:         (dateStr, cell) => openPanel(dateStr, cell),
     renderEventActions: renderEventDeleteActions,
 });
 

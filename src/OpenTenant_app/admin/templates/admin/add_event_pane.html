@@ -3,12 +3,29 @@
         <span id="eventPaneDate"></span>
         <button id="eventPaneClose" aria-label="Close panel">&times;</button>
     </div>
+
     <form id="eventForm" class="event-form">
 
         <label for="eventTitle">Title</label>
-        <input type="text" id="eventTitle" placeholder="e.g. Team standup" required>
+        <input type="text" id="eventTitle" placeholder="Add title" required>
 
-        <div class="time-row">
+        <div class="allday-row">
+            <input type="checkbox" id="eventAllDay">
+            <label for="eventAllDay" class="allday-label">All day</label>
+        </div>
+
+        <div class="date-row">
+            <div class="date-col">
+                <label for="eventStartDate">Start date</label>
+                <input type="date" id="eventStartDate" required>
+            </div>
+            <div class="date-col">
+                <label for="eventEndDate">End date</label>
+                <input type="date" id="eventEndDate">
+            </div>
+        </div>
+
+        <div id="timeRow" class="time-row">
             <div class="time-col">
                 <label for="eventStartTime">Start time</label>
                 <input type="time" id="eventStartTime">
@@ -23,10 +40,10 @@
         <select id="eventTimezone"></select>
 
         <label for="eventLocation">Location</label>
-        <input type="text" id="eventLocation" placeholder="e.g. Room 4B or https://meet.example.com">
+        <input type="text" id="eventLocation" placeholder="Add location">
 
         <label for="eventDesc">Description</label>
-        <textarea id="eventDesc" rows="3" placeholder="Optional notes..."></textarea>
+        <textarea id="eventDesc" rows="3" placeholder="Add description"></textarea>
 
         <!-- Recurrence -->
         <label for="eventRepeat">Repeat</label>
