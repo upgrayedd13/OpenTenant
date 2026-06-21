@@ -46,7 +46,12 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
             calendarEl.appendChild(document.createElement("div"));
         }
 
-        fetch(`/api/calendar/events?year=${year}&month=${month + 1}`)
+        const start = new Date(year, month, 1);
+        const end = new Date(year, month + 1, 1);
+        const startISO = start.toISOString();
+        const endISO = end.toISOString();
+
+        fetch(`/api/calendar/events?start=${startISO}&end=${endISO}`)
             .then(async response => {
                 const data = await response.json();
                 if (!response.ok) {
@@ -59,23 +64,40 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
                 // Spread each event across every calendar day it covers,
                 // tagging each entry with its position in the span.
                 const byDate = {};
+                const toLocalDateString = (date) => {
+                    const y = date.getFullYear();
+                    const m = String(date.getMonth() + 1).padStart(2, '0');
+                    const d = String(date.getDate()).padStart(2, '0');
+                    return `${y}-${m}-${d}`;
+                };
+
                 events.forEach(e => {
-                    const startDateStr = new Date(e.start_time).toISOString().slice(0, 10);
-                    const endDateStr   = new Date(e.end_time).toISOString().slice(0, 10);
+                    const eventStart = new Date(e.start_time);
+                    const eventEnd   = new Date(e.end_time);
+                    const startDateStr = toLocalDateString(eventStart);
+                    const endDateStr   = toLocalDateString(eventEnd);
                     const isMultiDay   = startDateStr !== endDateStr;
 
-                    let cur  = new Date(startDateStr + "T00:00:00Z");
-                    const last = new Date(endDateStr   + "T00:00:00Z");
-                    while (cur <= last) {
-                        const dateStr = cur.toISOString().slice(0, 10);
-                        byDate[dateStr] = byDate[dateStr] || [];
-                        byDate[dateStr].push({
-                            ...e,
-                            _isMultiDay: isMultiDay,
-                            _isStart:    dateStr === startDateStr,
-                            _isEnd:      dateStr === endDateStr,
-                        });
-                        cur = new Date(cur.getTime() + 86400000);
+                    let cur = new Date(eventStart);
+                    cur.setHours(0, 0, 0, 0);
+                    
+                    while (cur < eventEnd) {
+                        const dayStart = new Date(cur);
+                        const dayEnd   = new Date(cur);
+                        dayEnd.setDate(dayEnd.getDate() + 1);
+                        dayEnd.setHours(0, 0, 0, 0);
+                        
+                        if (eventStart < dayEnd && eventEnd > dayStart) {
+                            const dateStr = toLocalDateString(cur);
+                            byDate[dateStr] = byDate[dateStr] || [];
+                            byDate[dateStr].push({
+                                ...e,
+                                _isMultiDay: isMultiDay,
+                                _isStart:    dateStr === startDateStr,
+                                _isEnd:      dateStr === endDateStr,
+                            });
+                        }
+                        cur = dayEnd;
                     }
                 });
 
@@ -100,10 +122,11 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
                     const dateStr  = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
                     const colIndex = (startOffset + day - 1) % 7;  // 0=Sun … 6=Sat
 
-                    const cell = document.createElement("div");
-                    cell.className = "day";
-                    if (onDayClick) cell.classList.add("day--clickable");
-                    cell.innerHTML = `<div class="day-number">${day}</div>`;
+                        const cell = document.createElement("div");
+                        cell.className = "day";
+                        cell.dataset.date = dateStr;
+                        if (onDayClick) cell.classList.add("day--clickable");
+                        cell.innerHTML = `<div class="day-number">${day}</div>`;
 
                     // Multi-day events first so they stack above single-day ones
                     const dayEvents = [...(byDate[dateStr] || [])].sort(
@@ -183,6 +206,11 @@ export function initCalendar(calendarEl, monthLabelBtn, options={}) {
     }
 
     function openEventModal(ev) {
+        if (options.onEventClick) {
+            options.onEventClick(ev);
+            return;
+        }
+
         eventModalTitle.textContent = ev.title || "Untitled event";
         eventModalBody.innerHTML = "";
 

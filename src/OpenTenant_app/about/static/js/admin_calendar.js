@@ -54,22 +54,38 @@ const eventTimezone     = document.getElementById("eventTimezone");
 
 let selectedDateStr = null;
 let selectedCell    = null;
+let editingEventId  = null;
 
 
 /////////////////////////////////////////////////////////////////
 //////////////////////// Panel Open/Close ///////////////////////
 /////////////////////////////////////////////////////////////////
+function extractTime(isoString) {
+    if (!isoString) return "00:00";
+    const date = new Date(isoString);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
+
+function extractLocalDate(isoString) {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 function openPanel(dateStr, cell) {
-    if (selectedCell) selectedCell.classList.remove("selected");
-    selectedDateStr = dateStr;
-    selectedCell    = cell;
-    cell.classList.add("selected");
+    if (cell && cell === selectedCell) {
+        closePanel();
+        return;
+    }
 
-    const [year, month, day] = dateStr.split("-").map(Number);
-    eventPaneDate.textContent = new Date(year, month - 1, day).toLocaleDateString("default", {
-        weekday: "long", month: "long", day: "numeric"
-    });
+    updatePanelHeaderAndHighlight(dateStr, cell);
 
+    document.getElementById("eventDeleteActions").innerHTML = "";
     eventForm.reset();
     // Set after reset() so these aren't cleared back to empty
     eventStartDate.value = dateStr;
@@ -83,10 +99,110 @@ function openPanel(dateStr, cell) {
     setTimeout(() => eventTitle.focus(), 350);
 }
 
+function openPanelForEdit(ev) {
+    if (editingEventId === ev.id) {
+        closePanel();
+        return;
+    }
+
+    const startDateStr = extractLocalDate(ev.start_time);
+    const endDateStr   = extractLocalDate(ev.end_time);
+    
+    // Use the helper to open panel and highlight the start date
+    openPanel(startDateStr, null);
+    
+    // Prefill form values
+    editingEventId = ev.id;
+    eventTitle.value = ev.title || "";
+    eventStartDate.value = startDateStr;
+    eventEndDate.value = endDateStr;
+    eventTimezone.value = ev.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+    // Handle All-Day toggle
+    const start = new Date(ev.start_time);
+    const end = new Date(ev.end_time);
+    const isAllDay = start.getHours() === 0 && start.getMinutes() === 0 &&
+                     end.getHours() === 23 && end.getMinutes() === 59;
+    
+    eventAllDay.checked = isAllDay;
+    if (isAllDay) {
+        timeRow.classList.add("hidden");
+    } else {
+        timeRow.classList.remove("hidden");
+    }
+    
+    // Always prefill times so they are available if "All-day" is unchecked
+    document.getElementById("eventStartTime").value = extractTime(ev.start_time);
+    document.getElementById("eventEndTime").value = extractTime(ev.end_time);
+    
+    document.getElementById("eventLocation").value = ev.location || "";
+    document.getElementById("eventDesc").value = ev.description || "";
+    
+    // Recurrence
+    eventRepeat.value = ev.rrule ? (ev.rrule.includes("DAILY") ? "daily" : ev.rrule.includes("WEEKLY") ? "weekly" : ev.rrule.includes("MONTHLY") ? "monthly" : "custom") : "none";
+    
+    if (eventRepeat.value === "weekly") {
+        // This is a simplification; ideally we'd parse the BYDAY part of the RRULE
+        // For now, we just trigger the auto-select for the start date
+        autoSelectWeekday(startDateStr);
+    } else if (eventRepeat.value === "custom") {
+        customRrule.value = ev.rrule || "";
+    }
+    
+    syncRepeatUI();
+    
+    // Handle exceptions
+    clearExceptions();
+    if (ev.exceptions) {
+        ev.exceptions.forEach(ex => {
+            const dateStr = extractLocalDate(ex.exception_date);
+            addException(dateStr);
+        });
+    }
+    
+    // Render delete actions
+    const deleteActionsContainer = document.getElementById("eventDeleteActions");
+    renderEventDeleteActions(ev, deleteActionsContainer, { 
+        closeEventModal: closePanel, 
+        renderCalendar: renderCalendar 
+    });
+    
+    setTimeout(() => eventTitle.focus(), 350);
+}
+
+function updatePanelHeaderAndHighlight(dateStr, cell) {
+    // Update header text
+    if (dateStr) {
+        const [year, month, day] = dateStr.split("-").map(Number);
+        eventPaneDate.textContent = new Date(year, month - 1, day).toLocaleDateString("default", {
+            weekday: "long", month: "long", day: "numeric"
+        });
+    }
+
+    // Update calendar highlight
+    if (selectedCell) selectedCell.classList.remove("selected");
+    
+    if (cell) {
+        selectedCell = cell;
+        cell.classList.add("selected");
+    } else {
+        // Try to find the cell in the DOM if only dateStr is provided
+        const foundCell = document.querySelector(`.day[data-date="${dateStr}"]`);
+        if (foundCell) {
+            selectedCell = foundCell;
+            foundCell.classList.add("selected");
+        } else {
+            selectedCell = null;
+        }
+    }
+    selectedDateStr = dateStr;
+}
+
 function closePanel() {
     if (selectedCell?.isConnected) selectedCell.classList.remove("selected");
     selectedCell    = null;
     selectedDateStr = null;
+    editingEventId  = null;
     adminMain.classList.remove("panel-open");
 }
 
@@ -99,12 +215,15 @@ eventAllDay.onchange = () => {
 
 // Keep end date >= start date when start date changes; re-sync weekday pick
 eventStartDate.onchange = () => {
-    if (eventEndDate.value && eventEndDate.value < eventStartDate.value) {
-        eventEndDate.value = eventStartDate.value;
+    const newDate = eventStartDate.value;
+    updatePanelHeaderAndHighlight(newDate, null);
+
+    if (eventEndDate.value && eventEndDate.value < newDate) {
+        eventEndDate.value = newDate;
     }
 
     if (eventRepeat.value === "weekly") {
-        autoSelectWeekday(eventStartDate.value);
+        autoSelectWeekday(newDate);
     }
 };
 
@@ -285,7 +404,6 @@ eventForm.onsubmit = async (e) => {
         title,
         start_time:  startDatetime,
         end_time:    endDatetime,
-        all_day:     isAllDay,
         location,
         description,
         rrule,
@@ -294,17 +412,27 @@ eventForm.onsubmit = async (e) => {
     };
 
     try {
-        const res  = await fetch("/api/calendar/events", {
-            method:  "POST",
-            headers: { "Content-Type": "application/json" },
-            body:    JSON.stringify(payload),
-        });
+        let res;
+        if (editingEventId) {
+            res = await fetch(`/api/calendar/events/${editingEventId}`, {
+                method:  "PUT",
+                headers: { "Content-Type": "application/json" },
+                body:    JSON.stringify(payload),
+            });
+        } else {
+            res = await fetch("/api/calendar/events", {
+                method:  "POST",
+                headers: { "Content-Type": "application/json" },
+                body:    JSON.stringify(payload),
+            });
+        }
+        
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Unknown error");
         closePanel();
         renderCalendar();
     } catch (err) {
-        alert(err.message || "Failed to create event");
+        alert(err.message || "Failed to save event");
     }
 };
 
@@ -348,6 +476,7 @@ async function deleteEvent(ev, scope, closeEventModal, renderCalendar) {
 }
 
 function renderEventDeleteActions(ev, container, { closeEventModal, renderCalendar }) {
+    container.innerHTML = "";
     if (ev.rrule) {
         const note = document.createElement("p");
         note.className = "event-modal-recurring-note";
@@ -370,6 +499,7 @@ function renderEventDeleteActions(ev, container, { closeEventModal, renderCalend
 /////////////////////////////////////////////////////////////////
 const { renderCalendar, getCurrent } = initCalendar(calendarEl, monthLabel, {
     onDayClick:         (dateStr, cell) => openPanel(dateStr, cell),
+    onEventClick:       (ev) => openPanelForEdit(ev),
     renderEventActions: renderEventDeleteActions,
 });
 

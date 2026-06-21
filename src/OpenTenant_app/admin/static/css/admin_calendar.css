@@ -113,6 +113,8 @@
     margin-top: 0.75rem;
     padding: 0.55rem 1rem;
     background: #3174ad;
+    width: 100%;
+    box-sizing: border-box;
     color: white;
     border: none;
     border-radius: 4px;
@@ -138,6 +140,10 @@
     margin: 0;
 }
 
+.event-delete-actions {
+    margin-top: 0.75rem;
+}
+
 .event-delete-btn-row {
     display: flex;
     gap: 0.5rem;
@@ -145,6 +151,8 @@
 
 .event-delete-btn {
     flex: 1;
+    width: 100%;
+    box-sizing: border-box;
     padding: 0.5rem 0.75rem;
     border: 1px solid #ddd;
     border-radius: 4px;
