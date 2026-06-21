@@ -2,10 +2,10 @@ from sqlalchemy import Integer, String, DateTime, select, or_, and_
 from sqlalchemy.orm import mapped_column, relationship, Mapped
 from datetime import datetime, timezone
 from dateutil.rrule import rrulestr
-from zoneinfo import ZoneInfo
 from typing import Any
 
 from .calendar_event_exception import CalendarEventException
+from ..schemas.calendar_event import CalendarEventSchema
 from .model_base import ModelBase
 from ..extensions import db
 
@@ -32,95 +32,34 @@ class CalendarEvent(ModelBase):
 
     @classmethod
     def from_dict(cls, data: dict) -> 'CalendarEvent':
-        # helper function to get values out of JSON data
-        def get_val(k: str, *, type_: type|tuple[type, ...]|None=None, nullable: bool=False) -> Any:
-            if k not in data:
-                if nullable:
-                    return None
-                else:
-                    raise ValueError(f'Missing field {k}')
+        # Use the schema for validation and parsing
+        validated_data = CalendarEventSchema.parse_and_validate(data)
 
-            v = data[k]
-            if v is None:
-                if nullable:
-                    return None
-                raise ValueError(f'Missing value for field {k}')
-
-            if type_ is not None and not isinstance(v, type_):
-                type_name = type_.__name__ if isinstance(type_, type) else " or ".join(t.__name__ for t in type_)
-                raise ValueError(f'Field {k} must be {type_name}')
-
-            return v
-
-        # ensure we were given a dictionary
-        if not isinstance(data, dict):
-            raise ValueError('Expected an object')
-
-        # parse all the values
-        title          = get_val('title',       type_=str)
-        tz_name        = get_val('timezone',    type_=str)
-        start_time_str = get_val('start_time',  type_=str)
-        end_time_str   = get_val('end_time',    type_=str)
-        location       = get_val('location',    type_=str,  nullable=True)
-        description    = get_val('description', type_=str,  nullable=True)
-        rrule          = get_val('rrule',       type_=str,  nullable=True)
-        exceptions     = get_val('exceptions',  type_=list, nullable=True) or []
-
-        # convert the timezone name to a ZoneInfo object
-        try:
-            tz = ZoneInfo(tz_name)
-        except Exception:
-            raise ValueError(f'Invalid timezone "{tz_name}"')
-
-        # parse the start time strings as ISO8601
-        try:
-            start_naive = datetime.fromisoformat(start_time_str)
-            end_naive   = datetime.fromisoformat(end_time_str)
-        except Exception:
-            raise ValueError('Invalid datetime format (expected ISO 8601)')
-
-        # update the naive times with timezone info
-        start = start_naive.replace(tzinfo=tz)
-        end   = end_naive.replace(tzinfo=tz)
-
-        # normalize the start/end times to UTC
-        start = start.astimezone(timezone.utc)
-        end   = end.astimezone(timezone.utc)
-
-        # ensure the end time is after the start time
-        if end <= start:
-            raise ValueError('end_time must be after start_time')
-
-        # check that the rrule is valid
-        if rrule is not None:
-            CalendarEvent.validate_rrule(rrule)
-
-        # parse exceptions to the recurrences
-        if exceptions is None:
-            exceptions = []
-        elif not all(isinstance(e, dict) for e in exceptions):
+        # Parse exceptions to the recurrences
+        exceptions_raw = validated_data.pop('exceptions')
+        tz_name = validated_data.pop('timezone')
+        if not all(isinstance(e, dict) for e in exceptions_raw):
             raise ValueError('All date exceptions must be objects')
-        else:
-            exceptions = [CalendarEventException.from_dict(exception) for exception in exceptions]
+
+        # Pass the timezone to the exception parser
+        exceptions = []
+        for e in exceptions_raw:
+            # Ensure the exception has the timezone from the main event if not provided
+            if 'timezone' not in e:
+                e = e.copy()
+                e['timezone'] = tz_name
+            exceptions.append(CalendarEventException.from_dict(e))
 
         # return the constructed object
         return cls(
-            title=title,
-            start_time=start,
-            end_time=end,
-            location=location,
-            description=description,
-            rrule=rrule,
+            **validated_data,
             exceptions=exceptions,
         )
 
 
     @staticmethod
     def validate_rrule(value: str) -> None:
-        try:
-            rrulestr(value)
-        except Exception:
-            raise ValueError(f'Invalid RRULE "{value}"')
+        CalendarEventSchema.validate_rrule(value)
 
 
     @staticmethod
@@ -228,13 +167,4 @@ class CalendarEvent(ModelBase):
 
 
     def to_dict(self) -> dict:
-        return {
-            'id':          self.id,
-            'title':       self.title,
-            'location':    self.location,
-            'description': self.description,
-            'start_time':  self.start_time.isoformat(),
-            'end_time':    self.end_time.isoformat(),
-            'rrule':       self.rrule,
-            "exceptions":  [ex.exception_date.isoformat() for ex in self.exceptions] if self.exceptions else [],
-        }
+        return CalendarEventSchema.serialize(self)

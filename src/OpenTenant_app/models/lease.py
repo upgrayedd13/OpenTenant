@@ -6,6 +6,7 @@ from datetime import date
 import os
 
 from ..utils import custom_validators as unum
+from ..schemas.lease import LeaseSchema
 from .model_base import ModelBase
 if TYPE_CHECKING:
     from .user import User
@@ -57,3 +58,13 @@ class Lease(ModelBase):
         if length is not None:
             return length
         return 256
+
+
+    @classmethod
+    def from_dict(cls, data: dict) -> 'Lease':
+        validated_data = LeaseSchema.parse_and_validate(data)
+        return cls(**validated_data)
+
+
+    def to_dict(self) -> dict:
+        return LeaseSchema.serialize(self)

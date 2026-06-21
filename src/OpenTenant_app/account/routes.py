@@ -8,6 +8,7 @@ import os
 
 from ..parsers.leaseParser import parse_lease
 from ..utils.get_config import get_config
+from ..schemas.lease import LeaseSchema
 from ..models.lease import Lease
 from ..models.user import User
 from ..extensions import db
@@ -70,11 +71,15 @@ def register():
         l: Lease = form.apartment_info.create_lease()  # type: ignore
 
         # fill in the username and password
-        user.username = form.register_info.username.data or ""
-        user.set_password(form.register_info.password.data or "")
+        user.username = form.register_info.username.data or ''
+        user.set_password(form.register_info.password.data or '')
 
         # move the file to the actual upload directory
-        token = form.register_info.upload_token.data or ""
+        token = form.register_info.upload_token.data or ''
+        if not token:
+            flash('Please upload your lease before submitting the form.')
+            return redirect(url_for('account.register'))
+
         tmp_path = os.path.join(get_config('TMP_DIR'), token)
         real_path = os.path.join(get_config('LEASES_DIR'), token)
 
@@ -107,8 +112,13 @@ def register():
 
     # flash errors to the user
     for errors in form.errors.values():
-        for error in errors:
-            flash(error)
+        if isinstance(errors, dict):
+            for field_errors in errors.values():
+                for error in field_errors:
+                    flash(error)
+        else:
+            for error in errors:
+                flash(error)
 
     return render_template('account/register.html', form=form)
 
@@ -159,6 +169,17 @@ def upload_lease():
     # parse the file
     parsed_data = parse_lease(full_file_path)
     parsed_data['upload_token'] = fname
+
+    # validate and clean the parsed data using the schema
+    try:
+        validated_data = LeaseSchema.parse_and_validate(parsed_data)
+        # Merge validated data back into parsed_data for the frontend response
+        # so the frontend still gets the original raw fields if needed, 
+        # but we know the core fields are valid.
+        parsed_data.update(validated_data)
+    except ValueError as e:
+        # Return the token and the error so the user can still submit the form
+        return jsonify({'error': str(e), **parsed_data}), 200
     return jsonify(parsed_data)
 
 

@@ -57,6 +57,9 @@ pdfInput.addEventListener("change", async () => {
     let data;
     try {
         data = await uploadFile(file);
+        if (data.error) {
+            alert(`Lease validation error: ${data.error}\n\nPlease check the autofilled fields and correct them.`);
+        }
     } catch (err) {
         console.error(err);
         alert(err.message);
@@ -83,15 +86,15 @@ pdfInput.addEventListener("change", async () => {
     }
 
     if (data.base_rent) {
-        document.getElementById("apartment_info-base_monthly_rent").value = data.base_rent.toFixed(2);
+        document.getElementById("apartment_info-base_monthly_rent").value = parseFloat(data.base_rent).toFixed(2);
     }
 
     if (data.monthly_rent_total) {
-        document.getElementById("apartment_info-monthly_rent_total").value = data.monthly_rent_total.toFixed(2);
+        document.getElementById("apartment_info-monthly_rent_total").value = parseFloat(data.monthly_rent_total).toFixed(2);
     }
 
-    if (data.num_authorized_adults || data.num_authorized_minors) {
-        document.getElementById("apartment_info-num_occupants").value = data.num_authorized_adults + data.num_authorized_minors
+    if (data.num_occupants) {
+        document.getElementById("apartment_info-num_occupants").value = data.num_occupants;
     }
 
     if (data.upload_token) {
