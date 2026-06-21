@@ -23,8 +23,8 @@ logger = logging.getLogger(__name__)
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.get_by(username=form.username.data)
-        if user and user.check_password(form.password.data):
+        user = User.get_one_or_none_by(username=form.username.data)
+        if user and user.check_password(form.password.data or ''):
             remember = request.form.get('remember') == 'y'
             login_user(user, remember=remember)
             return redirect(url_for('account.account'))
@@ -38,18 +38,20 @@ def register():
 
     if form.validate_on_submit():
         # create the objects
-        user: User = form.personal_info.create_user()
-        l: Lease = form.apartment_info.create_lease()
+        # because the subforms are technically FlaskForms, tell Pylance to ignore the type and trust us
+        user: User = form.personal_info.create_user()  # type: ignore
+        l: Lease = form.apartment_info.create_lease()  # type: ignore
 
         # fill in the username and password
-        user.username = form.register_info.username.data
-        user.set_password(form.register_info.password.data)
+        user.username = form.register_info.username.data or ""
+        user.set_password(form.register_info.password.data or "")
 
         # TODO: make sure there's enough space for this file
 
         # move the file to the actual upload directory
-        tmp_path = os.path.join(get_config('TMP_DIR'), form.register_info.upload_token.data)
-        real_path = os.path.join(get_config('LEASES_DIR'), form.register_info.upload_token.data)
+        token = form.register_info.upload_token.data or ""
+        tmp_path = os.path.join(get_config('TMP_DIR'), token)
+        real_path = os.path.join(get_config('LEASES_DIR'), token)
         move(tmp_path, real_path)
 
         # add the path to the lease
@@ -78,7 +80,7 @@ def register():
 def upload_lease():
     # get the file
     file = request.files.get('pdf')
-    if not file:
+    if file is None or not file or file.filename is None:
         return jsonify({'error': "Didn't get a file!"}), 400
 
     # secure_filename will replace spaces with _ so we'll prematurely
@@ -126,7 +128,9 @@ def logout():
 @account_bp.route('/account')
 @login_required
 def account():
-    user: User = current_user
+    user = current_user._get_current_object()
+    if user is None:
+        return redirect(url_for('account.login'))
     form = SignupForm.from_user(user)
     form.disable_editing()
     return render_template('account/account.html', user=current_user, form=form)

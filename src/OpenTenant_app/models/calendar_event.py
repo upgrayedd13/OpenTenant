@@ -126,7 +126,7 @@ class CalendarEvent(ModelBase):
     @staticmethod
     def to_utc(dt: datetime) -> datetime:
         if dt.tzinfo is None:
-            raise ValueError('Datetime objects must be timezone-aware!')
+            dt = dt.replace(tzinfo=timezone.utc)  # assume naive datetimes from the DB are already UTC
         return dt.astimezone(timezone.utc)
 
 

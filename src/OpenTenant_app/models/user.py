@@ -41,13 +41,16 @@ class User(UserMixin, ModelBase):
 
 
     @classmethod
-    def get_by(cls, **kwargs) -> 'User' | None:
+    def get_one_or_none_by(cls, **kwargs) -> 'User|None':
         return db.session.execute(db.select(cls).filter_by(**kwargs)).scalar_one_or_none()
 
 
     @staticmethod
     def str_field_len(field: str) -> int:
-        return User.__table__.c[field].type.length
+        column = User.__table__.c[field]
+        if isinstance(column.type, String) and column.type.length is not None:
+            return column.type.length
+        return 256
 
 
     def set_password(self, password: str):

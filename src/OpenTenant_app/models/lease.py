@@ -1,6 +1,7 @@
-from sqlalchemy import Integer, Float, String, Date, CheckConstraint, ForeignKey
+from sqlalchemy import Integer, Numeric, String, Date, CheckConstraint, ForeignKey
 from sqlalchemy.orm import mapped_column, relationship, Mapped
 from typing import TYPE_CHECKING
+from decimal import Decimal
 from datetime import date
 import os
 
@@ -16,17 +17,17 @@ MAX_LEASE_PATH_LEN = os.pathconf(os.getenv('LEASES_DIR', '/tmp/leases'), 'PC_PAT
 class Lease(ModelBase):
     __tablename__ = 'leases'
 
-    id:                 Mapped[int]    = mapped_column(Integer,     primary_key=True)
-    base_monthly_rent:  Mapped[float]  = mapped_column(Float,       nullable=False)
-    monthly_rent_total: Mapped[float]  = mapped_column(Float,       nullable=False)
-    unit_number:        Mapped[int]    = mapped_column(Integer,     nullable=False)
-    num_occupants:      Mapped[int]    = mapped_column(Integer,     nullable=False)
-    start_date:         Mapped[date]   = mapped_column(Date,        nullable=False)
-    end_date:           Mapped[date]   = mapped_column(Date,        nullable=True)   # might not have an end date?
-    path:               Mapped[str]    = mapped_column(String(MAX_LEASE_PATH_LEN), nullable=False)
+    id:                 Mapped[int]       = mapped_column(Integer,        primary_key=True)
+    base_monthly_rent:  Mapped[Decimal]   = mapped_column(Numeric(10, 2), nullable=False)
+    monthly_rent_total: Mapped[Decimal]   = mapped_column(Numeric(10, 2), nullable=False)
+    unit_number:        Mapped[int]       = mapped_column(Integer,        nullable=False)
+    num_occupants:      Mapped[int]       = mapped_column(Integer,        nullable=False)
+    start_date:         Mapped[date]      = mapped_column(Date,           nullable=False)
+    end_date:           Mapped[date|None] = mapped_column(Date,           nullable=True)   # might not have an end date?
+    path:               Mapped[str]       = mapped_column(String(MAX_LEASE_PATH_LEN), nullable=False)
 
-    user_id:            Mapped[int]    = mapped_column(ForeignKey('users.id'), nullable=False)
-    user:               Mapped['User'] = relationship(back_populates='leases')
+    user_id:            Mapped[int]       = mapped_column(ForeignKey('users.id'), nullable=False)
+    user:               Mapped['User']    = relationship(back_populates='leases')
 
     __table_args__ = (
         CheckConstraint(
@@ -51,4 +52,8 @@ class Lease(ModelBase):
 
     @staticmethod
     def str_field_len(field: str) -> int:
-        return Lease.__table__.c[field].type.length
+        column = Lease.__table__.c[field]
+        length = getattr(column.type, 'length', None)
+        if length is not None:
+            return length
+        return 256

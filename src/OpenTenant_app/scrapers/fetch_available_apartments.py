@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import Any
 import requests
 
@@ -88,7 +88,7 @@ def get_apartment_snapshot() -> ApartmentInventorySnapshot:
         raise TypeError(f'Expected a dictionary from the request;, but got a {type(raw_data)}')
 
     snapshot = ApartmentInventorySnapshot(
-        snapshot_time=datetime.now(),
+        snapshot_time=datetime.now(timezone.utc),
         raw_data=raw_data,
     )
 

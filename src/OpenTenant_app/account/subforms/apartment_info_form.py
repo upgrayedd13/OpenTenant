@@ -1,5 +1,7 @@
-from wtforms import DateField, IntegerField, DecimalField, StringField
-from wtforms.validators import DataRequired, NumberRange, Length
+from wtforms import DateField, IntegerField, DecimalField
+from wtforms.validators import DataRequired, NumberRange
+from decimal import Decimal
+from datetime import date
 
 from ...utils.custom_validators import UnitNumberValidator
 from ...models.lease import Lease
@@ -52,22 +54,24 @@ class ApartmentInfoForm(Subform):
 
     def create_lease(self) -> Lease:
         l = Lease()
-        l.base_monthly_rent = self.base_monthly_rent.data
-        l.monthly_rent_total = self.monthly_rent_total.data
-        l.num_occupants = self.num_occupants.data
-        l.unit_number = self.unit_number.data
-        l.start_date = self.lease_start_date.data
-        l.end_date = self.lease_end_date.data
+        l.base_monthly_rent  = self.base_monthly_rent.data or Decimal(0)
+        l.monthly_rent_total = self.monthly_rent_total.data or Decimal(0)
+        l.num_occupants      = int(self.num_occupants.data or 0)
+        l.unit_number        = int(self.unit_number.data or 0)
+        l.start_date         = self.lease_start_date.data or date.today()
+        l.end_date           = self.lease_end_date.data
         return l
 
 
     @staticmethod
     def from_user(user: User) -> 'ApartmentInfoForm':
         form = ApartmentInfoForm()
-        form.base_monthly_rent.data  = user.current_lease.base_monthly_rent
-        form.monthly_rent_total.data = user.current_lease.monthly_rent_total
-        form.num_occupants.data      = user.current_lease.num_occupants
-        form.unit_number.data        = user.current_lease.unit_number
-        form.lease_start_date.data   = user.current_lease.start_date
-        form.lease_end_date.data     = user.current_lease.end_date
+        lease = user.current_lease
+        if lease:
+            form.base_monthly_rent.data  = lease.base_monthly_rent
+            form.monthly_rent_total.data = lease.monthly_rent_total
+            form.num_occupants.data      = lease.num_occupants
+            form.unit_number.data        = lease.unit_number
+            form.lease_start_date.data   = lease.start_date
+            form.lease_end_date.data     = lease.end_date
         return form
