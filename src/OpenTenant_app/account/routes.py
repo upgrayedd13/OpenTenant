@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
-from shutil import move
+from shutil import move, disk_usage
 import logging
 import uuid
 import os
@@ -17,6 +17,33 @@ from .forms import LoginForm, SignupForm
 
 account_bp = Blueprint('account', __name__, url_prefix='/account', template_folder='templates', static_folder='static', static_url_path='/account/static')
 logger = logging.getLogger(__name__)
+
+
+def get_dir_size(path: str) -> int:
+    total = 0
+    try:
+        with os.scandir(path) as it:
+            for entry in it:
+                if entry.is_file():
+                    total += entry.stat().st_size
+                elif entry.is_dir():
+                    total += get_dir_size(entry.path)
+    except (FileNotFoundError, PermissionError):
+        return 0
+    return total
+
+
+def validate_storage(path: str, file_size: int, max_dir_size: int) -> tuple[bool, str]:
+    # Partition check
+    usage = disk_usage(path)
+    if usage.free < file_size:
+        return False, 'Insufficient disk space on partition'
+
+    # Quota check
+    if get_dir_size(path) + file_size > max_dir_size:
+        return False, f'Directory quota exceeded for {path}'
+
+    return True, ''
 
 
 @account_bp.route('/login', methods=['GET', 'POST'])
@@ -46,12 +73,22 @@ def register():
         user.username = form.register_info.username.data or ""
         user.set_password(form.register_info.password.data or "")
 
-        # TODO: make sure there's enough space for this file
-
         # move the file to the actual upload directory
         token = form.register_info.upload_token.data or ""
         tmp_path = os.path.join(get_config('TMP_DIR'), token)
         real_path = os.path.join(get_config('LEASES_DIR'), token)
+
+        # Validate storage before moving
+        if not os.path.exists(tmp_path):
+            flash('Uploaded file not found. Please upload the lease again.')
+            return redirect(url_for('account.register'))
+
+        file_size = os.path.getsize(tmp_path)
+        ok, msg = validate_storage(get_config('LEASES_DIR'), file_size, get_config('MAX_LEASES_DIR_SIZE'))
+        if not ok:
+            flash(msg)
+            return redirect(url_for('account.register'))
+
         move(tmp_path, real_path)
 
         # add the path to the lease
@@ -106,7 +143,14 @@ def upload_lease():
     if len(fname) > os.pathconf(tmp_path, 'PC_NAME_MAX'):
         return jsonify({'error': f'Name "{file.filename}" exceeds maximum filename size!'}), 400
 
-    # TODO: make sure there's enough space for this file
+    # Validate storage (Partition and Quota)
+    file.seek(0, os.SEEK_END)
+    file_size = file.tell()
+    file.seek(0)
+
+    ok, msg = validate_storage(tmp_path, file_size, get_config('MAX_TMP_DIR_SIZE'))
+    if not ok:
+        return jsonify({'error': msg}), 507
 
     # write the file to disk
     full_file_path = os.path.join(tmp_path, fname)
