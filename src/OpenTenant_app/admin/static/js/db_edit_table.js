@@ -1,10 +1,6 @@
-import { state, updateButtons } from './db_edit_state.js';
-import { escHtml, setStatus }   from './db_edit_utils.js';
-
-const TABLES_ENDPOINT = '/api/db/tables';
-const TABLE_DATA_ENDPOINT = (name) => `/api/db/table/${name}`;
-
-export { TABLES_ENDPOINT, TABLE_DATA_ENDPOINT };
+import { TABLE_DATA_ENDPOINT, TABLES_ENDPOINT } from './db_endpoints.js';
+import { state, updateButtons }                 from './db_edit_state.js';
+import { escHtml, setStatus }                   from './db_edit_utils.js';
 
 export function initTables() {
     fetchTables();

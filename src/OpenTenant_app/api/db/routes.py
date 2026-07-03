@@ -1,6 +1,8 @@
+from flask import Blueprint, jsonify, Response, request, send_file
 from sqlalchemy.exc import SQLAlchemyError, ResourceClosedError
 from sqlalchemy import inspect, text, Table, CheckConstraint
-from flask import Blueprint, jsonify, Response, request
+from io import BytesIO
+import pandas as pd
 import logging
 
 from ...models.user_role import minimum_user_role, UserRole
@@ -127,4 +129,16 @@ def run_query() -> Response | tuple[Response, int]:
                 return jsonify({'rows': [], 'types': {}})
 
     except Exception as e:
-        return log_and_jsonify(str(e), 400)
+        return log_and_jsonify(str(e), 500)
+
+
+@db_api_bp.route('/export/<string:table_name>', methods=['GET'])
+@minimum_user_role(UserRole.SUPER_ADMIN)
+def export(table_name: str) -> Response | tuple[Response, int]:
+    df = pd.read_sql_table(table_name, db.engine)
+
+    output = BytesIO()
+    df.to_csv(output, index=False)
+    output.seek(0)
+
+    return send_file(output, as_attachment=True, download_name=f'{table_name}.csv', mimetype='text/csv')
