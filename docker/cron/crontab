@@ -1,0 +1,2 @@
+# TODO: modify
+0 2 * * * uv run python -m OpenTenant_app.cli.daily
