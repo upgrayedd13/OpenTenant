@@ -21,7 +21,8 @@ services:
         expose:
             - "8000"
         depends_on:
-            - cron
+            - db
+            - scheduler
 
     nginx:
         image: nginx:1.25-alpine
@@ -51,20 +52,29 @@ services:
                     sleep 12h;
                 done"
 
-    cron:
+    scheduler:
         build:
             context: .
-            dockerfile: docker/cron/Dockerfile
-        container_name: opentenant_cron
-        restart: unless-stopped
+            dockerfile: docker/scheduler/Dockerfile
+        container_name: opentenant_scheduler
+        command: uv run python -m src.OpenTenant_app.scheduler.runner
         env_file:
             - .env
+        depends_on:
+            - db
+        restart: unless-stopped
+
+    db:
+        image: postgres:16
+        container_name: opentenant_db
         environment:
-        ENV: production
-        PYTHONPATH: /app/src
-        LOAD_DOTENV: "0"
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
         volumes:
-            - ./instance:/app/instance
-            - ./data/tmp:/tmp/OpenTenant
-            - ./data/leases:/tmp/leases
-            - ./data/files:/tmp/files
+            - pgdata:/var/lib/postgresql/data
+        expose:
+            - "5432"
+
+volumes:
+    pgdata:

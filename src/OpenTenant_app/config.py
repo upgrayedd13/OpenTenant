@@ -44,7 +44,12 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-fallback-key')
 
     # database
-    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI') 
+    DB_USER = os.getenv('POSTGRES_USER')
+    DB_PASS = os.getenv('POSTGRES_PASSWORD')
+    DB_NAME = os.getenv('POSTGRES_DB')
+    DB_HOST = os.getenv('POSTGRES_HOST', 'db')
+
+    SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg://{DB_USER}:{DB_PASS}@{DB_HOST}:5432/{DB_NAME}'
     SQLALCHEMY_TRACK_MODIFICATIONS = env_bool('SQLALCHEMY_TRACK_MODIFICATIONS', False)
 
     # flask login remember me cookie

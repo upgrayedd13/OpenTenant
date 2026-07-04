@@ -4,12 +4,12 @@ from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any
 from dateutil.rrule import rrulestr
 
-from ..extensions import db
+from .model_base import ModelBase
 if TYPE_CHECKING:
     from .calendar_event_exception import CalendarEventException
 
 
-class CalendarEvent(db.Model):
+class CalendarEvent(ModelBase):
     __tablename__ = 'calendar_events'
 
     id:            Mapped[int]      = mapped_column(Integer,  primary_key=True)

@@ -18,9 +18,6 @@ RUN uv sync --frozen
 
 # Copy application code
 COPY src/ src/
-COPY wsgi.py .
-COPY migrations/ migrations/
-COPY docker/app/gunicorn_conf.py gunicorn_conf.py
 
 # Run via uv
-CMD ["uv", "run", "gunicorn", "-c", "gunicorn_conf.py", "wsgi:app"]
+CMD ["uv", "run", "python", "-m", "src.OpenTenant_app.scheduler.runner"]

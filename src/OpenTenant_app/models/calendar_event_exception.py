@@ -3,12 +3,12 @@ from sqlalchemy.orm import mapped_column, relationship, Mapped
 from typing import TYPE_CHECKING
 from datetime import datetime
 
-from ..extensions import db
+from .model_base import ModelBase
 if TYPE_CHECKING:
     from .calendar_event import CalendarEvent
 
 
-class CalendarEventException(db.Model):
+class CalendarEventException(ModelBase):
     __tablename__ = 'calendar_event_exceptions'
 
     id:             Mapped[int]             = mapped_column(Integer, primary_key=True)
