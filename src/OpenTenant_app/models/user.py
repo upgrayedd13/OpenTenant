@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 class User(ModelBase, UserMixin, IdMixin, TimestampMixin, VersionedMixin):
     __tablename__ = 'users'
 
-    role:              Mapped[int]           = mapped_column(Integer,     nullable=False, default=UserRole.USER)
+    role:              Mapped[UserRole]      = mapped_column(Integer,     nullable=False, default=UserRole.USER)
     username:          Mapped[str]           = mapped_column(String(50),  unique=True, nullable=False)
     email:             Mapped[str]           = mapped_column(String(254), unique=True, nullable=False)
     password_hash:     Mapped[str]           = mapped_column(String(256), nullable=False)
