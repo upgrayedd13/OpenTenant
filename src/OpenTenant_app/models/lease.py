@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from datetime import date
 import os
 
+from .mixins import IdMixin, TimestampMixin, VersionedMixin
 from ..utils import custom_validators as unum
 from .model_base import ModelBase
 if TYPE_CHECKING:
@@ -13,10 +14,9 @@ if TYPE_CHECKING:
 MAX_LEASE_PATH_LEN = os.pathconf(os.getenv('LEASES_DIR', '/tmp/leases'), 'PC_PATH_MAX')
 
 
-class Lease(ModelBase):
+class Lease(ModelBase, IdMixin, TimestampMixin, VersionedMixin):
     __tablename__ = 'leases'
 
-    id:                 Mapped[int]    = mapped_column(Integer,     primary_key=True)
     base_monthly_rent:  Mapped[float]  = mapped_column(Float,       nullable=False)
     monthly_rent_total: Mapped[float]  = mapped_column(Float,       nullable=False)
     unit_number:        Mapped[int]    = mapped_column(Integer,     nullable=False)

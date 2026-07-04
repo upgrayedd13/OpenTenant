@@ -1,13 +1,14 @@
 from sqlalchemy.orm import mapped_column, Mapped, validates
-from sqlalchemy import Integer, String, Boolean, DateTime
+from sqlalchemy import String, Boolean, DateTime
 from datetime import datetime, timezone
 
+from .mixins import IdMixin, TimestampMixin, VersionedMixin
 from .model_base import ModelBase
 
-class ScheduledJob(ModelBase):
+
+class ScheduledJob(ModelBase, IdMixin, TimestampMixin, VersionedMixin):
     __tablename__ = 'scheduled_jobs'
 
-    id:        Mapped[int]      = mapped_column(Integer,     primary_key=True)
     name:      Mapped[str]      = mapped_column(String(128), unique=True, nullable=False)
 
     minute:    Mapped[int]      = mapped_column(String(10),  default='0')
