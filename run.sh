@@ -9,4 +9,4 @@ fi
 
 export PYTHONPATH=src
 
-exec uv run gunicorn -c gunicorn_conf.py wsgi:app
+exec uv run gunicorn -c docker/app/gunicorn_conf.py wsgi:app

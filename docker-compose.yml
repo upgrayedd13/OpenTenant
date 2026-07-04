@@ -22,22 +22,34 @@ services:
             - "8000"
         depends_on:
             - db
-            - scheduler
+            # - scheduler
 
-    nginx:
-        image: nginx:1.25-alpine
-        container_name: opentenant_nginx
-        restart: unless-stopped
-        ports:
-            - "80:80"
-            - "443:443"
-        volumes:
-            - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-            - ./certbot/www:/var/www/certbot
-            - ./certbot/conf:/etc/letsencrypt
-            - ./src:/app/src:ro
-        depends_on:
-            - app
+    # scheduler:
+    #     build:
+    #         context: .
+    #         dockerfile: docker/scheduler/Dockerfile
+    #     container_name: opentenant_scheduler
+    #     command: uv run python -m src.OpenTenant_app.scheduler.runner
+    #     env_file:
+    #         - .env
+    #     depends_on:
+    #         - db
+    #     restart: unless-stopped
+
+    # nginx:
+    #     image: nginx:1.25-alpine
+    #     container_name: opentenant_nginx
+    #     restart: unless-stopped
+    #     ports:
+    #         - "80:80"
+    #         - "443:443"
+    #     volumes:
+    #         - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    #         - ./certbot/www:/var/www/certbot
+    #         - ./certbot/conf:/etc/letsencrypt
+    #         - ./src:/app/src:ro
+    #     depends_on:
+    #         - app
 
     certbot:
         image: certbot/certbot
@@ -51,18 +63,6 @@ services:
                     certbot renew --webroot -w /var/www/certbot;
                     sleep 12h;
                 done"
-
-    scheduler:
-        build:
-            context: .
-            dockerfile: docker/scheduler/Dockerfile
-        container_name: opentenant_scheduler
-        command: uv run python -m src.OpenTenant_app.scheduler.runner
-        env_file:
-            - .env
-        depends_on:
-            - db
-        restart: unless-stopped
 
     db:
         image: postgres:16
