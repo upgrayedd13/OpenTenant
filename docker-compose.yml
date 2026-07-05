@@ -11,6 +11,8 @@ services:
             ENV: production
             PYTHONPATH: /app/src
             LOAD_DOTENV: "0"
+        env_file:
+            - .env.production
         volumes:
             - ./instance:/app/instance
             - ./data/tmp:/tmp/OpenTenant
@@ -31,6 +33,8 @@ services:
         depends_on:
             - db
         restart: unless-stopped
+        env_file:
+            - .env.production
 
     nginx:
         image: nginx:1.25-alpine
@@ -50,6 +54,7 @@ services:
     certbot:
         image: certbot/certbot
         container_name: opentenant_certbot
+        restart: unless-stopped
         volumes:
             - ./certbot/www:/var/www/certbot
             - ./certbot/conf:/etc/letsencrypt
@@ -63,6 +68,7 @@ services:
     db:
         image: postgres:16
         container_name: opentenant_db
+        restart: unless-stopped
         environment:
             POSTGRES_USER: ${POSTGRES_USER}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

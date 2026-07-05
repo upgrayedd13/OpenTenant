@@ -1,13 +1,20 @@
+from apscheduler.schedulers.background import BackgroundScheduler
 from time import sleep
 
-from src.OpenTenant_app import create_app
-from src.OpenTenant_app.scheduler.service import start_scheduler
+from .registry import load_jobs_from_db
 
-app = create_app()
 
-if __name__ == '__main__':
-    start_scheduler(app)
+scheduler = BackgroundScheduler()
 
-    # keep process alive
+
+def main():
+    print('Scheduler running')
+    load_jobs_from_db(scheduler)
+    scheduler.start()
+
     while True:
         sleep(3600)
+
+
+if __name__ == '__main__':
+    main()

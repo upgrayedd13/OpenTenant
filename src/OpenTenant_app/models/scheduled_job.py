@@ -1,6 +1,5 @@
 from sqlalchemy.orm import mapped_column, Mapped, validates
-from sqlalchemy import String, Boolean, DateTime
-from datetime import datetime, timezone
+from sqlalchemy import String, Boolean
 
 from .mixins import IdMixin, TimestampMixin, VersionedMixin
 from .model_base import ModelBase
@@ -10,6 +9,7 @@ class ScheduledJob(ModelBase, IdMixin, TimestampMixin, VersionedMixin):
     __tablename__ = 'scheduled_jobs'
 
     name:      Mapped[str]      = mapped_column(String(128), unique=True, nullable=False)
+    function:  Mapped[str]      = mapped_column(String(256), nullable=False)
 
     minute:    Mapped[int]      = mapped_column(String(10),  default='0')
     hour:      Mapped[int]      = mapped_column(String(10),  default='0')
@@ -18,7 +18,6 @@ class ScheduledJob(ModelBase, IdMixin, TimestampMixin, VersionedMixin):
     dow:       Mapped[str]      = mapped_column(String(10),  default='*')
 
     enabled:   Mapped[bool]     = mapped_column(Boolean,     default=True)
-    update_at: Mapped[datetime] = mapped_column(DateTime,    default=lambda: datetime.now(timezone.utc))
 
 
     @validates('minute', 'hour', 'dom', 'month', 'dow')

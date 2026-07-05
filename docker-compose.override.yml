@@ -3,11 +3,14 @@ services:
         environment:
             ENV: development
             FLASK_DEBUG: 1
+        env_file:
+            - .env.development
         ports:
             - "8000:8000"
 
     scheduler:
-        restart: "no"
+        env_file:
+            - .env.development
 
     db:
         ports:
