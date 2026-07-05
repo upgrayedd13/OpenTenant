@@ -35,13 +35,13 @@ class UnitNumberValidator:
 
 class UsernameUniqueValidator:
     def __call__(self, form: FlaskForm, field: Field) -> None:
-        if User.query.filter_by(username=field.data).first():
+        if User.get_one_or_none_by(username=field.data):
             raise ValidationError(f'Username "{field.data}" is already taken!')
 
 
 class EmailUniqueValidator:
     def __call__(self, form: FlaskForm, field: Field) -> None:
-        if User.query.filter_by(email=field.data).first():
+        if User.get_one_or_none_by(email=field.data):
             raise ValidationError(f'Email "{field.data}" is already taken!')
 
 

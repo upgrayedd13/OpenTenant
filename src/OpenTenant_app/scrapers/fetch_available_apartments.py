@@ -1,9 +1,10 @@
-from datetime import date, datetime
+from datetime import datetime, timezone
 from typing import Any
 import requests
 
 from ..models.apartment_inventory_snapshot import ApartmentInventorySnapshot
 from ..models.apartment_unit_snapshot import ApartmentUnitSnapshot
+from ..schemas.apartment_snapshot import ApartmentSnapshotSchema
 
 
 def fetch_raw_apartment_data() -> Any:
@@ -69,32 +70,21 @@ def fetch_raw_apartment_data() -> Any:
     return response.json()
 
 
-def parse_unit_data(data: dict[str, Any]) -> ApartmentUnitSnapshot:
-    return ApartmentUnitSnapshot(
-        unit_id=data['id'],
-        unit_num=data['unit_number'] if 'unit_number' in data else None,
-        price=int(data['price']) if 'price' in data else None,
-        sq_footage=int(data['area']) if 'area' in data else None,
-        date_available=date.strptime(data['available_on'], '%Y-%m-%d') if 'available_on' in data else None,
-    )
-
-
 def get_apartment_snapshot() -> ApartmentInventorySnapshot:
     # make the request
     raw_data = fetch_raw_apartment_data()
 
-    # we expect (and only support) a dictionary as the return data
-    if not isinstance(raw_data, dict):
-        raise TypeError(f'Expected a dictionary from the request;, but got a {type(raw_data)}')
+    # Use the schema to validate and parse the raw data
+    snapshot_params, parsed_units = ApartmentSnapshotSchema.parse_snapshot(raw_data)
 
     snapshot = ApartmentInventorySnapshot(
-        snapshot_time=datetime.now(),
-        raw_data=raw_data,
+        snapshot_time=datetime.now(timezone.utc),
+        **snapshot_params,
     )
 
-    # parse the raw data
-    for unit in raw_data['data']['units']:
-        snapshot.units.append(parse_unit_data(unit))
+    # create model instances from the parsed unit data
+    for unit_data in parsed_units:
+        snapshot.units.append(ApartmentUnitSnapshot(**unit_data))
 
     # return data
     return snapshot

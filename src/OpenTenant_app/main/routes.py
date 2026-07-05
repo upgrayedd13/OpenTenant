@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, abort
+from jinja2.exceptions import TemplateNotFound
 import logging
 
 
@@ -15,5 +16,5 @@ def homepage():
 def modal_content(name: str):
     try:
         return render_template(f'modals/{name}.html')
-    except:
+    except TemplateNotFound:
         abort(404)

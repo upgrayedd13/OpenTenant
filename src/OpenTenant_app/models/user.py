@@ -9,6 +9,7 @@ import logging
 
 from .mixins import IdMixin, TimestampMixin, VersionedMixin
 from ..extensions import login_manager, db
+from ..schemas.user import UserSchema
 from .model_base import ModelBase
 from .user_role import UserRole
 if TYPE_CHECKING:
@@ -30,6 +31,7 @@ class User(ModelBase, UserMixin, IdMixin, TimestampMixin, VersionedMixin):
     pronouns:          Mapped[str|None]      = mapped_column(String(20),  nullable=True)
     leases:            Mapped[list['Lease']] = relationship(back_populates='user', order_by='Lease.start_date')
 
+
     @hybrid_property
     def current_lease(self) -> 'Lease | None':
         today = date.today()
@@ -39,9 +41,17 @@ class User(ModelBase, UserMixin, IdMixin, TimestampMixin, VersionedMixin):
         return None
 
 
+    @classmethod
+    def get_one_or_none_by(cls, **kwargs) -> 'User|None':
+        return db.session.execute(db.select(cls).filter_by(**kwargs)).scalar_one_or_none()
+
+
     @staticmethod
     def str_field_len(field: str) -> int:
-        return User.__table__.c[field].type.length
+        column = User.__table__.c[field]
+        if isinstance(column.type, String) and column.type.length is not None:
+            return column.type.length
+        return 256
 
 
     def set_password(self, password: str):
@@ -54,6 +64,10 @@ class User(ModelBase, UserMixin, IdMixin, TimestampMixin, VersionedMixin):
 
     def is_admin(self) -> bool:
         return self.role >= UserRole.ADMIN
+
+
+    def to_dict(self) -> dict:
+        return UserSchema.serialize(self)
 
 
 @login_manager.user_loader
