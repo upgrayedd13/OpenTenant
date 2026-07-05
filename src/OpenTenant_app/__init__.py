@@ -8,7 +8,7 @@ from datetime import datetime
 import logging
 import os
 
-from .config import DevelopmentConfig, ProductionConfig
+from .config import DevelopmentConfig, ProductionConfig, validate_config
 from .extensions import db, login_manager, migrate
 
 from .api.calendar.routes import calendar_api_bp
@@ -25,11 +25,16 @@ def create_app() -> None:
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
     # Setup the configs depending on our selected environment type
-    env = os.getenv("ENV", "development")
-    if env == "production":
+    env = os.getenv('ENV', 'development').lower()
+    if env == 'production':
         app.config.from_object(ProductionConfig)
-    else:
+    elif env == 'development':
         app.config.from_object(DevelopmentConfig)
+    else:
+        raise RuntimeError(f'Unknown ENV value: {env}')
+
+    # Ensure the user didn't screw up the configs
+    validate_config(app)
 
     # Ensure the upload directories exist
     os.makedirs(app.config['TMP_DIR'], exist_ok=True)
@@ -66,7 +71,7 @@ def create_app() -> None:
     @app.context_processor
     def inject_current_year():
         return {
-            "current_year": datetime.now().year
+            'current_year': datetime.now().year
         }
 
     # Log that we're done with setup

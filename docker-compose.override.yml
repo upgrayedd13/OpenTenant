@@ -1,0 +1,21 @@
+services:
+    app:
+        environment:
+            ENV: development
+            FLASK_DEBUG: 1
+        ports:
+            - "8000:8000"
+
+    scheduler:
+        restart: "no"
+
+    db:
+        ports:
+            - "5432:5432"
+
+    nginx:
+        ports: []
+        restart: "no"
+
+    certbot:
+        restart: "no"
