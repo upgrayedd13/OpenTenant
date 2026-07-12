@@ -3,8 +3,12 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from sqlalchemy import MetaData
 
+from .models.model_base import ModelBase
+
+
+db = SQLAlchemy(model_class=ModelBase)
+
 # while we'll generally use ORM models, we'll also include a MetaData object for arbitrary reflection
-db = SQLAlchemy()
 md = MetaData()
 
 migrate = Migrate()

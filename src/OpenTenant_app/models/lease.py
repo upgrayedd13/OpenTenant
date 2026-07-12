@@ -5,7 +5,7 @@ from datetime import date
 import os
 
 from ..utils import custom_validators as unum
-from ..extensions import db
+from .model_base import ModelBase
 if TYPE_CHECKING:
     from .user import User
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 MAX_LEASE_PATH_LEN = os.pathconf(os.getenv('LEASES_DIR', '/tmp/leases'), 'PC_PATH_MAX')
 
 
-class Lease(db.Model):
+class Lease(ModelBase):
     __tablename__ = 'leases'
 
     id:                 Mapped[int]    = mapped_column(Integer,     primary_key=True)

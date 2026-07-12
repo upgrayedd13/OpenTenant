@@ -1,3 +1,5 @@
+import { EXPORT_ENDPOINT } from "./db_endpoints.js";
+
 export const state = {  // NOTE: const in JS only prevents reassignment and doesn't actually mean immutable...
     activeTable: null,
     originalData: {},
@@ -22,4 +24,8 @@ export function updateButtons() {
     document.getElementById('discard-all-btn').classList.toggle('visible', hasAny);
     document.getElementById('commit-btn').disabled = !hasLocal;
     document.getElementById('commit-all-btn').disabled = !hasAny;
+    document.getElementById('export-csv-btn').disabled = false;
+    if (state.activeTable !== null) {
+        document.getElementById('export-csv-btn').href = EXPORT_ENDPOINT(state.activeTable);
+    }
 }
