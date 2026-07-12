@@ -1,21 +1,88 @@
-# Python-generated files
+##############################
+# Python / uv
+##############################
+
+# Bytecode
 __pycache__/
-*.py[oc]
+*.py[cod]
+
+# Python stuff
 build/
 dist/
 wheels/
 *.egg-info
 
 # Virtual environments
-.venv
+.venv/
+venv/
 
 # Flask environment
 .env
 
-# VS Code
-**/.vscode/
+# uv caches
+.uv/
+uv-cache/
 
-# Databases
+# Lockfile is committed
+!uv.lock
+
+
+##############################
+# Environment / secrets
+##############################
+
+.env
+.env.*
+!.env.example
+
+instance/
+
+
+##############################
+# Flask / app runtime
+##############################
+
+# SQLite databases
 *.db
 *.sqlite
 *.sqlite3
+
+# Uploads / generated files
+/tmp/
+/leases/
+/files/
+
+
+##############################
+# Logs
+##############################
+
+*.log
+
+
+##############################
+# Certbot / TLS
+##############################
+
+certbot/conf/*
+certbot/www/*
+!certbot/conf/.gitkeep
+!certbot/www/.gitkeep
+
+
+##############################
+# Docker
+##############################
+
+# Docker runtime files
+docker-data/
+
+
+##############################
+# OS / Editor junk
+##############################
+
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

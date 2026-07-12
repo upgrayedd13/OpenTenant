@@ -5,6 +5,7 @@ from decimal import Decimal
 from datetime import date
 import os
 
+from .mixins import IdMixin, TimestampMixin, VersionedMixin
 from ..utils import custom_validators as unum
 from ..schemas.lease import LeaseSchema
 from .model_base import ModelBase
@@ -15,20 +16,19 @@ if TYPE_CHECKING:
 MAX_LEASE_PATH_LEN = os.pathconf(os.getenv('LEASES_DIR', '/tmp/leases'), 'PC_PATH_MAX')
 
 
-class Lease(ModelBase):
+class Lease(ModelBase, IdMixin, TimestampMixin, VersionedMixin):
     __tablename__ = 'leases'
 
-    id:                 Mapped[int]       = mapped_column(Integer,        primary_key=True)
-    base_monthly_rent:  Mapped[Decimal]   = mapped_column(Numeric(10, 2), nullable=False)
-    monthly_rent_total: Mapped[Decimal]   = mapped_column(Numeric(10, 2), nullable=False)
-    unit_number:        Mapped[int]       = mapped_column(Integer,        nullable=False)
-    num_occupants:      Mapped[int]       = mapped_column(Integer,        nullable=False)
-    start_date:         Mapped[date]      = mapped_column(Date,           nullable=False)
-    end_date:           Mapped[date|None] = mapped_column(Date,           nullable=True)   # might not have an end date?
-    path:               Mapped[str]       = mapped_column(String(MAX_LEASE_PATH_LEN), nullable=False)
+    base_monthly_rent:  Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+    monthly_rent_total: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+    unit_number:        Mapped[int]     = mapped_column(Integer,        nullable=False)
+    num_occupants:      Mapped[int]     = mapped_column(Integer,        nullable=False)
+    start_date:         Mapped[date]    = mapped_column(Date,           nullable=False)
+    end_date:           Mapped[date]    = mapped_column(Date,           nullable=True)   # might not have an end date?
+    path:               Mapped[str]     = mapped_column(String(MAX_LEASE_PATH_LEN), nullable=False)
 
-    user_id:            Mapped[int]       = mapped_column(ForeignKey('users.id'), nullable=False)
-    user:               Mapped['User']    = relationship(back_populates='leases')
+    user_id:            Mapped[int]     = mapped_column(ForeignKey('users.id'), nullable=False)
+    user:               Mapped['User']  = relationship(back_populates='leases')
 
     __table_args__ = (
         CheckConstraint(

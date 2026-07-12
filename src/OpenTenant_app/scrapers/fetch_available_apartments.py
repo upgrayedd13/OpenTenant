@@ -88,27 +88,3 @@ def get_apartment_snapshot() -> ApartmentInventorySnapshot:
 
     # return data
     return snapshot
-
-
-def main() -> None:
-    from sqlalchemy.orm import sessionmaker
-    from sqlalchemy import create_engine
-
-    from ..models.model_base import ModelBase
-
-    # expected to be called from the OpenTenant root directory with "uv run -m src.OpenTenant_app.scrapers.fetch_available_apartments"
-    db_file = 'sqlite:///instance/app.db'
-    engine = create_engine(db_file, future=True)
-    ModelBase.metadata.create_all(engine)
-
-    data = get_apartment_snapshot()
-
-    SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
-
-    with SessionLocal() as session:
-        session.add(data)
-        session.commit()
-
-
-if __name__ == "__main__":
-    main()

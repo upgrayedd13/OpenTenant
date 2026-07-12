@@ -1,19 +1,19 @@
-from sqlalchemy import Integer, String, DateTime, select, or_, and_
 from sqlalchemy.orm import mapped_column, relationship, Mapped
+from sqlalchemy import String, DateTime, select, or_, and_
 from datetime import datetime, timezone
 from dateutil.rrule import rrulestr
 from typing import Any
 
+from .mixins import IdMixin, TimestampMixin, VersionedMixin
 from .calendar_event_exception import CalendarEventException
 from ..schemas.calendar_event import CalendarEventSchema
 from .model_base import ModelBase
 from ..extensions import db
 
 
-class CalendarEvent(ModelBase):
+class CalendarEvent(ModelBase, IdMixin, TimestampMixin, VersionedMixin):
     __tablename__ = 'calendar_events'
 
-    id:            Mapped[int]      = mapped_column(Integer,  primary_key=True)
     title:         Mapped[str]      = mapped_column(String,   nullable=False)
     location:      Mapped[str|None] = mapped_column(String,   nullable=True)
     description:   Mapped[str|None] = mapped_column(String,   nullable=True)

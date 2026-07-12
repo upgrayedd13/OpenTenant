@@ -3,15 +3,15 @@ from sqlalchemy.orm import mapped_column, relationship, Mapped
 from typing import TYPE_CHECKING
 from datetime import date
 
+from .mixins import IdMixin, TimestampMixin, VersionedMixin
 from .model_base import ModelBase
 if TYPE_CHECKING:
     from .apartment_inventory_snapshot import ApartmentInventorySnapshot
 
 
-class ApartmentUnitSnapshot(ModelBase):
+class ApartmentUnitSnapshot(ModelBase, IdMixin, TimestampMixin, VersionedMixin):
     __tablename__ = 'apartment_unit_snapshots'
 
-    id:             Mapped[int]  = mapped_column(Integer, primary_key=True)
     unit_id:        Mapped[str]  = mapped_column(String,  nullable=False)
     unit_num:       Mapped[str]  = mapped_column(String,  nullable=True)
     price:          Mapped[int]  = mapped_column(Integer, nullable=True)

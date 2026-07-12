@@ -7,9 +7,9 @@ from flask import abort
 
 @unique
 class UserRole(IntEnum):
-    USER        = 1
-    ADMIN       = 2
-    SUPER_ADMIN = 3
+    USER        = 10
+    ADMIN       = 20
+    SUPER_ADMIN = 30
 
 
 # Function decorator to set that a given endpoint is only accessible
