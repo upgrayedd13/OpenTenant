@@ -4,8 +4,8 @@ from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
-from .mixins import IdMixin, TimestampMixin, VersionedMixin
-from .model_base import ModelBase
+from ..mixins import IdMixin, TimestampMixin, VersionedMixin
+from ..model_base import ModelBase
 if TYPE_CHECKING:
     from .calendar_event import CalendarEvent
 

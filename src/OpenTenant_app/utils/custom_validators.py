@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 import os
 
 from .get_config import get_config
-from ..models.user import User
+from ..models.user.user import User
 
 
 MIN_FLOOR = 7

@@ -9,8 +9,8 @@ import os
 from ..parsers.leaseParser import parse_lease
 from ..utils.get_config import get_config
 from ..schemas.lease import LeaseSchema
+from ..models.user.user import User
 from ..models.lease import Lease
-from ..models.user import User
 from ..extensions import db
 
 from .forms import LoginForm, SignupForm

@@ -2,7 +2,7 @@ from wtforms.validators import DataRequired, EqualTo, Length
 from wtforms import StringField, PasswordField, HiddenField
 
 from ...utils.custom_validators import UploadTokenValidator, UsernameUniqueValidator
-from ...models.user import User
+from ...models.user.user import User
 from .subform import Subform
 
 

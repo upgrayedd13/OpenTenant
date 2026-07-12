@@ -7,13 +7,13 @@ from typing import TYPE_CHECKING
 from datetime import date
 import logging
 
-from .mixins import IdMixin, TimestampMixin, VersionedMixin
-from ..extensions import login_manager, db
-from ..schemas.user import UserSchema
-from .model_base import ModelBase
+from ..mixins import IdMixin, TimestampMixin, VersionedMixin
+from ...extensions import login_manager, db
+from ...schemas.user import UserSchema
+from ..model_base import ModelBase
 from .user_role import UserRole
 if TYPE_CHECKING:
-    from .lease import Lease
+    from ..lease import Lease
 
 
 logger = logging.getLogger(__name__)

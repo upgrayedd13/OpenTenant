@@ -3,8 +3,8 @@ from sqlalchemy.orm import mapped_column, relationship, Mapped
 from typing import TYPE_CHECKING
 from datetime import date
 
-from .mixins import IdMixin, TimestampMixin, VersionedMixin
-from .model_base import ModelBase
+from ..mixins import IdMixin, TimestampMixin, VersionedMixin
+from ..model_base import ModelBase
 if TYPE_CHECKING:
     from .apartment_inventory_snapshot import ApartmentInventorySnapshot
 

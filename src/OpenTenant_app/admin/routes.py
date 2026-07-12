@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 import logging
 
-from ..models.user_role import *
+from ..models.user.user_role import UserRole, minimum_user_role
 
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin', template_folder='templates', static_folder='static', static_url_path='/admin/static')

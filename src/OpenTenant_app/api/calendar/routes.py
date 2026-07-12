@@ -2,9 +2,9 @@ from flask import Blueprint, jsonify, request, Response
 from datetime import datetime, timezone, timedelta
 import logging
 
-from ...models.calendar_event_exception import CalendarEventException
-from ...models.user_role import minimum_user_role, UserRole
-from ...models.calendar_event import CalendarEvent
+from ...models.calendar.calendar_event_exception import CalendarEventException
+from ...models.user.user_role import minimum_user_role, UserRole
+from ...models.calendar.calendar_event import CalendarEvent
 from ...utils.log_and_exit import log_and_jsonify
 from ...extensions import db
 

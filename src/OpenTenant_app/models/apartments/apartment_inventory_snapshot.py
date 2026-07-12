@@ -3,8 +3,8 @@ from sqlalchemy import JSON, DateTime
 from typing import TYPE_CHECKING
 from datetime import datetime
 
-from .mixins import IdMixin, TimestampMixin, VersionedMixin
-from .model_base import ModelBase
+from ..mixins import IdMixin, TimestampMixin, VersionedMixin
+from ..model_base import ModelBase
 if TYPE_CHECKING:
     from .apartment_unit_snapshot import ApartmentUnitSnapshot
 

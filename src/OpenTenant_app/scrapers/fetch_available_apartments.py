@@ -2,8 +2,8 @@ from datetime import datetime, timezone
 from typing import Any
 import requests
 
-from ..models.apartment_inventory_snapshot import ApartmentInventorySnapshot
-from ..models.apartment_unit_snapshot import ApartmentUnitSnapshot
+from ..models.apartments.apartment_inventory_snapshot import ApartmentInventorySnapshot
+from ..models.apartments.apartment_unit_snapshot import ApartmentUnitSnapshot
 from ..schemas.apartment_snapshot import ApartmentSnapshotSchema
 
 

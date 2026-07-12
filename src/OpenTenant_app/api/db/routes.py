@@ -6,7 +6,7 @@ import pandas as pd
 import logging
 
 from ...schemas.db_management import UpdateRequest, WorkerException
-from ...models.user_role import minimum_user_role, UserRole
+from ...models.user.user_role import minimum_user_role, UserRole
 from ...utils.log_and_exit import log_and_jsonify
 from ...extensions import db
 

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..models.user import User
+    from ..models.user.user import User
 
 
 class UserSchema:

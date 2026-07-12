@@ -4,8 +4,8 @@ from decimal import Decimal
 from datetime import date
 
 from ...utils.custom_validators import UnitNumberValidator
+from ...models.user.user import User
 from ...models.lease import Lease
-from ...models.user import User
 from .subform import Subform
 
 

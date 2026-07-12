@@ -4,7 +4,7 @@ from dateutil.rrule import rrulestr
 from zoneinfo import ZoneInfo
 
 if TYPE_CHECKING:
-    from ..models.calendar_event import CalendarEvent
+    from ..models.calendar.calendar_event import CalendarEvent
 
 
 class CalendarEventSchema:

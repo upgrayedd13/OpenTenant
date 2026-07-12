@@ -10,7 +10,7 @@ from ..utils import custom_validators as unum
 from ..schemas.lease import LeaseSchema
 from .model_base import ModelBase
 if TYPE_CHECKING:
-    from .user import User
+    from .user.user import User
 
 
 MAX_LEASE_PATH_LEN = os.pathconf(os.getenv('LEASES_DIR', '/tmp/leases'), 'PC_PATH_MAX')

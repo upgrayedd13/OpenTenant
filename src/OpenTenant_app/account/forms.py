@@ -5,7 +5,7 @@ from flask_wtf import FlaskForm
 from .subforms.apartment_info_form import ApartmentInfoForm
 from .subforms.personal_info_form import PersonalInfoForm
 from .subforms.register_form import RegisterForm
-from ..models.user import User
+from ..models.user.user import User
 
 
 class LoginForm(FlaskForm):
