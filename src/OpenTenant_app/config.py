@@ -65,6 +65,7 @@ class Config:
     LEASES_DIR            = os.getenv('LEASES_DIR',            '/tmp/leases')
     FILE_REPOSITORY_DIR   = os.getenv('FILE_REPOSITORY_DIR',   '/tmp/files')
     MAX_CONTENT_LENGTH    = env_bytes('MAX_CONTENT_LENGTH',    '10M')  # largest request size
+    MAX_TMP_DIR_SIZE      = env_bytes('MAX_TMP_DIR_SIZE',      '1G')
     MAX_LEASES_DIR_SIZE   = env_bytes('MAX_LEASES_DIR_SIZE',   '10G')
     MAX_FILE_REP_DIR_SIZE = env_bytes('MAX_FILE_REP_DIR_SIZE', '10G')
 

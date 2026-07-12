@@ -18,7 +18,6 @@ class CellUpdate:
     column: str
     new_value: Any
 
-
     @staticmethod
     def json_to_cell_updates(id: int, js_data: dict) -> list['CellUpdate']|None:
         # initial sanity check that we were given a dictionary
@@ -78,7 +77,6 @@ class TableUpdate:
 @dataclass(frozen=True)
 class UpdateRequest:
     tables: list[TableUpdate]
-
 
     @staticmethod
     def json_to_update_request(js_data: dict) -> 'UpdateRequest|None':

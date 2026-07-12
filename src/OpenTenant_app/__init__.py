@@ -3,8 +3,8 @@ load_dotenv()
 
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.middleware.proxy_fix import ProxyFix
+from datetime import datetime, timezone
 from flask import Flask, jsonify
-from datetime import datetime
 import logging
 import os
 
@@ -20,7 +20,7 @@ from .about.routes import about_bp
 from .main.routes import main_bp
 
 
-def create_app() -> None:
+def create_app() -> Flask:
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
@@ -66,7 +66,7 @@ def create_app() -> None:
     @app.context_processor
     def inject_current_year():
         return {
-            "current_year": datetime.now().year
+            "current_year": datetime.now(timezone.utc).year
         }
 
     # Log that we're done with setup

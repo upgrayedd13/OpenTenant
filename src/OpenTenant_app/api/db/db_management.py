@@ -2,10 +2,9 @@ from sqlalchemy import Table, Connection, select
 from sqlalchemy.sql.schema import Column
 import logging
 
+from ...schemas.db_management import TableUpdate, WorkerException
 from ...utils.log_and_exit import log_and_jsonify
 from ...extensions import db, md
-
-from .types import TableUpdate, WorkerException
 
 logger = logging.getLogger(__name__)
 

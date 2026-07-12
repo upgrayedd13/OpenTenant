@@ -7,14 +7,24 @@ Modify Calendar
 
 
 {% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('about.static', filename='css/calendar.css') }}">
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin_calendar.css') }}">
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='css/add_event.css') }}">
 {% endblock %}
 
 
 {% block content %}
 
-<main class="modify-calendar">
+<main class="admin-main">
+    <section class="admin-calendar-pane">
+        {% include "about/calendar_content.html" %}
+    </section>
 
+    <aside class="admin-event-pane" id="eventPane">
+        {% include "admin/add_event_pane.html" %}
+    </aside>
 </main>
 
+<script type="module" src="{{ url_for('about.static', filename='js/admin_calendar.js') }}"></script>
 
 {% endblock %}

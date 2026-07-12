@@ -5,12 +5,12 @@ from io import BytesIO
 import pandas as pd
 import logging
 
+from ...schemas.db_management import UpdateRequest, WorkerException
 from ...models.user_role import minimum_user_role, UserRole
 from ...utils.log_and_exit import log_and_jsonify
 from ...extensions import db
 
 from .db_management import update_table_worker, load_table
-from .types import UpdateRequest, WorkerException
 
 db_api_bp = Blueprint('db_api', __name__, url_prefix='/api/db')
 logger = logging.getLogger(__name__)

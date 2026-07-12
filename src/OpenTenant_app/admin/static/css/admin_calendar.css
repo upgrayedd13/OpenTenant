@@ -1,0 +1,178 @@
+.admin-calendar-pane {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    width: 100%;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: visible;
+    flex: 1;
+    padding: 30px 50px;
+    box-sizing: border-box;
+}
+
+.admin-event-pane {
+    width: 0%;
+    overflow: hidden;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 0px solid #ddd;
+}
+
+.admin-main {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    overflow: visible;
+    align-items: stretch;
+    padding: 0;
+}
+
+.admin-main.panel-open .admin-calendar-pane {
+    width: 65%;
+}
+
+.admin-main.panel-open .admin-event-pane {
+    width: 35%;
+    border-left-width: 1px;
+}
+
+.event-pane-inner {
+    padding: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    opacity: 0;
+    transform: translateX(16px);
+    transition: opacity 0.25s ease 0.15s, transform 0.25s ease 0.15s;
+}
+
+.admin-main.panel-open .event-pane-inner {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.event-pane-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.event-pane-header span {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+#eventPaneClose {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+    color: #666;
+}
+
+#eventPaneClose:hover {
+    color: #000;
+}
+
+.event-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.event-form label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #555;
+    margin-top: 0.5rem;
+}
+
+.event-form input,
+.event-form textarea {
+    padding: 0.45rem 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.event-form input:focus,
+.event-form textarea:focus {
+    outline: none;
+    border-color: #3174ad;
+    box-shadow: 0 0 0 2px rgba(49, 116, 173, 0.15);
+}
+
+.event-submit {
+    margin-top: 0.75rem;
+    padding: 0.55rem 1rem;
+    background: #3174ad;
+    width: 100%;
+    box-sizing: border-box;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.event-submit:hover {
+    background: #255e91;
+}
+
+/* Highlight the selected day */
+.day.selected {
+    background: #eef4fb;
+    border-color: #3174ad;
+}
+
+/* Delete controls inside the event detail modal (admin only) */
+.event-modal-recurring-note {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+}
+
+.event-delete-actions {
+    margin-top: 0.75rem;
+}
+
+.event-delete-btn-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.event-delete-btn {
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    color: #333;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.event-delete-btn:hover {
+    background: #f5f5f5;
+}
+
+.event-delete-btn--danger {
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+.event-delete-btn--danger:hover {
+    background: #dc2626;
+    color: white;
+}
