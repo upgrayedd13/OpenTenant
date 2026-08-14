@@ -42,7 +42,7 @@ ENVIRONMENT="${1:-}"
 COMMAND="${2:-up}"
 
 if [[ "$ENVIRONMENT" != "development" && "$ENVIRONMENT" != "production" ]]; then
-    echo "Usage: $0 <development|production> [up|down|restart|logs]"
+    echo "Usage: $0 <development|production> [up|down|restart|logs|ps|shell <SERVICE> [SHELL_APP]]"
     exit 1
 fi
 
@@ -66,6 +66,18 @@ case "$COMMAND" in
         ;;
     logs)
         COMPOSE_ARGS+=(logs -f)
+        ;;
+    ps)
+        COMPOSE_ARGS+=(ps)
+        ;;
+    shell)
+        SERVICE="${3:-}"
+        if [ -z "$SERVICE" ]; then
+            echo "Usage: $0 <development|production> shell <SERVICE> [SHELL_APP]"
+            exit 1
+        fi
+        SHELL_APP="${4:-/bin/sh}"
+        COMPOSE_ARGS+=(exec -it -u root "$SERVICE" "$SHELL_APP")
         ;;
     *)
         echo "Unknown command: $COMMAND"
