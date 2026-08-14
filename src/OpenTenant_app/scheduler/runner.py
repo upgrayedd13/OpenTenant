@@ -1,8 +1,10 @@
 #from apscheduler.schedulers.background import BackgroundScheduler
 from time import sleep, perf_counter
-import logging
+import logging.config
+from pprint import pprint
 
 from ..scrapers.fetch_available_apartments import get_apartment_snapshot
+from ..logging_config import LOGGING_CONFIG
 
 #from .registry import load_jobs_from_db
 from .db import SessionLocal
@@ -10,7 +12,8 @@ from .db import SessionLocal
 PERIOD_HOURS = 12
 PERIOD_SECONDS = PERIOD_HOURS * 3600
 
-logger = logging.getLogger(__name__)
+logging.config.dictConfig(LOGGING_CONFIG)
+logger = logging.getLogger('scheduler.runner')
 # scheduler = BackgroundScheduler()
 
 
