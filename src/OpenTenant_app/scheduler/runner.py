@@ -15,13 +15,13 @@ logger = logging.getLogger(__name__)
 
 
 def get_apartments() -> None:
-    logger.log('Fetching apartment data...')
-    
+    logger.info('Fetching apartment data...')
+
     # get the apartment data
     t0 = perf_counter()
     data = get_apartment_snapshot()
     t1 = perf_counter()
-    logger.log(f'Fetching apartment data took {t1 - t0:.2f} seconds')
+    logger.info(f'Fetching apartment data took {t1 - t0:.2f} seconds')
 
     # commit the data to the DB
     with SessionLocal() as session:
@@ -30,7 +30,7 @@ def get_apartments() -> None:
 
 
 def main() -> None:
-    logger.log('Scheduler running')
+    logger.info('Scheduler running')
     #load_jobs_from_db(scheduler)
     #scheduler.start()
 
@@ -44,7 +44,7 @@ def main() -> None:
             logger.exception(e)
 
         # wait for some period of time before running again
-        logger.log(f'Sleeping for {PERIOD_HOURS} hours ({PERIOD_SECONDS} seconds)...')
+        logger.info(f'Sleeping for {PERIOD_HOURS} hours ({PERIOD_SECONDS} seconds)...')
         sleep(PERIOD_SECONDS)
 
 
