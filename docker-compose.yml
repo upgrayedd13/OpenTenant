@@ -32,7 +32,8 @@ services:
         container_name: opentenant_scheduler
         command: uv run python -m src.OpenTenant_app.scheduler.runner
         depends_on:
-            - db
+            db:
+                condition: service_healthy
         restart: unless-stopped
         env_file:
             - .env.production
