@@ -42,3 +42,8 @@ def sitemap() -> Response:
         '</urlset>',
     ]
     return Response('\n'.join(xml) + '\n', mimetype='application/xml')
+
+
+@main_bp.route('/health')
+def health() -> Response:
+    return Response('OK', status=200)
