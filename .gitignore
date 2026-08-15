@@ -64,10 +64,8 @@ instance/
 # Certbot / TLS
 ##############################
 
-certbot/conf/*
-certbot/www/*
-!certbot/conf/.gitkeep
-!certbot/www/.gitkeep
+/docker/certbot/conf/
+/docker/certbot/www/
 
 
 ##############################
