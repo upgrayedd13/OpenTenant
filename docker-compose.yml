@@ -7,12 +7,11 @@ services:
             dockerfile: docker/app/Dockerfile
         container_name: opentenant_app
         restart: unless-stopped
+        env_file:
+            - ${COMPOSE_ENV_FILE}
         environment:
-            ENV: production
             PYTHONPATH: /app/src
             LOAD_DOTENV: "0"
-        env_file:
-            - .env.production
         volumes:
             - ./docker/app/data/tmp:/tmp/OpenTenant
             - ./docker/app/data/leases:/app/leases
@@ -40,7 +39,7 @@ services:
                 condition: service_healthy
         restart: unless-stopped
         env_file:
-            - .env.production
+            - ${COMPOSE_ENV_FILE}
         healthcheck:
             test: ["CMD-SHELL", "test -f /tmp/scheduler-health && test $$(($$(date +%s) - $$(stat -c %Y /tmp/scheduler-health))) -lt 120 && test $(cat /tmp/scheduler-health) -eq 1"]
             interval: 30s
@@ -51,6 +50,7 @@ services:
     nginx:
         image: nginx:1.25-alpine
         container_name: opentenant_nginx
+        profiles: ["production"]
         restart: unless-stopped
         entrypoint: >
             sh -c "while :; do
@@ -75,6 +75,7 @@ services:
     certbot:
         image: certbot/certbot
         container_name: opentenant_certbot
+        profiles: ["production"]
         restart: unless-stopped
         volumes:
             - ./docker/certbot/www:/var/www/certbot
@@ -97,6 +98,8 @@ services:
         image: postgres:16
         container_name: opentenant_db
         restart: unless-stopped
+        env_file:
+            - ${COMPOSE_ENV_FILE}
         environment:
             POSTGRES_USER: ${POSTGRES_USER}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
