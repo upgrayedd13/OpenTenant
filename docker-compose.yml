@@ -19,10 +19,15 @@ services:
             - ./docker/app/data/files:/app/files
         expose:
             - "8000"
+        healthcheck:
+            test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 30s
         depends_on:
             db:
                 condition: service_healthy
-            #scheduler:
 
     scheduler:
         build:
@@ -36,6 +41,12 @@ services:
         restart: unless-stopped
         env_file:
             - .env.production
+        healthcheck:
+            test: ["CMD-SHELL", "test -f /tmp/scheduler-health && test $$(($$(date +%s) - $$(stat -c %Y /tmp/scheduler-health))) -lt 120 && test $(cat /tmp/scheduler-health) -eq 1"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 30s
 
     nginx:
         image: nginx:1.25-alpine
@@ -53,7 +64,6 @@ services:
             - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
             - ./docker/certbot/www:/var/www/certbot
             - ./docker/certbot/conf:/etc/letsencrypt
-            - ./src:/app/src:ro
         depends_on:
             - app
         healthcheck:

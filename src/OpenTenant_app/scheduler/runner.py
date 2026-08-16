@@ -1,7 +1,7 @@
 #from apscheduler.schedulers.background import BackgroundScheduler
 from time import sleep, perf_counter
+from pathlib import Path
 import logging.config
-from pprint import pprint
 
 from ..scrapers.fetch_available_apartments import get_apartment_snapshot
 from ..logging_config import LOGGING_CONFIG
@@ -11,6 +11,9 @@ from .db import SessionLocal
 
 PERIOD_HOURS = 12
 PERIOD_SECONDS = PERIOD_HOURS * 3600
+HEARTBEAT_INTERVAL_SECONDS = 30
+HEALTH_FILE = Path('/tmp/scheduler-health')
+
 
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger('scheduler.runner')
@@ -32,6 +35,11 @@ def get_apartments() -> None:
         session.commit()
 
 
+def update_health(success: bool) -> None:
+    HEALTH_FILE.write_text('1' if success else '0')
+
+
+# TODO: make this more dynamic (for now, the simplicity is all we need)
 def main() -> None:
     logger.info('Scheduler running')
     #load_jobs_from_db(scheduler)
@@ -42,13 +50,17 @@ def main() -> None:
         # perform the task
         try:
             get_apartments()
+            success = True
         except Exception as e:
             logger.exception(f'Failed to fetch apartment data!')
             logger.exception(e)
+            success = False
 
         # wait for some period of time before running again
         logger.info(f'Sleeping for {PERIOD_HOURS} hours ({PERIOD_SECONDS} seconds)...')
-        sleep(PERIOD_SECONDS)
+        for _ in range(0, PERIOD_SECONDS, HEARTBEAT_INTERVAL_SECONDS):
+            update_health(success)
+            sleep(HEARTBEAT_INTERVAL_SECONDS)
 
 
 if __name__ == '__main__':
