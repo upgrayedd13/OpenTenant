@@ -26,11 +26,14 @@ def setup_env(env_file: str, env_str: str) -> dict[str, str]:
     return env
 
 
-def docker_run(args: list[str], env_file: str, env_str: str) -> None:
+def docker_run(args: list[str], env_file: str, env_str: str, verbose: bool=False) -> None:
     cmd = ['docker', 'compose']
     if env_str == 'production':
         cmd += ['--profile', env_str] 
     cmd += ['--env-file', env_file, *args]
+
+    if verbose:
+        print(' '.join(cmd))
 
     try:
         subprocess.run(cmd, check=True, env=setup_env(env_file, env_str))
@@ -40,45 +43,45 @@ def docker_run(args: list[str], env_file: str, env_str: str) -> None:
         sys.exit(4)
 
 
-def docker_up(args: argparse.Namespace, env_file: str) -> None:
+def docker_up(args: argparse.Namespace, env_file: str, verbose: bool=False) -> None:
     cmd = ['up', '--build']
     if args.environment == 'production':
         cmd.append('-d')
     cmd += args.SERVICE
-    docker_run(cmd, env_file, args.environment)
+    docker_run(cmd, env_file, args.environment, verbose)
 
 
-def docker_down(args: argparse.Namespace, env_file: str) -> None:
+def docker_down(args: argparse.Namespace, env_file: str, verbose: bool=False) -> None:
     cmd = ['down', *args.SERVICE]
-    docker_run(cmd, env_file, args.environment)
+    docker_run(cmd, env_file, args.environment, verbose)
 
 
-def docker_restart(args: argparse.Namespace, env_file: str) -> None:
-    docker_down(args, env_file)
-    docker_up(args, env_file)
+def docker_restart(args: argparse.Namespace, env_file: str, verbose: bool=False) -> None:
+    docker_down(args, env_file, verbose)
+    docker_up(args, env_file, verbose)
 
 
-def docker_logs(args: argparse.Namespace, env_file: str) -> None:
+def docker_logs(args: argparse.Namespace, env_file: str, verbose: bool=False) -> None:
     cmd = ['logs', '-f', *args.SERVICE]
-    docker_run(cmd, env_file, args.environment)
+    docker_run(cmd, env_file, args.environment, verbose)
 
 
-def docker_config(args: argparse.Namespace, env_file: str) -> None:
+def docker_config(args: argparse.Namespace, env_file: str, verbose: bool=False) -> None:
     cmd = ['config', *args.SERVICE]
-    docker_run(cmd, env_file, args.environment)
+    docker_run(cmd, env_file, args.environment, verbose)
 
 
-def docker_ps(args: argparse.Namespace, env_file: str) -> None:
+def docker_ps(args: argparse.Namespace, env_file: str, verbose: bool=False) -> None:
     cmd = ['ps', *args.SERVICE]
-    docker_run(cmd, env_file, args.environment)
+    docker_run(cmd, env_file, args.environment, verbose)
 
 
-def docker_shell(args: argparse.Namespace, env_file: str) -> None:
+def docker_shell(args: argparse.Namespace, env_file: str, verbose: bool=False) -> None:
     cmd = ['exec', '-it', '-u', 'root', args.SERVICE, args.SHELL_APP]
-    docker_run(cmd, env_file, args.environment)
+    docker_run(cmd, env_file, args.environment, verbose)
 
 
-def determine_environment(env_arg: str) -> str:
+def determine_environment(env_arg: str, verbose: bool=False) -> str:
     root_dir = Path(__file__).parent
 
     if env_arg:
@@ -86,9 +89,14 @@ def determine_environment(env_arg: str) -> str:
 
     possible_env_files = [root_dir / f'.env.{env}' for env in ENVIRONMENTS]
     existing = [env_file for env_file in possible_env_files if env_file.is_file()]
+    if verbose:
+        print(f'Found env files: {' '.join(fname for fname in existing)}')
 
     if len(existing) == 1:
-        return str(existing[0].resolve())
+        env_file = str(existing[0].resolve())
+        if verbose:
+            print(f'Using env file "{env_file}"')
+        return env_file
 
     if len(existing) == 0:
         print('No expected environment files exist! Please rerun and specify an environment!', file=sys.stderr)
@@ -132,6 +140,7 @@ def create_environment_file(env_file: str, env: str) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Wrapper for docker compose commands for this application.')
     parser.add_argument('-e', '--environment', type=str, choices=ENVIRONMENTS, default='', help='Environment file to use. If not specified, the app will attempt to automatically determine which to use.')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Causes the script to print more verbose output.')
     commands = parser.add_subparsers(dest='command', required=True)
 
     up_parser = commands.add_parser('up', help='Bring services up.')
@@ -178,10 +187,12 @@ def main() -> None:
 
     # if the environment doesn't exist, create it
     if not os.path.isfile(env_file):
+        if args.verbose:
+            print('Creating environment file')
         create_environment_file(env_file, args.environment)
 
     # run the function
-    args.func(args, env_file)
+    args.func(args, env_file, args.verbose)
 
 
 if __name__ == '__main__':

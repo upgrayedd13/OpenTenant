@@ -20,7 +20,7 @@ services:
             - "8000"
         healthcheck:
             test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
-            interval: 30s
+            interval: 600s
             timeout: 5s
             retries: 3
             start_period: 30s
@@ -47,7 +47,7 @@ services:
             retries: 3
             start_period: 30s
 
-    nginx:
+    opentenant-nginx:
         image: nginx:1.25-alpine
         container_name: opentenant_nginx
         profiles: ["production"]
@@ -71,6 +71,9 @@ services:
             interval: 30s
             timeout: 5s
             retries: 3
+        networks:
+            default: {}
+            mailcow: {}
 
     certbot:
         image: certbot/certbot
@@ -116,3 +119,8 @@ services:
 
 volumes:
     pgdata:
+
+networks:
+    mailcow:
+        external: true
+        name: mailcowdockerized_mailcow-network
