@@ -87,6 +87,13 @@ class Config:
     MAX_LEASES_DIR_SIZE   = env_bytes('MAX_LEASES_DIR_SIZE',   '10G')
     MAX_FILE_REP_DIR_SIZE = env_bytes('MAX_FILE_REP_DIR_SIZE', '10G')
 
+    # --------------------------------------------------
+    # Email
+    # --------------------------------------------------
+    BOT_EMAIL             = os.getenv('BOT_EMAIL',      'no-reply@example.com')
+    CONTACT_EMAIL         = os.getenv('CONTACT_EMAIL',  'contact@example.com')
+    FEEDBACK_EMAIL        = os.getenv('FEEDBACK_EMAIL', 'feedback@exmample.com')
+
 
 class DevelopmentConfig(Config):
     DEBUG = True

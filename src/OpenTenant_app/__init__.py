@@ -69,9 +69,12 @@ def create_app() -> Flask:
 
     # Add a context processor so templates get the current year
     @app.context_processor
-    def inject_current_year():
+    def inject_vars():
         return {
-            "current_year": datetime.now(timezone.utc).year
+            'current_year':   datetime.now(timezone.utc).year,
+            'bot_email':      app.config['BOT_EMAIL'],
+            'contact_email':  app.config['CONTACT_EMAIL'],
+            'feedback_email': app.config['FEEDBACK_EMAIL'],
         }
 
     # Log that we're done with setup

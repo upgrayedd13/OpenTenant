@@ -5,6 +5,10 @@ services:
         ports:
             - "8000:8000"
 
+    opentenant-nginx:
+        networks: !reset
+            - default
+
     db:
         ports:
             - "5432:5432"

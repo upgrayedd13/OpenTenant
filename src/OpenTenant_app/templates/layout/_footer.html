@@ -1,9 +1,9 @@
 <footer>
-    <a href="mailto:example@example.com">Contact Us</a>
+    <a href="mailto:{{ contact_email }}">Contact Us</a>
     |
     <a class="openModal"
        data-title="Report a Bug"
-        data-src="{{ url_for('main.modal_content', name='bug_report') }}">
+       data-src="{{ url_for('main.modal_content', name='bug_report') }}">
         Report a Bug
     </a>
     |
