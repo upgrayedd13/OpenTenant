@@ -5,6 +5,7 @@ const closeBtn  = document.getElementById("closeModal");
 
 document.addEventListener("click", handleOpen);
 contentEl.addEventListener("submit", handleSubmit);
+overlay.addEventListener("click", handleOverlayClick);
 closeBtn.addEventListener("click", closeModal);
 document.addEventListener("keydown", handleEsc);
 
@@ -61,6 +62,13 @@ async function handleSubmit(e) {
         throw new Error();
     } catch {
         contentEl.innerHTML = "<p>Error submitting form.</p>";
+    }
+}
+
+
+function handleOverlayClick(e) {
+    if (e.target === overlay) {
+        closeModal();
     }
 }
 
