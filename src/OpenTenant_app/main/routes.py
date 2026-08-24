@@ -34,15 +34,15 @@ def bug_report_modal() -> str|tuple[str, int]|Response:
 
     body = (
         'New Bug Report\n\n'
-        f'Name:  {name}\n'
-        f'Email: {email}\n\n'
+        f'Name:  {name if name else "Not Specified"}\n'
+        f'Email: {email if email else "Not Specified"}\n\n'
         f'Description:\n{description}\n'
     )
 
     msg = Message(
-        subject=f'Bug report from {name}',
+        subject=f'Bug report from {name}' if name else 'Bug report',
         recipients=[current_app.config['BUG_REPORT_EMAIL']],
-        reply_to=email,
+        reply_to=email if email else None,
         body=body,
     )
 
