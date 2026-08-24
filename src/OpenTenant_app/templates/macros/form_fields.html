@@ -1,4 +1,4 @@
-{% macro form_group(field, attrs=None) %}
+{% macro form_group(field, attrs=None, tooltip_prefix='Why we collect this: ') %}
 
 {% set final_attrs = {} %}
 
@@ -29,7 +29,8 @@
         {% if field.description %}
             <span
                 class="info-icon"
-                data-tooltip="Why we collect this: {{ field.description }}"
+                data-tooltip="{{ tooltip_prefix }}{{ field.description }}"
+                aria-label="{{ field.description }}"
             >i</span>
         {% endif %}
     </label>

@@ -1,20 +1,19 @@
+{% from "macros/form_fields.html" import form_group %}
+
 <link rel="stylesheet" href="{{ url_for('main.static', filename='css/bug_report.css') }}">
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/tool_tip.css') }}">
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/register.css') }}">
 
 <div class="bug-box">
-    <form method="POST" class="bug-form">
+    <form method="POST" action="{{ url_for('main.bug_report_modal') }}" class="bug-form">
+        {{ form.hidden_tag() }}
 
-        <label for="name">Name</label>
-        <input type="text" name="name" required>
+        {{ form_group(form.name, tooltip_prefix='') }}
+        {{ form_group(form.email, tooltip_prefix='') }}
+        {{ form_group(form.description, tooltip_prefix='') }}
 
-        <label for="email">Email</label>
-        <input type="email" name="email" required>
-
-        <label for="description">Describe the Issue</label>
-        <textarea name="description" rows="5" required></textarea>
-
-        <button type="submit" class="bug-btn">
+        <button type="submit" class="submit-btn">
             Submit Report
         </button>
-
     </form>
 </div>

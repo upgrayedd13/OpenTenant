@@ -35,6 +35,7 @@ class SignupForm(FlaskForm):
         self.register_info.disable_editing()
         self.apartment_info.disable_editing()
 
+
     def enable_editing(self) -> None:
         self.personal_info.enable_editing()
         self.register_info.enable_editing()

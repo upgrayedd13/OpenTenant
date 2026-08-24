@@ -90,9 +90,16 @@ class Config:
     # --------------------------------------------------
     # Email
     # --------------------------------------------------
-    BOT_EMAIL             = os.getenv('BOT_EMAIL',      'no-reply@example.com')
-    CONTACT_EMAIL         = os.getenv('CONTACT_EMAIL',  'contact@example.com')
-    FEEDBACK_EMAIL        = os.getenv('FEEDBACK_EMAIL', 'feedback@exmample.com')
+    BUG_REPORT_EMAIL      = os.getenv('BUG_REPORT_EMAIL',    'bug-report@example.com')
+    BOT_EMAIL             = os.getenv('BOT_EMAIL',           'no-reply@example.com')
+    CONTACT_EMAIL         = os.getenv('CONTACT_EMAIL',       'contact@example.com')
+    FEEDBACK_EMAIL        = os.getenv('FEEDBACK_EMAIL',      'feedback@exmample.com')
+    MAIL_SERVER           = os.getenv('MAIL_SERVER',         'mail.example.com')
+    MAIL_PORT             = env_int('MAIL_PORT',             587)
+    MAIL_USE_TLS          = env_bool('MAIL_USE_TLS',         True)
+    MAIL_USERNAME         = os.getenv('MAIL_USERNAME',       BOT_EMAIL)
+    MAIL_PASSWORD         = os.getenv('MAIL_PASSWORD',       '')
+    MAIL_DEFAULT_SENDER   = os.getenv('MAIL_DEFAULT_SENDER', BOT_EMAIL)
 
 
 class DevelopmentConfig(Config):
@@ -126,6 +133,9 @@ def validate_config(app: Flask) -> None:
 
         if app.config.get('SECRET_KEY') == 'dev-fallback-key':
             errors.append('SECRET_KEY is using the development fallback value')
+
+        if not app.config.get('MAIL_PASSWORD'):
+            errors.append('MAIL_PASSWORD must be set in production')
 
         if errors:
             raise RuntimeError('Invalid production configuration:\n- ' + '\n- '.join(errors))

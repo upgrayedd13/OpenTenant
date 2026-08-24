@@ -9,7 +9,7 @@ import logging
 import os
 
 from .config import DevelopmentConfig, ProductionConfig, validate_config
-from .extensions import db, login_manager, migrate
+from .extensions import db, login_manager, migrate, mail
 
 from .api.calendar.routes import calendar_api_bp
 from .api.db.routes import db_api_bp
@@ -41,10 +41,11 @@ def create_app() -> Flask:
     os.makedirs(app.config['LEASES_DIR'], exist_ok=True)
     os.makedirs(app.config['FILE_REPOSITORY_DIR'], exist_ok=True)
 
-    # Initialize the DB and app
+    # Initialize the DB, mail, and login manager
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+    mail.init_app(app)
 
     # Register blueprints
     app.register_blueprint(calendar_api_bp)
@@ -71,10 +72,11 @@ def create_app() -> Flask:
     @app.context_processor
     def inject_vars():
         return {
-            'current_year':   datetime.now(timezone.utc).year,
-            'bot_email':      app.config['BOT_EMAIL'],
-            'contact_email':  app.config['CONTACT_EMAIL'],
-            'feedback_email': app.config['FEEDBACK_EMAIL'],
+            'current_year':     datetime.now(timezone.utc).year,
+            'bot_email':        app.config['BOT_EMAIL'],
+            'contact_email':    app.config['CONTACT_EMAIL'],
+            'feedback_email':   app.config['FEEDBACK_EMAIL'],
+            'bug_report_email': app.config['BUG_REPORT_EMAIL'],
         }
 
     # Log that we're done with setup

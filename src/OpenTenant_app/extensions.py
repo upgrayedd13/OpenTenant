@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from sqlalchemy import MetaData
+from flask_mail import Mail
 
 from .models.model_base import ModelBase
 
@@ -12,6 +13,8 @@ db = SQLAlchemy(model_class=ModelBase)
 md = MetaData()
 
 migrate = Migrate()
+
+mail = Mail()
 
 login_manager = LoginManager()
 login_manager.login_view = "account.login"
