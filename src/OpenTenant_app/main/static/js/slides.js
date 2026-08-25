@@ -56,7 +56,7 @@ if (slides.length > 0) {
     });
 
     function startAutoSlide() {
-        autoSlide = setInterval(nextSlide, 3000);
+        autoSlide = setInterval(nextSlide, 10000);
     }
 
     function resetAutoSlide() {
