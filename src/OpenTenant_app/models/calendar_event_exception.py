@@ -4,13 +4,13 @@ from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
 
-from .mixins import IdMixin, TimestampMixin, VersionedMixin
+from .mixins import IdMixin, TimestampMixin, VersionedMixin, QueryMixin
 from .model_base import ModelBase
 if TYPE_CHECKING:
     from .calendar_event import CalendarEvent
 
 
-class CalendarEventException(ModelBase, IdMixin, TimestampMixin, VersionedMixin):
+class CalendarEventException(ModelBase, IdMixin, TimestampMixin, VersionedMixin, QueryMixin):
     __tablename__ = 'calendar_event_exceptions'
 
     event_id:       Mapped[int]             = mapped_column(ForeignKey('calendar_events.id'), nullable=False)

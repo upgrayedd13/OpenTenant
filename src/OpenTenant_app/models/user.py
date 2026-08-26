@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from datetime import date
 import logging
 
-from .mixins import IdMixin, TimestampMixin, VersionedMixin
+from .mixins import IdMixin, TimestampMixin, VersionedMixin, QueryMixin
 from ..extensions import login_manager, db
 from ..schemas.user import UserSchema
 from .model_base import ModelBase
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class User(ModelBase, UserMixin, IdMixin, TimestampMixin, VersionedMixin):
+class User(ModelBase, UserMixin, IdMixin, TimestampMixin, VersionedMixin, QueryMixin):
     __tablename__ = 'users'
 
     role:              Mapped[UserRole]      = mapped_column(Integer,     nullable=False, default=UserRole.USER)
@@ -39,11 +39,6 @@ class User(ModelBase, UserMixin, IdMixin, TimestampMixin, VersionedMixin):
             if lease.start_date <= today and (lease.end_date is None or lease.end_date >= today):
                 return lease
         return None
-
-
-    @classmethod
-    def get_one_or_none_by(cls, **kwargs) -> 'User|None':
-        return db.session.execute(db.select(cls).filter_by(**kwargs)).scalar_one_or_none()
 
 
     @staticmethod

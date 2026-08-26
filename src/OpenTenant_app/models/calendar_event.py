@@ -4,14 +4,14 @@ from datetime import datetime, timezone
 from dateutil.rrule import rrulestr
 from typing import Any
 
-from .mixins import IdMixin, TimestampMixin, VersionedMixin
+from .mixins import IdMixin, TimestampMixin, VersionedMixin, QueryMixin
 from .calendar_event_exception import CalendarEventException
 from ..schemas.calendar_event import CalendarEventSchema
 from .model_base import ModelBase
 from ..extensions import db
 
 
-class CalendarEvent(ModelBase, IdMixin, TimestampMixin, VersionedMixin):
+class CalendarEvent(ModelBase, IdMixin, TimestampMixin, VersionedMixin, QueryMixin):
     __tablename__ = 'calendar_events'
 
     title:         Mapped[str]      = mapped_column(String,   nullable=False)
