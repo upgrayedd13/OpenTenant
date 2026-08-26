@@ -1,11 +1,14 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
+from datetime import datetime, timezone
 from shutil import move, disk_usage
 import logging
+import hashlib
 import uuid
 import os
 
+from ..models.email_verification import EmailVerification
 from ..parsers.leaseParser import parse_lease
 from ..utils.get_config import get_config
 from ..schemas.lease import LeaseSchema
@@ -199,3 +202,33 @@ def account():
     form = SignupForm.from_user(user)
     form.disable_editing()
     return render_template('account/account.html', user=current_user, form=form)
+
+
+@account_bp.route('/verify-email/<token>')
+def verify_email(token: str) -> str:
+    # we only store the hash, so calculate it
+    token_hash = hashlib.sha256(token.encode()).hexdigest()
+
+    # attempt to get the corresponding EmailVerification entry
+    verification = EmailVerification.get_one_or_none_by(token_hash=token_hash)
+
+    # if we didn't find a matching object, fail
+    if verification is None:
+        return render_template('auth/verify_email.html', success=False, message="Invalid verification link.")
+
+    # if we found an object, remove the entry and fail
+    if verification.expires_at < datetime.now(timezone.utc):
+        db.session.delete(verification)
+        db.session.commit()
+        return render_template('auth/verify_email.html', success=False, message="This verification link has expired.")
+
+    # mark that the user's email is now verified
+    user: User = verification.user
+    user.email_verified = True
+
+    # remove the verification entry
+    db.session.delete(verification)
+    db.session.commit()
+
+    # success
+    return render_template('auth/verify_email.html', success=True, message='Your email is verified!')
