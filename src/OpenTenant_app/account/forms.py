@@ -17,7 +17,8 @@ class LoginForm(FlaskForm):
 class SignupForm(FlaskForm):
     personal_info = FormField(PersonalInfoForm)
     register_info = FormField(RegisterForm)
-    apartment_info = FormField(ApartmentInfoForm)
+    # TODO: Add apartment info back in eventually
+    # apartment_info = FormField(ApartmentInfoForm)
 
     submit = SubmitField('Submit')
 
@@ -26,17 +27,17 @@ class SignupForm(FlaskForm):
     def from_user(user: User) -> 'SignupForm':
         form = SignupForm()
         form.personal_info = PersonalInfoForm.from_user(user)
-        form.apartment_info = ApartmentInfoForm.from_user(user)
+        # form.apartment_info = ApartmentInfoForm.from_user(user)
         return form
 
 
     def disable_editing(self) -> None:
         self.personal_info.disable_editing()
         self.register_info.disable_editing()
-        self.apartment_info.disable_editing()
+        # self.apartment_info.disable_editing()
 
 
     def enable_editing(self) -> None:
         self.personal_info.enable_editing()
         self.register_info.enable_editing()
-        self.apartment_info.enable_editing()
+        # self.apartment_info.enable_editing()

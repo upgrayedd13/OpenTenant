@@ -71,39 +71,40 @@ def register():
         # create the objects
         # because the subforms are technically FlaskForms, tell Pylance to ignore the type and trust us
         user: User = form.personal_info.create_user()  # type: ignore
-        l: Lease = form.apartment_info.create_lease()  # type: ignore
+        # TODO: lease stuff commented out for now, need to re-address later
+        #l: Lease = form.apartment_info.create_lease()  # type: ignore
 
         # fill in the username and password
         user.username = form.register_info.username.data or ''
         user.set_password(form.register_info.password.data or '')
 
         # move the file to the actual upload directory
-        token = form.register_info.upload_token.data or ''
-        if not token:
-            flash('Please upload your lease before submitting the form.')
-            return redirect(url_for('account.register'))
+        # token = form.register_info.upload_token.data or ''
+        # if not token:
+        #     flash('Please upload your lease before submitting the form.')
+        #     return redirect(url_for('account.register'))
 
-        tmp_path = os.path.join(get_config('TMP_DIR'), token)
-        real_path = os.path.join(get_config('LEASES_DIR'), token)
+        # tmp_path = os.path.join(get_config('TMP_DIR'), token)
+        # real_path = os.path.join(get_config('LEASES_DIR'), token)
 
         # Validate storage before moving
-        if not os.path.exists(tmp_path):
-            flash('Uploaded file not found. Please upload the lease again.')
-            return redirect(url_for('account.register'))
+        # if not os.path.exists(tmp_path):
+        #     flash('Uploaded file not found. Please upload the lease again.')
+        #     return redirect(url_for('account.register'))
 
-        file_size = os.path.getsize(tmp_path)
-        ok, msg = validate_storage(get_config('LEASES_DIR'), file_size, get_config('MAX_LEASES_DIR_SIZE'))
-        if not ok:
-            flash(msg)
-            return redirect(url_for('account.register'))
+        # file_size = os.path.getsize(tmp_path)
+        # ok, msg = validate_storage(get_config('LEASES_DIR'), file_size, get_config('MAX_LEASES_DIR_SIZE'))
+        # if not ok:
+        #     flash(msg)
+        #     return redirect(url_for('account.register'))
 
-        move(tmp_path, real_path)
+        # move(tmp_path, real_path)
 
         # add the path to the lease
-        l.path = real_path
+        # l.path = real_path
 
         # link the user and emergency contact
-        user.leases.append(l)
+        # user.leases.append(l)
 
         # add everything to the database
         db.session.add(user)
