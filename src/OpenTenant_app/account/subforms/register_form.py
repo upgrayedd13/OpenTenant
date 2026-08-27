@@ -26,6 +26,7 @@ class RegisterForm(Subform):
     )
 
     # this is a hidden field so no label or description is needed
-    upload_token = HiddenField(
-        validators=[DataRequired(), UploadTokenValidator()]
-    )
+    # TODO: Add this back in eventually
+    # upload_token = HiddenField(
+    #     validators=[DataRequired(), UploadTokenValidator()]
+    # )
