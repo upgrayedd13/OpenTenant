@@ -1,35 +1,39 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import mapped_column, relationship, Mapped
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy import Integer, String
+from sqlalchemy import Integer, String, Boolean
 from flask_login import UserMixin
 from typing import TYPE_CHECKING
 from datetime import date
 import logging
 
-from .mixins import IdMixin, TimestampMixin, VersionedMixin
+from .mixins import IdMixin, TimestampMixin, VersionedMixin, QueryMixin
 from ..extensions import login_manager, db
 from ..schemas.user import UserSchema
 from .model_base import ModelBase
 from .user_role import UserRole
 if TYPE_CHECKING:
+    from .email_verification import EmailVerification
     from .lease import Lease
 
 
 logger = logging.getLogger(__name__)
 
 
-class User(ModelBase, UserMixin, IdMixin, TimestampMixin, VersionedMixin):
+class User(ModelBase, UserMixin, IdMixin, TimestampMixin, VersionedMixin, QueryMixin):
     __tablename__ = 'users'
 
-    role:              Mapped[UserRole]      = mapped_column(Integer,     nullable=False, default=UserRole.USER)
-    username:          Mapped[str]           = mapped_column(String(50),  unique=True, nullable=False)
-    email:             Mapped[str]           = mapped_column(String(254), unique=True, nullable=False)
-    password_hash:     Mapped[str]           = mapped_column(String(256), nullable=False)
-    name:              Mapped[str]           = mapped_column(String(150), nullable=False)
-    phone_number:      Mapped[str|None]      = mapped_column(String(20),  nullable=True)
-    pronouns:          Mapped[str|None]      = mapped_column(String(20),  nullable=True)
-    leases:            Mapped[list['Lease']] = relationship(back_populates='user', order_by='Lease.start_date')
+    role:               Mapped[UserRole] = mapped_column(Integer,     nullable=False, default=UserRole.USER)
+    username:           Mapped[str]      = mapped_column(String(50),  unique=True, nullable=False)
+    email:              Mapped[str]      = mapped_column(String(254), unique=True, nullable=False)
+    password_hash:      Mapped[str]      = mapped_column(String(256), nullable=False)
+    name:               Mapped[str]      = mapped_column(String(150), nullable=False)
+    phone_number:       Mapped[str|None] = mapped_column(String(20),  nullable=True)
+    pronouns:           Mapped[str|None] = mapped_column(String(20),  nullable=True)
+    email_verified:     Mapped[bool]     = mapped_column(Boolean, nullable=False, default=False)
+
+    leases:             Mapped[list['Lease']] = relationship(back_populates='user', order_by='Lease.start_date')
+    email_verification: Mapped['EmailVerification|None'] = relationship(back_populates='user', uselist=False, cascade='all, delete-orphan')
 
 
     @hybrid_property
@@ -39,11 +43,6 @@ class User(ModelBase, UserMixin, IdMixin, TimestampMixin, VersionedMixin):
             if lease.start_date <= today and (lease.end_date is None or lease.end_date >= today):
                 return lease
         return None
-
-
-    @classmethod
-    def get_one_or_none_by(cls, **kwargs) -> 'User|None':
-        return db.session.execute(db.select(cls).filter_by(**kwargs)).scalar_one_or_none()
 
 
     @staticmethod

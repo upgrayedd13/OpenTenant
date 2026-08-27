@@ -5,7 +5,7 @@ from decimal import Decimal
 from datetime import date
 import os
 
-from .mixins import IdMixin, TimestampMixin, VersionedMixin
+from .mixins import IdMixin, TimestampMixin, VersionedMixin, QueryMixin
 from ..utils import custom_validators as unum
 from ..schemas.lease import LeaseSchema
 from .model_base import ModelBase
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 MAX_LEASE_PATH_LEN = os.pathconf(os.getenv('LEASES_DIR', '/tmp/leases'), 'PC_PATH_MAX')
 
 
-class Lease(ModelBase, IdMixin, TimestampMixin, VersionedMixin):
+class Lease(ModelBase, IdMixin, TimestampMixin, VersionedMixin, QueryMixin):
     __tablename__ = 'leases'
 
     base_monthly_rent:  Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)

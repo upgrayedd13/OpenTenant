@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Please Verify Email
+{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/register.css') }}">
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/tool_tip.css') }}">
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/forms.css') }}">
+{% endblock %}
+
+
+{% block content %}
+
+<main class="register-main">
+    <div class="register-box">
+        <p>Verification email sent! Please check your email and click the link in it.</p>
+        <p>Don't forget to check your spam folder!</p>
+    </div>
+</main>
+
+{% endblock %}

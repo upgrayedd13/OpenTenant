@@ -1,11 +1,11 @@
 from sqlalchemy.orm import mapped_column, Mapped, validates
 from sqlalchemy import String, Boolean
 
-from .mixins import IdMixin, TimestampMixin, VersionedMixin
+from .mixins import IdMixin, TimestampMixin, VersionedMixin, QueryMixin
 from .model_base import ModelBase
 
 
-class ScheduledJob(ModelBase, IdMixin, TimestampMixin, VersionedMixin):
+class ScheduledJob(ModelBase, IdMixin, TimestampMixin, VersionedMixin, QueryMixin):
     __tablename__ = 'scheduled_jobs'
 
     name:      Mapped[str]      = mapped_column(String(128), unique=True, nullable=False)

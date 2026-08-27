@@ -3,13 +3,13 @@ from sqlalchemy.orm import mapped_column, relationship, Mapped
 from typing import TYPE_CHECKING
 from datetime import date
 
-from .mixins import IdMixin, TimestampMixin, VersionedMixin
+from .mixins import IdMixin, TimestampMixin, VersionedMixin, QueryMixin
 from .model_base import ModelBase
 if TYPE_CHECKING:
     from .apartment_inventory_snapshot import ApartmentInventorySnapshot
 
 
-class ApartmentUnitSnapshot(ModelBase, IdMixin, TimestampMixin, VersionedMixin):
+class ApartmentUnitSnapshot(ModelBase, IdMixin, TimestampMixin, VersionedMixin, QueryMixin):
     __tablename__ = 'apartment_unit_snapshots'
 
     unit_id:        Mapped[str]  = mapped_column(String,  nullable=False)

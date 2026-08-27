@@ -8,6 +8,7 @@ from flask import abort
 @unique
 class UserRole(IntEnum):
     USER        = 10
+    SUPER_USER  = 11
     ADMIN       = 20
     SUPER_ADMIN = 30
 

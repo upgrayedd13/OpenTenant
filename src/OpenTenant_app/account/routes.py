@@ -1,11 +1,14 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
+from datetime import datetime, timezone
 from shutil import move, disk_usage
 import logging
+import hashlib
 import uuid
 import os
 
+from ..models.email_verification import EmailVerification
 from ..parsers.leaseParser import parse_lease
 from ..utils.get_config import get_config
 from ..schemas.lease import LeaseSchema
@@ -13,6 +16,7 @@ from ..models.lease import Lease
 from ..models.user import User
 from ..extensions import db
 
+from .verification import send_email_verification
 from .forms import LoginForm, SignupForm
 
 
@@ -52,11 +56,18 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.get_one_or_none_by(username=form.username.data)
-        if user and user.check_password(form.password.data or ''):
+
+        if user and not user.email_verified:
+            flash('You must verify your account first. Please check your email (especially the spam folder).')
+
+        elif user and user.check_password(form.password.data or ''):
             remember = request.form.get('remember') == 'y'
             login_user(user, remember=remember)
             return redirect(url_for('account.account'))
-        flash('Invalid credentials')
+
+        else:
+            flash('Invalid credentials')
+
     return render_template('account/login.html', form=form)
 
 
@@ -68,47 +79,51 @@ def register():
         # create the objects
         # because the subforms are technically FlaskForms, tell Pylance to ignore the type and trust us
         user: User = form.personal_info.create_user()  # type: ignore
-        l: Lease = form.apartment_info.create_lease()  # type: ignore
+        # TODO: lease stuff commented out for now, need to re-address later
+        #l: Lease = form.apartment_info.create_lease()  # type: ignore
 
         # fill in the username and password
         user.username = form.register_info.username.data or ''
         user.set_password(form.register_info.password.data or '')
 
         # move the file to the actual upload directory
-        token = form.register_info.upload_token.data or ''
-        if not token:
-            flash('Please upload your lease before submitting the form.')
-            return redirect(url_for('account.register'))
+        # token = form.register_info.upload_token.data or ''
+        # if not token:
+        #     flash('Please upload your lease before submitting the form.')
+        #     return redirect(url_for('account.register'))
 
-        tmp_path = os.path.join(get_config('TMP_DIR'), token)
-        real_path = os.path.join(get_config('LEASES_DIR'), token)
+        # tmp_path = os.path.join(get_config('TMP_DIR'), token)
+        # real_path = os.path.join(get_config('LEASES_DIR'), token)
 
         # Validate storage before moving
-        if not os.path.exists(tmp_path):
-            flash('Uploaded file not found. Please upload the lease again.')
-            return redirect(url_for('account.register'))
+        # if not os.path.exists(tmp_path):
+        #     flash('Uploaded file not found. Please upload the lease again.')
+        #     return redirect(url_for('account.register'))
 
-        file_size = os.path.getsize(tmp_path)
-        ok, msg = validate_storage(get_config('LEASES_DIR'), file_size, get_config('MAX_LEASES_DIR_SIZE'))
-        if not ok:
-            flash(msg)
-            return redirect(url_for('account.register'))
+        # file_size = os.path.getsize(tmp_path)
+        # ok, msg = validate_storage(get_config('LEASES_DIR'), file_size, get_config('MAX_LEASES_DIR_SIZE'))
+        # if not ok:
+        #     flash(msg)
+        #     return redirect(url_for('account.register'))
 
-        move(tmp_path, real_path)
+        # move(tmp_path, real_path)
 
         # add the path to the lease
-        l.path = real_path
+        # l.path = real_path
 
         # link the user and emergency contact
-        user.leases.append(l)
+        # user.leases.append(l)
 
         # add everything to the database
         db.session.add(user)
         db.session.commit()
 
+        send_email_verification(user)
+
         # take the user to the login page
-        flash('Account created! Please log in.')
-        return redirect(url_for('account.login'))
+        # flash('Account created! Please log in.')
+        # return redirect(url_for('account.login'))
+        return redirect(url_for('account.prompt_verification'))
 
     # flash errors to the user
     for errors in form.errors.values():
@@ -199,3 +214,38 @@ def account():
     form = SignupForm.from_user(user)
     form.disable_editing()
     return render_template('account/account.html', user=current_user, form=form)
+
+
+@account_bp.route('/prompt-verification')
+def prompt_verification():
+    return render_template('account/prompt_verification.html')
+
+
+@account_bp.route('/verify-email/<token>')
+def verify_email(token: str) -> str:
+    # we only store the hash, so calculate it
+    token_hash = hashlib.sha256(token.encode()).hexdigest()
+
+    # attempt to get the corresponding EmailVerification entry
+    verification = EmailVerification.get_one_or_none_by(token_hash=token_hash)
+
+    # if we didn't find a matching object, fail
+    if verification is None:
+        return render_template('account/verify_email.html', success=False, message="Invalid verification link.")
+
+    # if we found an object, remove the entry and fail
+    if verification.expires_at < datetime.now(timezone.utc):
+        db.session.delete(verification)
+        db.session.commit()
+        return render_template('account/verify_email.html', success=False, message="This verification link has expired.")
+
+    # mark that the user's email is now verified
+    user: User = verification.user
+    user.email_verified = True
+
+    # remove the verification entry
+    db.session.delete(verification)
+    db.session.commit()
+
+    # success
+    return render_template('account/verify_email.html', success=True, message='Your email is verified!')
