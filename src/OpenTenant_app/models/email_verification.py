@@ -15,5 +15,5 @@ class EmailVerification(ModelBase, IdMixin, TimestampMixin, QueryMixin):
     token_hash: Mapped[str]      = mapped_column(String(64), nullable=False, unique=True)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
-    user_id:    Mapped[int]      = mapped_column(ForeignKey('users.id'), nullable=False, unique=True)
+    user_id:    Mapped[int]      = mapped_column(ForeignKey('users.id', ondelete='CASCADE'), nullable=False, unique=True)
     user:       Mapped['User']   = relationship(back_populates='email_verification')
