@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Email Verified
+{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/register.css') }}">
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/tool_tip.css') }}">
+<link rel="stylesheet" href="{{ url_for('account.static', filename='css/forms.css') }}">
+{% endblock %}
+
+
+{% block content %}
+
+<main class="register-main">
+    <div class="register-box">
+        {% if success %}
+            <p>
+                Your email address has been successfully verified.
+            </p>
+
+            <p>
+                You can now log in to your account.
+            </p>
+
+            <a href="{{ url_for('account.login') }}" class="button">
+                Log In
+            </a>
+
+        {% else %}
+            <p>
+                We couldn't verify your email address.
+            </p>
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+
+            <p>
+                The verification link may have expired or already been used.
+            </p>
+
+            <a href="{{ url_for('account.login') }}" class="button">
+                Return to Login
+            </a>
+        {% endif %}
+    </div>
+</main>
+
+{% endblock %}

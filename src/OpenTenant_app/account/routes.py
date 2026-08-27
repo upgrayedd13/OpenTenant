@@ -16,6 +16,7 @@ from ..models.lease import Lease
 from ..models.user import User
 from ..extensions import db
 
+from .verification import send_email_verification
 from .forms import LoginForm, SignupForm
 
 
@@ -117,9 +118,12 @@ def register():
         db.session.add(user)
         db.session.commit()
 
+        send_email_verification(user)
+
         # take the user to the login page
-        flash('Account created! Please log in.')
-        return redirect(url_for('account.login'))
+        # flash('Account created! Please log in.')
+        # return redirect(url_for('account.login'))
+        return redirect(url_for('account.prompt_verification'))
 
     # flash errors to the user
     for errors in form.errors.values():
@@ -212,6 +216,11 @@ def account():
     return render_template('account/account.html', user=current_user, form=form)
 
 
+@account_bp.route('/prompt-verification')
+def prompt_verification():
+    return render_template('account/prompt_verification.html')
+
+
 @account_bp.route('/verify-email/<token>')
 def verify_email(token: str) -> str:
     # we only store the hash, so calculate it
@@ -222,13 +231,13 @@ def verify_email(token: str) -> str:
 
     # if we didn't find a matching object, fail
     if verification is None:
-        return render_template('auth/verify_email.html', success=False, message="Invalid verification link.")
+        return render_template('account/verify_email.html', success=False, message="Invalid verification link.")
 
     # if we found an object, remove the entry and fail
     if verification.expires_at < datetime.now(timezone.utc):
         db.session.delete(verification)
         db.session.commit()
-        return render_template('auth/verify_email.html', success=False, message="This verification link has expired.")
+        return render_template('account/verify_email.html', success=False, message="This verification link has expired.")
 
     # mark that the user's email is now verified
     user: User = verification.user
@@ -239,4 +248,4 @@ def verify_email(token: str) -> str:
     db.session.commit()
 
     # success
-    return render_template('auth/verify_email.html', success=True, message='Your email is verified!')
+    return render_template('account/verify_email.html', success=True, message='Your email is verified!')

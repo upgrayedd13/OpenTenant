@@ -34,12 +34,12 @@ def fmt_timedelta(delta: timedelta) -> str:
     return ', '.join(parts) or '0 seconds'
 
 
-def send_email_verification(user: User, expiration_time: timedelta=timedelta(minutes=30)) -> None:
+def send_email_verification(user: User, time_til_expiration: timedelta=timedelta(minutes=15)) -> None:
     # create token and hash of token
     token, token_hash = create_verification_token()
 
     # create the DB entry
-    expiration_time = datetime.now(timezone.utc) + expiration_time
+    expiration_time = datetime.now(timezone.utc) + time_til_expiration
     verification = EmailVerification(user_id=user.id, token_hash=token_hash, expires_at=expiration_time)
 
     # put the email verification entry into the DB
@@ -47,7 +47,7 @@ def send_email_verification(user: User, expiration_time: timedelta=timedelta(min
     db.session.commit()
 
     # generate authentication URL
-    verification_url = url_for('auth.verify_email', token=token, _external=True)
+    verification_url = url_for('account.verify_email', token=token, _external=True)
 
     # create email
     subject = 'LPM Tenant Union Email Verification'
@@ -57,7 +57,7 @@ def send_email_verification(user: User, expiration_time: timedelta=timedelta(min
     msg.body  = f'Hello {user.name},\n\n'
     msg.body +=  'Please verify your email address by clicking the link below:\n\n'
     msg.body += f'{verification_url}\n\n'
-    msg.body += f'This link will expire in {fmt_timedelta(expiration_time)}.\n\n'
+    msg.body += f'This link will expire in {fmt_timedelta(time_til_expiration)}.\n\n'
     msg.body +=  'If you didn\'t create an account, you can safely ignore this email.\n'
 
     # send email
