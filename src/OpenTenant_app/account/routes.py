@@ -55,11 +55,18 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.get_one_or_none_by(username=form.username.data)
-        if user and user.check_password(form.password.data or ''):
+
+        if user and not user.email_verified:
+            flash('You must verify your account first. Please check your email (especially the spam folder).')
+
+        elif user and user.check_password(form.password.data or ''):
             remember = request.form.get('remember') == 'y'
             login_user(user, remember=remember)
             return redirect(url_for('account.account'))
-        flash('Invalid credentials')
+
+        else:
+            flash('Invalid credentials')
+
     return render_template('account/login.html', form=form)
 
 
