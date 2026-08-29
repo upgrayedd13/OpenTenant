@@ -5,6 +5,7 @@ import requests
 from ..models.apartment_inventory_snapshot import ApartmentInventorySnapshot
 from ..models.apartment_unit_snapshot import ApartmentUnitSnapshot
 from ..schemas.apartment_snapshot import ApartmentSnapshotSchema
+from ..models.apartment_unit import ApartmentUnit
 
 
 def fetch_raw_apartment_data() -> Any:
@@ -74,17 +75,31 @@ def get_apartment_snapshot() -> ApartmentInventorySnapshot:
     # make the request
     raw_data = fetch_raw_apartment_data()
 
+    # TODO: change parsing to account for ApartmentUnit
     # Use the schema to validate and parse the raw data
     snapshot_params, parsed_units = ApartmentSnapshotSchema.parse_snapshot(raw_data)
 
-    snapshot = ApartmentInventorySnapshot(
+    inventory_snapshot = ApartmentInventorySnapshot(
         snapshot_time=datetime.now(timezone.utc),
-        **snapshot_params,
+        raw_data=snapshot_params['raw_data'],
     )
 
-    # create model instances from the parsed unit data
     for unit_data in parsed_units:
-        snapshot.units.append(ApartmentUnitSnapshot(**unit_data))
+        unit = ApartmentUnit.get_one_or_none_by(unit_id=unit_data['unit_id'])
+
+        if unit is None:
+            unit = ApartmentUnit(
+                unit_id=unit_data['unit_id'],
+                unit_num=unit_data['unit_num'],
+                sq_footage=unit_data['sq_footage'],
+            )
+
+        ApartmentUnitSnapshot(
+            price=unit_data['price'],
+            date_available=unit_data['date_available'],
+            unit=unit,
+            snapshot=inventory_snapshot,
+        )
 
     # return data
-    return snapshot
+    return inventory_snapshot
