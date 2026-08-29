@@ -16,4 +16,11 @@
     --text-color-light: white;
 
     --shadow-color: rgba(0,0,0,0.1);
+
+    --border-radius: 4px;
+
+    --breakpoint-sm: 480px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
 }

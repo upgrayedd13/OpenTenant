@@ -2,6 +2,8 @@
 <header>
     <a href="{{ url_for('main.homepage') }}" class="logo">LPM Tenants Union</a>
 
+    <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+
     <nav>
         {% if current_user.is_authenticated and current_user.is_admin() %}
             <a href="{{ url_for('admin.admin') }}" class="admin">Admin</a>
@@ -33,13 +35,13 @@
 
         <a href="{{ url_for('account.register') }}">Register</a>
 
-        <!-- <div class="dropdown">
+        {# <div class="dropdown">
             <div class="dropdown-btn">Language</div>
             <div class="dropdown-menu">
                 <a href="#" onclick="setLanguage('English')">English</a>
                 <a href="#" onclick="setLanguage('Español')">Español</a>
                 <a href="#" onclick="setLanguage('Soomaali')">Soomaali</a>
             </div>
-        </div> -->
+        </div> #}
     </nav>
 </header>

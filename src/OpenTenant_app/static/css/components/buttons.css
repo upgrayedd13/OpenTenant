@@ -9,6 +9,22 @@
     border: none;
     cursor: pointer;
     transition: background 0.2s;
+    min-height: 44px;
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: var(--border-radius);
+}
+
+@media (max-width: 768px) {
+    .login-btn,
+    .account-btn,
+    .submit-btn,
+    .uploadLease-btn,
+    .admin-btn,
+    .bug-btn {
+        width: 100%;
+        min-height: 48px;
+    }
 }
 
 .login-btn:hover,
@@ -22,8 +38,6 @@
 
 .submit-btn,
 .uploadLease-btn {
-    padding: 12px;
-    font-size: 16px;
     width: 100%;
 }
 

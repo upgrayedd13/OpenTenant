@@ -1,7 +1,13 @@
 .form-row {
     display: flex;
-    gap: 40px;
+    gap: 16px;
     margin-bottom: 25px;
+}
+
+@media (min-width: 768px) {
+    .form-row {
+        gap: 40px;
+    }
 }
 
 .form-group {
@@ -20,9 +26,12 @@
 .form-group input {
     border: none;
     border-bottom: 2px solid gray;
-    padding: 6px;
+    padding: 6px 4px;
     font-size: 14px;
     outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
 select {
@@ -34,11 +43,12 @@ select {
     font-size: 16px;
     padding: 10px 14px;
     border: 2px solid #ccc;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     transition: border 0.2s, box-shadow 0.2s;
     width: 100%;
     outline: none;
+    min-height: 44px;
 }
 
 /* Hover and focus states */

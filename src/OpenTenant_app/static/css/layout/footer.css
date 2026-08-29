@@ -1,17 +1,20 @@
 footer {
     background-color: var(--header-color);
-    height: 80px;
+    height: auto;
+    min-height: 60px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    padding: 12px 24px;
     font-size: 13px;
 }
 
 footer a {
     color: var(--text-main);
     text-decoration: none;
+    display: inline-block;
 }
 
 footer a:hover {
@@ -19,9 +22,9 @@ footer a:hover {
 }
 
 footer .row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
 .legal {
@@ -31,4 +34,62 @@ footer .row {
     text-align: center;
     padding: 6px 0;
     font-size: 12px;
+}
+
+/* Hamburger view (376-768px) - keep horizontal and compact */
+@media (min-width: 376px) and (max-width: 768px) {
+    footer {
+        flex-direction: row;
+        padding: 12px 24px;
+    }
+
+    footer a {
+        display: inline-block;
+    }
+
+    footer .row {
+        display: flex;
+        gap: 8px;
+    }
+}
+
+/* True mobile (≤375px) - stack vertically */
+@media (max-width: 375px) {
+    footer {
+        flex-direction: column;
+        padding: 20px 16px;
+        gap: 16px;
+        height: auto;
+    }
+
+    footer a {
+        display: block;
+        text-align: center;
+    }
+
+    footer .row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        width: 100%;
+    }
+}
+
+/* Desktop (≥768px) */
+@media (min-width: 768px) {
+    footer {
+        height: 80px;
+        flex-direction: row;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 40px;
+    }
+
+    footer a {
+        display: inline;
+    }
+
+    footer .row {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
 }
