@@ -119,15 +119,17 @@ nav a.admin.active {
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+        transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
         z-index: 100;
         opacity: 0;
+        transform: translateY(-10px);
     }
 
     nav.active {
         display: flex;
         max-height: 500px;
         opacity: 1;
+        transform: translateY(0);
     }
 
     nav a,
@@ -163,27 +165,28 @@ nav a.admin.active {
         padding-left: 16px;
         padding-right: 16px;
         background-color: rgba(0,0,0,0.03);
-        transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+        transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
         opacity: 0;
     }
 
-.dropdown.active .dropdown-menu {
-    max-height: 500px;
-    opacity: 1;
-}
+    .dropdown.active .dropdown-menu {
+        display: flex;
+        max-height: 500px;
+        opacity: 1;
+    }
 
     .dropdown-menu a {
         padding: 10px 12px;
     }
 
     .dropdown-btn:hover {
-        background-color: initial;
-        border-radius: initial;
+        background-color: var(--header-color-hover);
+        border-radius: var(--border-radius);
     }
 
     .dropdown-menu a:hover {
-        background-color: initial;
-        color: initial;
+        background-color: var(--primary-color);
+        color: var(--text-color-light);
     }
 }
 
