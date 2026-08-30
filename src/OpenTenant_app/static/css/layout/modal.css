@@ -5,8 +5,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
-    /* Hidden by default */
+    padding: 16px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -20,11 +19,23 @@
 .modal {
     background: white;
     padding: 1.5rem;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     max-width: 400px;
     width: 90%;
     transform: translateY(10px);
     transition: transform 0.3s ease;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .modal {
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+        border-radius: var(--border-radius);
+        height: calc(100vh - 32px);
+    }
 }
 
 .openModal {
@@ -42,6 +53,11 @@
     font-size: 18pt;
     cursor: pointer;
     line-height: 1;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .close-btn:hover {

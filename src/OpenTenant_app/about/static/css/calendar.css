@@ -352,3 +352,77 @@
 .event-modal-actions:empty {
     display: none;
 }
+
+@media (max-width: 768px) {
+    .calendar-header {
+        flex-wrap: wrap;
+        padding: 0.75rem 0.5rem 0.5rem 0.5rem;
+        gap: 0.5rem;
+    }
+    
+    .month-label-btn {
+        padding: 6px 12px;
+        font-size: 0.95rem;
+    }
+    
+    .calendar-grid {
+        padding: 0;
+        gap: 0;
+    }
+    
+    .cal-nav-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .month-picker {
+        width: 90%;
+        left: 5%;
+    }
+    
+    .day {
+        min-height: 90px;
+        padding: 2px;
+    }
+    
+    .event {
+        font-size: 0.7em;
+        padding: 1px 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .calendar-header {
+        padding: 0.5rem 0.25rem 0.25rem 0.25rem;
+    }
+    
+    .month-label-btn {
+        padding: 5px 10px;
+        font-size: 0.9rem;
+    }
+    
+    .cal-nav-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+    
+    .month-label-caret {
+        font-size: 8px;
+    }
+    
+    .day {
+        min-height: 70px;
+        padding: 1px;
+    }
+    
+    .day-number {
+        font-size: 0.85rem;
+    }
+    
+    .event {
+        font-size: 0.65em;
+        padding: 1px 2px;
+        margin-top: 2px;
+    }
+}

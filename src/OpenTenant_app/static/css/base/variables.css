@@ -1,4 +1,7 @@
 :root {
+    /* ================================================== */
+    /* COLOR TOKENS */
+    /* ================================================== */
     --primary-color: #192945;         /* lpm blue for legal footer, dev report */
     --primary-color-hover: #58899d;
 
@@ -16,4 +19,93 @@
     --text-color-light: white;
 
     --shadow-color: rgba(0,0,0,0.1);
+
+    /* ================================================== */
+    /* SPACING TOKENS (8px base grid) */
+    /* ================================================== */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+    --space-3xl: 64px;
+
+    /* ================================================== */
+    /* LAYOUT TOKENS */
+    /* ================================================== */
+    --container-max: 1200px;
+    --container-padding: 1rem;
+
+    /* ================================================== */
+    /* COMPONENT SIZES */
+    /* ================================================== */
+    --min-touch-target: 44px;
+    --header-height: 60px;
+
+    /* ================================================== */
+    /* BORDER RADIUS */
+    /* ================================================== */
+    --radius-sm: 2px;
+    --radius-md: 4px;
+    --radius-lg: 8px;
+    --radius-full: 9999px;
+
+    /* ================================================== */
+    /* TYPOGRAPHY */
+    /* ================================================== */
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-2xl: 24px;
+
+    /* ================================================== */
+    /* TRANSITIONS */
+    /* ================================================== */
+    --transition-fast: 0.15s;
+    --transition-normal: 0.3s;
+    --transition-slow: 0.5s;
+
+    /* ================================================== */
+    /* BREAKPOINTS */
+    /* ================================================== */
+    --breakpoint-sm: 480px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
+}
+
+/* Tablet adjustments */
+@media (max-width: 1023px) {
+    :root {
+        --container-padding: 0.75rem;
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    :root {
+        --space-md: 12px;
+        --space-lg: 20px;
+        --space-xl: 24px;
+        --space-2xl: 32px;
+        --container-padding: 0.75rem;
+        --font-size-lg: 16px;
+        --font-size-xl: 18px;
+    }
+}
+
+/* Small mobile adjustments */
+@media (max-width: 480px) {
+    :root {
+        --space-md: 10px;
+        --space-lg: 16px;
+        --space-xl: 20px;
+        --space-2xl: 24px;
+        --container-padding: 0.5rem;
+        --font-size-lg: 15px;
+        --font-size-xl: 16px;
+    }
 }
