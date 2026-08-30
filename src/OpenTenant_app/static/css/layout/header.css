@@ -108,7 +108,7 @@ nav a.admin.active {
     }
 
     nav {
-        display: none;
+        display: flex;
         position: absolute;
         top: 100%;
         left: 0;
@@ -121,17 +121,18 @@ nav a.admin.active {
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, transform 0.5s ease-in-out, pointer-events 0.5s ease-in-out;
         z-index: 100;
         opacity: 0;
         transform: translateY(-10px);
+        pointer-events: none;
     }
 
     nav.active {
-        display: flex;
         max-height: 500px;
         opacity: 1;
         transform: translateY(0);
+        pointer-events: auto;
     }
 
     nav a,
