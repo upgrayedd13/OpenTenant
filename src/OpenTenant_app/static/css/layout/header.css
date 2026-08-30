@@ -148,6 +148,7 @@ nav a.admin.active {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        border-radius: var(--border-radius);
     }
 
     .dropdown-btn.active {
@@ -177,11 +178,11 @@ nav a.admin.active {
 
     .dropdown-menu a {
         padding: 10px 12px;
+        border-radius: var(--border-radius);
     }
 
     .dropdown-btn:hover {
         background-color: var(--header-color-hover);
-        border-radius: var(--border-radius);
     }
 
     .dropdown-menu a:hover {
