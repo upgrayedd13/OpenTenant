@@ -18,36 +18,65 @@ Email Verified
 <main class="register-main">
     <div class="register-box">
         {% if success %}
-            <p>
-                Your email address has been successfully verified.
-            </p>
-
-            <p>
-                You can now log in to your account.
-            </p>
-
-            <a href="{{ url_for('account.login') }}" class="button">
-                Log In
-            </a>
-
+            <p>{{ message|safe }}</p>
         {% else %}
-            <p>
-                We couldn't verify your email address.
-            </p>
+            <p>We couldn't verify your email address.</p>
 
-            {% if error %}
-                <p class="error">{{ error }}</p>
+            {% if message %}
+                <p class="error">{{ message|safe }}</p>
             {% endif %}
 
-            <p>
-                The verification link may have expired or already been used.
-            </p>
+            {% if email %}
+                <button type="button" id="resend-verification" class="button">
+                    Resend Verification
+                </button>
 
-            <a href="{{ url_for('account.login') }}" class="button">
-                Return to Login
-            </a>
+                <p id="resend-message"></p>
+            {% endif %}
         {% endif %}
+
+        <a href="{{ url_for('account.login') }}" class="button">
+            Return to Login
+        </a>
     </div>
 </main>
+
+{% if not success and email %}
+<script>
+const resendButton = document.getElementById('resend-verification');
+const resendMessage = document.getElementById('resend-message');
+
+resendButton.addEventListener('click', async () => {
+    resendButton.disabled = true;
+    resendButton.textContent = 'Sending...';
+    resendMessage.textContent = '';
+
+    try {
+        const response = await fetch(
+            '{{ url_for("account.resend_verification") }}',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: {{ email|tojson }}
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        resendMessage.textContent = data.message;
+
+    } catch (error) {
+        resendMessage.textContent = 'Something went wrong. Please try again later.';
+    } finally {
+        resendButton.disabled = false;
+        resendButton.textContent = 'Resend Verification';
+    }
+});
+</script>
+{% endif %}
 
 {% endblock %}

@@ -16,7 +16,7 @@ from ..models.lease import Lease
 from ..models.user import User
 from ..extensions import db
 
-from .verification import send_email_verification
+from .verification import create_and_send_email_verification
 from .forms import LoginForm, SignupForm
 
 
@@ -118,12 +118,17 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        send_email_verification(user)
+        try:
+            create_and_send_email_verification(user)
+        except Exception:
+            message = 'Account created, but failed to send verification email!'
+            logger.exception(f'Failed to send email to {user.email}')
+            return render_template('account/verify_email.html', success=False, message=message, email=user.email)
 
-        # take the user to the login page
-        # flash('Account created! Please log in.')
-        # return redirect(url_for('account.login'))
-        return redirect(url_for('account.prompt_verification'))
+        # take the user to the page that prompts them to validate their email
+        message =  f'Verification email sent to {user.email}! Please check your email and click the link in it.<br>'
+        message += 'Don\'t forget to check your spam folder!'
+        return render_template('account/verify_email.html', success=True, message=message)
 
     # flash errors to the user
     for errors in form.errors.values():
@@ -216,9 +221,27 @@ def account():
     return render_template('account/account.html', user=current_user, form=form)
 
 
-@account_bp.route('/prompt-verification')
-def prompt_verification():
-    return render_template('account/prompt_verification.html')
+@account_bp.route('/resend-verification', methods=['POST'])
+def resend_verification():
+    data = request.get_json(silent=True) or {}
+    email = data.get('email')
+
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+
+    # generic message that doesn't reveal whether an account exists
+    msg = f'If {email} is associated with an unverified account, an email has been sent to it.'
+
+    user = User.get_one_or_none_by(email=email)
+    if user is None or user.email_verified:
+        return jsonify({'message': msg})
+
+    try:
+        create_and_send_email_verification(user)
+    except Exception:
+        logger.exception(f'Failed to resend verification email to {user.email}')
+
+    return jsonify({'message': msg})
 
 
 @account_bp.route('/verify-email/<token>')
@@ -231,16 +254,24 @@ def verify_email(token: str) -> str:
 
     # if we didn't find a matching object, fail
     if verification is None:
-        return render_template('account/verify_email.html', success=False, message="Invalid verification link.")
+        return render_template('account/verify_email.html', success=False, message='Invalid verification link. It may have been used already.')
+
+    # get the corresponding user
+    user: User = verification.user
+
+    # if the user is somehow already verified
+    if user.email_verified:
+        db.session.delete(verification)
+        db.session.commit()
+        return render_template('account/verify_email.html', success=True, message='Your email address is already verified.')
 
     # if we found an object, remove the entry and fail
     if verification.expires_at < datetime.now(timezone.utc):
         db.session.delete(verification)
         db.session.commit()
-        return render_template('account/verify_email.html', success=False, message="This verification link has expired.")
+        return render_template('account/verify_email.html', success=False, email=user.email, message='This verification link has expired.')
 
     # mark that the user's email is now verified
-    user: User = verification.user
     user.email_verified = True
 
     # remove the verification entry
@@ -248,4 +279,6 @@ def verify_email(token: str) -> str:
     db.session.commit()
 
     # success
-    return render_template('account/verify_email.html', success=True, message='Your email is verified!')
+    message =  'Your email address has been successfully verified.<br>'
+    message += 'You can now log in to your account.'
+    return render_template('account/verify_email.html', success=True, message=message)

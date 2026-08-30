@@ -34,7 +34,13 @@ def fmt_timedelta(delta: timedelta) -> str:
     return ', '.join(parts) or '0 seconds'
 
 
-def send_email_verification(user: User, time_til_expiration: timedelta=timedelta(minutes=15)) -> None:
+def create_and_send_email_verification(user: User, time_til_expiration: timedelta=timedelta(minutes=15)) -> None:
+    # remove any existing verification for this user
+    existing = EmailVerification.get_one_or_none_by(user_id=user.id)
+    if existing is not None:
+        db.session.delete(existing)
+        db.session.flush()
+
     # create token and hash of token
     token, token_hash = create_verification_token()
 
