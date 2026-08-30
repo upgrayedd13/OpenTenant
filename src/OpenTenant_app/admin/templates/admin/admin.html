@@ -4,11 +4,9 @@
 Admin
 {% endblock %}
 
-
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin.css') }}">
 {% endblock %}
-
 
 {% block content %}
 
@@ -17,13 +15,14 @@ Admin
         <div class="admin-panel">
             <div class="admin-column">
                 <button class="admin-btn">View Property Map</button>
-                <button class="admin-btn">Approve User Accounts</button>
+                <a class="admin-btn" href="{{ url_for('admin.modify_calendar') }}">Modify Calendar</a>
             </div>
 
             <div class="admin-column">
+                <button class="admin-btn">Approve User Accounts</button>
                 <button class="admin-btn">Data Visualizations</button>
-                <a class="admin-btn" href="{{ url_for('admin.modify_calendar') }}">Modify Calendar</a>
                 <a class="admin-btn" href="{{ url_for('admin.db_edit_tool') }}">Modify Database</a>
+                <a class="admin-btn" href="{{ url_for('admin.create_bot_account') }}">Create Bot Account</a>
             </div>
         </div>
     </div>
