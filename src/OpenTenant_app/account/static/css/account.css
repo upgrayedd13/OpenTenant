@@ -9,6 +9,7 @@
 .account-btn {
     padding: var(--space-md);
     font-size: var(--font-size-md);
+    border-radius: var(--radius-md);
 }
 
 .account-main {
@@ -29,6 +30,7 @@
     display: flex;
     justify-content: space-between;
     gap: var(--space-xl);
+    border-radius: var(--radius-md);
 }
 
 .account-left {
