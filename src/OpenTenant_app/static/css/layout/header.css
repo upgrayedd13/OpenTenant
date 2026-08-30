@@ -45,6 +45,7 @@ nav a,
     padding: 8px 10px;
     transition: background 0.2s;
     cursor: pointer;
+    border-radius: 4px;
 }
 
 nav a.active {
@@ -83,6 +84,7 @@ nav a.admin.active {
     padding: 10px;
     text-decoration: none;
     color: var(--text-color-main);
+    border-radius: 4px;
 }
 
 .dropdown-menu a:hover {
@@ -195,6 +197,5 @@ nav a.admin.active {
     nav a:hover,
     .dropdown-btn:hover {
         background-color: var(--header-color-hover);
-        border-radius: 4px;
     }
 }
