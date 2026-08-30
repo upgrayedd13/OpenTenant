@@ -45,6 +45,7 @@
 
 .register-group {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
@@ -52,6 +53,8 @@
 
 .register-group label {
     font-size: var(--font-size-md);
+    overflow-wrap: break-word;
+    word-wrap: break-word;
     font-weight: 500;
     color: var(--text-color-main);
 }
@@ -120,6 +123,13 @@
         width: 0.8rem;
         height: 0.8rem;
         border-width: 1.5px;
+    }
+}
+
+@media (max-width: 768px) {
+    .password-row {
+        flex-direction: column;
+        gap: var(--space-lg);
     }
 }
 
