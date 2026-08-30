@@ -4,35 +4,35 @@
     justify-content: center;
     align-items: center;
     background-color: var(--background-color);
-    padding: 20px;
+    padding: var(--space-md);
 }
 
 .login-box {
     background-color: var(--box-background-color);
-    padding: 40px;
+    padding: var(--space-xl);
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    min-width: 250px;
-    box-shadow: 0 4px 10px var(--shadow-color);
+    gap: var(--space-md);
+    min-width: unset;
+    box-shadow: 0 var(--space-sm) var(--space-md) var(--shadow-color);
 }
 
 .login-box label {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--text-color-main);
 }
 
 .login-box input {
-    padding: 8px 10px;
-    font-size: 14px;
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
     border: 1px solid #ccc;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
 }
 
 .login-btn {
-    padding: 10px;
-    font-size: 15px;
-    border-radius: 3px;
+    padding: var(--space-md);
+    font-size: var(--font-size-md);
+    border-radius: var(--radius-sm);
 }
 
 @media (max-width: 768px) {
@@ -41,14 +41,14 @@
     }
     
     .login-box {
-        padding: 30px 24px;
+        padding: var(--space-xl) var(--space-lg);
         min-width: unset;
         width: 100%;
         max-width: 350px;
     }
     
     .login-box input {
-        padding: 10px 12px;
+        padding: var(--space-md) var(--space-lg);
         min-height: 44px;
     }
     
@@ -59,24 +59,24 @@
 
 @media (max-width: 480px) {
     .login-main {
-        padding: 12px;
+        padding: var(--space-md);
     }
     
     .login-box {
-        padding: 24px 20px;
+        padding: var(--space-lg) var(--space-md);
     }
     
     .login-box label {
-        font-size: 13px;
+        font-size: var(--font-size-xs);
     }
     
     .login-box input {
-        font-size: 13px;
-        padding: 10px 10px;
+        font-size: var(--font-size-xs);
+        padding: var(--space-md);
     }
     
     .login-btn {
-        padding: 12px;
-        font-size: 14px;
+        padding: var(--space-md);
+        font-size: var(--font-size-sm);
     }
 }

@@ -1,35 +1,35 @@
 .doc-layout {
     display: flex;
     align-items: flex-start;
-    gap: 1.5rem;
+    gap: var(--space-lg);
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: var(--space-xl) var(--space-md);
     width: 100%;
     box-sizing: border-box;
 }
 
 .doc-toc {
     position: sticky;
-    top: 2rem;
+    top: var(--space-xl);
     width: 230px;
     flex-shrink: 0;
     background: #fff;
     border-radius: 6px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-    padding: 1rem 0.75rem;
-    max-height: calc(100vh - 4rem);
+    padding: var(--space-md) var(--space-sm);
+    max-height: calc(100vh - var(--space-2xl));
     overflow-y: auto;
     display: block;
 }
 
 .toc-title {
-    font-size: 0.7rem;
+    font-size: var(--font-size-xs);
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: #888;
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 var(--space-xs) 0;
     padding: 0 0.25rem;
 }
 
@@ -43,7 +43,7 @@
 #toc-list a {
     display: block;
     padding: 0.2rem 0.25rem;
-    font-size: 0.78rem;
+    font-size: 0.85rem;
     color: #444;
     text-decoration: none;
     border-radius: 3px;
@@ -75,7 +75,7 @@
 
 #toc-list li {
     list-style: none;
-    margin: 0.25rem 0;
+    margin: var(--space-xs) 0;
 }
 
 #toc-list li[data-level="2"] {
@@ -83,7 +83,7 @@
 }
 
 #toc-list li[data-level="3"] {
-    margin-left: 1.5rem;
+    margin-left: var(--space-lg);
 }
 
 @media (max-width: 768px) {
@@ -101,11 +101,11 @@
     }
     
     .toc-title {
-        font-size: 0.65rem;
+        font-size: 0.75rem;
     }
     
     #toc-list a {
-        font-size: 0.72rem;
+        font-size: 0.8rem;
         padding: 0.15rem 0.2rem;
     }
 }

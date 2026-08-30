@@ -2,13 +2,13 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--space-md);
     align-items: stretch;
 }
 
 .account-btn {
-    padding: 18px;
-    font-size: 16px;
+    padding: var(--space-md);
+    font-size: var(--font-size-md);
 }
 
 .account-main {
@@ -23,12 +23,12 @@
 .account-box {
     background-color: var(--box-background-color);
     width: 90%;
-    max-width: 1200px;
-    min-height: 500px;
-    padding: 30px;
+    max-width: var(--container-max);
+    min-height: auto;
+    padding: var(--space-xl);
     display: flex;
     justify-content: space-between;
-    gap: 40px;
+    gap: var(--space-xl);
 }
 
 .account-left {
@@ -38,7 +38,7 @@
 .account-left h2 {
     color: var(--text-color-main);
     font-size: 18px;
-    margin-bottom: 20px;
+    margin-bottom: var(--space-md);
 }
 
 @media (max-width: 768px) {
@@ -48,7 +48,7 @@
     
     .account-box {
         flex-direction: column;
-        padding: 20px 16px;
+        padding: var(--space-lg) var(--space-md);
         width: 100%;
     }
     
@@ -63,20 +63,20 @@
     }
     
     .account-left h2 {
-        font-size: 16px;
+        font-size: var(--font-size-md);
         margin-bottom: 16px;
     }
     
     .account-btn {
         padding: 16px;
-        font-size: 15px;
+        font-size: var(--font-size-sm);
         min-height: 44px;
     }
 }
 
 @media (max-width: 480px) {
     .account-main {
-        padding: 12px;
+        padding: var(--space-md);
     }
     
     .account-box {
@@ -84,7 +84,7 @@
     }
     
     .account-left h2 {
-        font-size: 15px;
+        font-size: var(--font-size-sm);
         margin-bottom: 14px;
     }
 }

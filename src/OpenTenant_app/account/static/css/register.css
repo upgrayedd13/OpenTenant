@@ -11,25 +11,25 @@
 .register-box {
     background-color: var(--box-background-color);
     width: 95%;
-    max-width: 1050px;
-    min-height: 520px;
-    padding: 20px 25px;
+    max-width: var(--container-max);
+    min-height: auto;
+    padding: var(--space-lg) var(--space-xl);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
 .register-title {
-    font-size: 18px;
+    font-size: var(--font-size-xl);
     font-weight: bold;
     color: var(--text-color-main);
-    margin-bottom: 25px;
+    margin-bottom: var(--space-lg);
 }
 
 .register-form {
     display: flex;
     justify-content: space-between;
-    gap: 40px;
+    gap: var(--space-xl);
     flex: 1;
 }
 
@@ -39,19 +39,19 @@
 
 .register-row {
     display: flex;
-    gap: 35px;
-    margin-bottom: 35px;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xl);
 }
 
 .register-group {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--space-sm);
 }
 
 .register-group label {
-    font-size: 15px;
+    font-size: var(--font-size-md);
     font-weight: 500;
     color: var(--text-color-main);
 }
@@ -59,19 +59,19 @@
 .register-group input {
     border: none;
     border-bottom: 2px solid gray;
-    padding: 6px;
-    font-size: 15px;
+    padding: var(--space-xs);
+    font-size: var(--font-size-md);
     outline: none;
     text-align: center;
 }
 
 .register-notes {
     flex: 1;
-    font-size: 15px;
+    font-size: var(--font-size-md);
     color: var(--text-color-main);
     display: flex;
     align-items: flex-start;
-    padding-top: 40px;
+    padding-top: var(--space-xl);
     line-height: 1.5;
 }
 
@@ -97,23 +97,23 @@
     }
     
     .register-box {
-        padding: 20px 16px;
+        padding: var(--space-lg) var(--space-md);
         min-height: auto;
     }
     
     .register-title {
-        font-size: 16px;
-        margin-bottom: 20px;
+        font-size: var(--font-size-lg);
+        margin-bottom: var(--space-lg);
     }
     
     .register-form {
         flex-direction: column;
-        gap: 20px;
+        gap: var(--space-md);
     }
     
     .register-notes {
-        padding-top: 15px;
-        font-size: 14px;
+        padding-top: var(--space-md);
+        font-size: var(--font-size-sm);
     }
     
     .spinner {
@@ -125,21 +125,21 @@
 
 @media (max-width: 480px) {
     .register-main {
-        padding: 12px;
+        padding: var(--space-md);
     }
     
     .register-box {
         width: 100%;
-        padding: 16px 12px;
+        padding: var(--space-md) var(--space-sm);
     }
     
     .register-title {
-        font-size: 15px;
-        margin-bottom: 16px;
+        font-size: var(--font-size-md);
+        margin-bottom: var(--space-md);
     }
     
     .register-notes {
-        font-size: 13px;
-        padding-top: 10px;
+        font-size: var(--font-size-xs);
+        padding-top: var(--space-xs);
     }
 }
