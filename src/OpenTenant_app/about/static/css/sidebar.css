@@ -5,6 +5,8 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .doc-toc {
@@ -61,9 +63,14 @@
 }
 
 /* Hide sidebar on small screens */
-@media (max-width: 1050px) {
+@media (max-width: 768px) {
     .doc-toc { display: none; }
-    .doc-layout { padding: 0; }
+    .doc-layout { 
+        padding: 1rem 0.5rem; 
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
 
 #toc-list li {
@@ -77,4 +84,28 @@
 
 #toc-list li[data-level="3"] {
     margin-left: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .doc-layout {
+        padding: 1rem 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .doc-layout {
+        padding: 0.75rem 0.25rem;
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .toc-title {
+        font-size: 0.65rem;
+    }
+    
+    #toc-list a {
+        font-size: 0.72rem;
+        padding: 0.15rem 0.2rem;
+    }
 }

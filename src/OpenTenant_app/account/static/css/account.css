@@ -17,7 +17,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 30px;
+    padding: 20px;
 }
 
 .account-box {
@@ -39,4 +39,52 @@
     color: var(--text-color-main);
     font-size: 18px;
     margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .account-main {
+        padding: 16px;
+    }
+    
+    .account-box {
+        flex-direction: column;
+        padding: 20px 16px;
+        width: 100%;
+    }
+    
+    .account-left {
+        flex: none;
+        width: 100%;
+    }
+    
+    .account-right {
+        flex: none;
+        width: 100%;
+    }
+    
+    .account-left h2 {
+        font-size: 16px;
+        margin-bottom: 16px;
+    }
+    
+    .account-btn {
+        padding: 16px;
+        font-size: 15px;
+        min-height: 44px;
+    }
+}
+
+@media (max-width: 480px) {
+    .account-main {
+        padding: 12px;
+    }
+    
+    .account-box {
+        padding: 16px 12px;
+    }
+    
+    .account-left h2 {
+        font-size: 15px;
+        margin-bottom: 14px;
+    }
 }

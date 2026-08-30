@@ -34,3 +34,49 @@
     font-size: 15px;
     border-radius: 3px;
 }
+
+@media (max-width: 768px) {
+    .login-main {
+        padding: 16px;
+    }
+    
+    .login-box {
+        padding: 30px 24px;
+        min-width: unset;
+        width: 100%;
+        max-width: 350px;
+    }
+    
+    .login-box input {
+        padding: 10px 12px;
+        min-height: 44px;
+    }
+    
+    .login-btn {
+        min-height: 44px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-main {
+        padding: 12px;
+    }
+    
+    .login-box {
+        padding: 24px 20px;
+    }
+    
+    .login-box label {
+        font-size: 13px;
+    }
+    
+    .login-box input {
+        font-size: 13px;
+        padding: 10px 10px;
+    }
+    
+    .login-btn {
+        padding: 12px;
+        font-size: 14px;
+    }
+}

@@ -4,7 +4,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 30px;
+    padding: 20px;
+    overflow-x: hidden;
 }
 
 .register-box {
@@ -88,4 +89,57 @@
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .register-main {
+        padding: 16px;
+    }
+    
+    .register-box {
+        padding: 20px 16px;
+        min-height: auto;
+    }
+    
+    .register-title {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .register-form {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .register-notes {
+        padding-top: 15px;
+        font-size: 14px;
+    }
+    
+    .spinner {
+        width: 0.8rem;
+        height: 0.8rem;
+        border-width: 1.5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-main {
+        padding: 12px;
+    }
+    
+    .register-box {
+        width: 100%;
+        padding: 16px 12px;
+    }
+    
+    .register-title {
+        font-size: 15px;
+        margin-bottom: 16px;
+    }
+    
+    .register-notes {
+        font-size: 13px;
+        padding-top: 10px;
+    }
 }
