@@ -1,0 +1,136 @@
+.bot-account-main {
+    flex: 1;
+    background-color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+.bot-account-box {
+    background-color: var(--box-background-color);
+    width: 100%;
+    max-width: var(--container-max);
+    min-height: auto;
+    padding: var(--space-lg) var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: var(--radius-md);
+}
+
+.bot-account-box h1 {
+    font-size: var(--font-size-xl);
+    font-weight: bold;
+    color: var(--text-color-main);
+    margin-bottom: var(--space-xl);
+    text-align: center;
+}
+
+.bot-account-form {
+    display: flex;
+    gap: var(--space-xl);
+    flex: 1;
+}
+
+.bot-account-fields {
+    flex: 2;
+}
+
+.bot-account-row {
+    display: flex;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+
+.password-row {
+    flex-wrap: wrap;
+}
+
+.bot-account-group {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.bot-account-group label {
+    font-size: var(--font-size-md);
+    font-weight: 500;
+    color: var(--text-color-main);
+}
+
+.bot-account-input {
+    border: none;
+    border-bottom: 2px solid gray;
+    padding: var(--space-xs);
+    font-size: var(--font-size-md);
+    outline: none;
+    background-color: transparent;
+    color: var(--text-color-main);
+}
+
+.submit-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: var(--space-md) var(--space-xl);
+    font-size: var(--font-size-md);
+    font-weight: bold;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    margin-top: var(--space-lg);
+    align-self: center;
+}
+
+.submit-btn:hover {
+    opacity: 0.9;
+}
+
+.error-message {
+    color: #d32f2f;
+    font-size: var(--font-size-sm);
+}
+
+@media (max-width: 768px) {
+    .bot-account-main {
+        padding: 16px;
+    }
+    
+    .bot-account-box {
+        padding: var(--space-lg) var(--space-md);
+    }
+    
+    .bot-account-box h1 {
+        font-size: var(--font-size-lg);
+        margin-bottom: var(--space-lg);
+    }
+    
+    .bot-account-form {
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+    
+    .password-row {
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+}
+
+@media (max-width: 480px) {
+    .bot-account-main {
+        padding: var(--space-md);
+    }
+    
+    .bot-account-box {
+        width: 100%;
+        padding: var(--space-md) var(--space-sm);
+    }
+    
+    .bot-account-box h1 {
+        font-size: var(--font-size-md);
+        margin-bottom: var(--space-md);
+    }
+}

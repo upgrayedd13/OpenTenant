@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create Bot Account
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='css/bot_account.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<main class="bot-account-main">
+    <div class="bot-account-box">
+        <h1>Create Bot Account</h1>
+        
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            
+            <div class="bot-account-form">
+                <div class="bot-account-fields">
+                    <div class="bot-account-row">
+                        <div class="bot-account-group">
+                            <label for="name">{{ form.name.label.text }}</label>
+                            {{ form.name(class="bot-account-input") }}
+                            {% if form.name.errors %}
+                            <span class="error-message">{{ form.name.errors[0] }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="bot-account-group">
+                            <label for="email">{{ form.email.label.text }}</label>
+                            {{ form.email(class="bot-account-input") }}
+                            {% if form.email.errors %}
+                            <span class="error-message">{{ form.email.errors[0] }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="bot-account-row">
+                        <div class="bot-account-group">
+                            <label for="username">{{ form.username.label.text }}</label>
+                            {{ form.username(class="bot-account-input") }}
+                            {% if form.username.errors %}
+                            <span class="error-message">{{ form.username.errors[0] }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="bot-account-row password-row">
+                        <div class="bot-account-group">
+                            <label for="password">{{ form.password.label.text }}</label>
+                            {{ form.password(class="bot-account-input") }}
+                            {% if form.password.errors %}
+                            <span class="error-message">{{ form.password.errors[0] }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="bot-account-group">
+                            <label for="confirmed_password">{{ form.confirmed_password.label.text }}</label>
+                            {{ form.confirmed_password(class="bot-account-input") }}
+                            {% if form.confirmed_password.errors %}
+                            <span class="error-message">{{ form.confirmed_password.errors[0] }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="bot-account-row">
+                        <div class="bot-account-group">
+                            <label for="role">{{ form.role.label.text }}</label>
+                            {{ form.role(class="bot-account-input") }}
+                            {% if form.role.errors %}
+                            <span class="error-message">{{ form.role.errors[0] }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">Create Bot Account</button>
+        </form>
+    </div>
+</main>
+
+{% endblock %}
