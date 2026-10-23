@@ -2,8 +2,11 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 import logging
 
 from ..models.user_role import *
+from ..models.elevator import Elevator, ElevatorStatus
 from ..extensions import db
 from .subforms.bot_account_form import BotAccountForm
+from .forms import ElevatorStatusForm
+from sqlalchemy import select
 
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin', template_folder='templates', static_folder='static', static_url_path='/admin/static')
@@ -42,3 +45,46 @@ def create_bot_account():
         return redirect(url_for('account.login'))
     
     return render_template('admin/create_bot_account.html', form=form)
+
+
+@admin_bp.route('/elevator-status', methods=['GET', 'POST'])
+@minimum_user_role(UserRole.ADMIN)
+def elevator_status():
+    form = ElevatorStatusForm()
+    
+    if request.method == 'GET':
+        elevators = db.session.execute(select(Elevator).order_by(Elevator.car_number)).scalars().all()
+        if elevators:
+            for i, elevator in enumerate(elevators, 1):
+                form_vars = {
+                    f'car_{i}_status': elevator.status.value if hasattr(elevator.status, 'value') else elevator.status,
+                    f'car_{i}_comment': elevator.comment or ''
+                }
+                for key, value in form_vars.items():
+                    setattr(form, key, value)
+    
+    if form.validate_on_submit():
+        car_fields = ['1', '2', '3']
+        
+        for car_num in car_fields:
+            status_value = form[f'car_{car_num}_status'].data
+            comment = form[f'car_{car_num}_comment'].data.strip() if form[f'car_{car_num}_comment'].data else None
+            
+            elevator = db.session.execute(select(Elevator).filter_by(car_number=int(car_num))).scalar_one_or_none()
+            
+            if elevator:
+                elevator.status = ElevatorStatus(status_value)
+                elevator.comment = comment if comment else None
+            else:
+                elevator = Elevator(
+                    car_number=int(car_num),
+                    status=ElevatorStatus(status_value),
+                    comment=comment if comment else None
+                )
+                db.session.add(elevator)
+        
+        db.session.commit()
+        flash('Elevator statuses updated successfully!', 'success')
+        return redirect(url_for('admin.elevator_status'))
+    
+    return render_template('admin/elevator_status.html', form=form)

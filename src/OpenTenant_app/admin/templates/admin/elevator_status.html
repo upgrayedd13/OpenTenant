@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Elevator Status - Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='css/elevator_status.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<main class="elevator-status-admin">
+    <div class="admin-page">
+        <div class="admin-panel">
+            <div class="page-header">
+                <h1 class="page-title">Elevator Status</h1>
+                <p class="page-description">Update the status and notes for each elevator car.</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('admin.elevator_status') }}" id="elevator-form">
+                {{ form.csrf_token }}
+
+                {% for car_num in ['1', '2', '3'] %}
+                    <div class="elevator-form">
+                        <div class="elevator-form-header">
+                            <h2 class="elevator-form-title">Elevator Car {{ car_num }}</h2>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Status
+                                <span class="required">*</span>
+                            </label>
+                            {{ form['car_{}_status'.format(car_num)](class_='form-select') }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Note
+                            </label>
+                            {{ form['car_{}_comment'.format(car_num)](class_='form-textarea', placeholder='Enter a note about this elevator (optional)...', maxlength=160) }}
+                            <div class="form-hint">Maximum 160 characters</div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="submit-section">
+                    <button type="submit" class="submit-btn">Update Elevator Statuses</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

@@ -85,3 +85,8 @@ def sitemap() -> Response:
 @main_bp.route('/health')
 def health() -> Response:
     return Response('OK', status=200)
+
+
+@main_bp.route('/elevator-status')
+def elevator_status() -> str:
+    return render_template('main/elevator_status.html')

@@ -13,6 +13,7 @@ from .extensions import db, login_manager, migrate, mail
 
 from .api.calendar.routes import calendar_api_bp
 from .api.db.routes import db_api_bp
+from .api.elevator.routes import elevator_api_bp
 from .resources.routes import resources_bp
 from .account.routes import account_bp
 from .admin.routes import admin_bp
@@ -50,6 +51,7 @@ def create_app() -> Flask:
     # Register blueprints
     app.register_blueprint(calendar_api_bp)
     app.register_blueprint(db_api_bp)
+    app.register_blueprint(elevator_api_bp)
     app.register_blueprint(resources_bp)
     app.register_blueprint(account_bp)
     app.register_blueprint(admin_bp)

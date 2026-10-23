@@ -27,6 +27,8 @@
             </div>
         </div>
 
+        <a href="{{ url_for('main.elevator_status') }}">Elevator Status</a>
+
         {% if current_user.is_authenticated %}
             <a href="{{ url_for('account.account') }}">Account</a>
         {% else %}

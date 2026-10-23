@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Elevator Status{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('main.static', filename='css/elevator_status.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<main class="elevator-status-main">
+    <div class="elevator-container">
+        <h1 class="page-title">Elevator Status</h1>
+        
+        <div id="elevators" class="elevators-grid">
+            <div class="loading">Loading elevator status...</div>
+        </div>
+    </div>
+</main>
+
+<script type="module" src="{{ url_for('main.static', filename='js/elevator_status.js') }}"></script>
+
+{% endblock %}

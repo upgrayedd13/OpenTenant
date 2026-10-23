@@ -44,6 +44,15 @@ main.admin-main {
     box-sizing: border-box;
 }
 
+/* Grey out admin buttons that aren't functional */
+.admin-btn:is(button) {
+    background-color: #a0a0a0;
+    color: #ffffff;
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
 @media (max-width: 768px) {
     .admin-panel {
         padding: 20px 16px;

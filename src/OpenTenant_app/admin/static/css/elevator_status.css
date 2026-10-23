@@ -1,0 +1,156 @@
+/* Elevator Status Admin Page */
+.elevator-status-admin {
+    flex: 1;
+    padding: 0;
+    display: flex;
+}
+
+/* Page padding for admin-page (avoiding duplicate with admin.css) */
+.elevator-status-admin .admin-page {
+    padding: 40px 20px;
+}
+
+/* Form styles */
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.page-description {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.elevator-form {
+    background-color: var(--box-background-color);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.elevator-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.elevator-form-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.form-label .required {
+    color: #c62828;
+    margin-left: 4px;
+}
+
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    background-color: var(--box-background-color);
+    color: var(--text-primary);
+    box-sizing: border-box;
+}
+
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 88, 158, 0.2);
+}
+
+.form-textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-hint {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+}
+
+.submit-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.submit-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: #00568a;
+}
+
+.submit-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 88, 158, 0.4);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .elevator-status-admin .admin-page {
+        padding: 20px 16px;
+    }
+    
+    .elevator-status-admin .admin-panel {
+        padding: 20px 16px;
+    }
+    
+    .elevator-form {
+        padding: 16px;
+    }
+
+    .elevator-form-title {
+        font-size: 16px;
+    }
+
+    .form-textarea {
+        min-height: 60px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 12px 24px;
+    }
+}
