@@ -14,7 +14,7 @@ class ElevatorStatusForm(FlaskForm):
             ('non-working', 'NON-WORKING'),
             ('reserved', 'RESERVED'),
         ],
-        validators=[DataRequired()]
+        validators=[Optional()]
     )
     car_1_comment = StringField(
         'Car 1 Comment',
@@ -28,7 +28,7 @@ class ElevatorStatusForm(FlaskForm):
             ('non-working', 'NON-WORKING'),
             ('reserved', 'RESERVED'),
         ],
-        validators=[DataRequired()]
+        validators=[Optional()]
     )
     car_2_comment = StringField(
         'Car 2 Comment',
@@ -42,7 +42,7 @@ class ElevatorStatusForm(FlaskForm):
             ('non-working', 'NON-WORKING'),
             ('reserved', 'RESERVED'),
         ],
-        validators=[DataRequired()]
+        validators=[Optional()]
     )
     car_3_comment = StringField(
         'Car 3 Comment',

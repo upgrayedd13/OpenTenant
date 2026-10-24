@@ -34,6 +34,7 @@ class User(ModelBase, UserMixin, IdMixin, TimestampMixin, VersionedMixin, QueryM
 
     leases:             Mapped[list['Lease']] = relationship(back_populates='user', order_by='Lease.start_date')
     email_verification: Mapped['EmailVerification|None'] = relationship(back_populates='user', uselist=False, cascade='all, delete-orphan')
+    elevator_status_history: Mapped[list['ElevatorStatusHistory']] = relationship(back_populates='changed_by_user', cascade='all, delete-orphan')
 
 
     @hybrid_property

@@ -1,8 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import current_user
 import logging
 
 from ..models.user_role import *
 from ..models.elevator import Elevator, ElevatorStatus
+from ..models.elevator_history import ElevatorStatusHistory
 from ..extensions import db
 from .subforms.bot_account_form import BotAccountForm
 from .forms import ElevatorStatusForm
@@ -64,15 +66,42 @@ def elevator_status():
                     setattr(form, key, value)
     
     if form.validate_on_submit():
-        car_fields = ['1', '2', '3']
+        update_all = request.form.get('update_all')
+        
+        if update_all:
+            car_fields = ['1', '2', '3']
+        else:
+            update_car = request.form.get('update_car')
+            car_fields = [update_car] if update_car else []
+        
+        if not car_fields:
+            flash('Please select a car to update.', 'error')
+            return redirect(url_for('admin.elevator_status'))
         
         for car_num in car_fields:
             status_value = form[f'car_{car_num}_status'].data
             comment = form[f'car_{car_num}_comment'].data.strip() if form[f'car_{car_num}_comment'].data else None
             
+            if not status_value:
+                continue
+            
             elevator = db.session.execute(select(Elevator).filter_by(car_number=int(car_num))).scalar_one_or_none()
             
             if elevator:
+                old_status = elevator.status.value if hasattr(elevator.status, 'value') else elevator.status
+                old_comment = elevator.comment
+                
+                if old_status != status_value or old_comment != comment:
+                    history = ElevatorStatusHistory(
+                        elevator_id=elevator.id,
+                        car_number=int(car_num),
+                        old_status=old_status,
+                        new_status=status_value,
+                        changed_by_user_id=current_user.id,
+                        comment=comment if comment else None
+                    )
+                    db.session.add(history)
+                
                 elevator.status = ElevatorStatus(status_value)
                 elevator.comment = comment if comment else None
             else:
@@ -82,6 +111,16 @@ def elevator_status():
                     comment=comment if comment else None
                 )
                 db.session.add(elevator)
+                
+                history = ElevatorStatusHistory(
+                    elevator_id=elevator.id,
+                    car_number=int(car_num),
+                    old_status=None,
+                    new_status=status_value,
+                    changed_by_user_id=current_user.id,
+                    comment=comment if comment else None
+                )
+                db.session.add(history)
         
         db.session.commit()
         flash('Elevator statuses updated successfully!', 'success')

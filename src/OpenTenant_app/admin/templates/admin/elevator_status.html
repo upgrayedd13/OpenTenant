@@ -29,7 +29,6 @@
                         <div class="form-group">
                             <label class="form-label">
                                 Status
-                                <span class="required">*</span>
                             </label>
                             {{ form['car_{}_status'.format(car_num)](class_='form-select') }}
                         </div>
@@ -41,11 +40,15 @@
                             {{ form['car_{}_comment'.format(car_num)](class_='form-textarea', placeholder='Enter a note about this elevator (optional)...', maxlength=160) }}
                             <div class="form-hint">Maximum 160 characters</div>
                         </div>
+
+                        <div class="submit-section">
+                            <button type="submit" name="update_car" value="{{ car_num }}" class="submit-btn">Update Car {{ car_num }}</button>
+                        </div>
                     </div>
                 {% endfor %}
 
                 <div class="submit-section">
-                    <button type="submit" class="submit-btn">Update Elevator Statuses</button>
+                    <button type="submit" name="update_all" value="1" class="submit-btn submit-btn-all">Update All Elevator Statuses</button>
                 </div>
             </form>
         </div>
