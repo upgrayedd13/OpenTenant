@@ -50,17 +50,17 @@ nav a,
 
 nav a.active {
     background-color: var(--header-color-active);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-md);
 }
 
 nav a.admin.active {
     background-color: #4b7c8d;
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-md);
     color: var(--text-color-light);
 }
 
 .dropdown-btn.active {
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-md);
 }
 
 .dropdown {
@@ -77,7 +77,7 @@ nav a.admin.active {
     flex-direction: column;
     z-index: 10;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-md);
 }
 
 .dropdown-menu a {
@@ -151,12 +151,12 @@ nav a.admin.active {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-radius: var(--border-radius);
+        border-radius: var(--radius-md);
     }
 
     .dropdown-btn.active {
         background-color: var(--header-color-active);
-        border-radius: var(--border-radius);
+        border-radius: var(--radius-md);
     }
 
     .dropdown-menu {
@@ -181,7 +181,7 @@ nav a.admin.active {
 
     .dropdown-menu a {
         padding: 10px 12px;
-        border-radius: var(--border-radius);
+        border-radius: var(--radius-md);
     }
 
     .dropdown-btn:hover {

@@ -28,7 +28,7 @@
     cursor: pointer;
     min-width: 44px;
     min-height: 44px;
-    border-radius: var(--border-radius);
+    border-radius: var(--radius-md);
 }
 
 @media (min-width: 768px) {
