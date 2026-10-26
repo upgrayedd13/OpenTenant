@@ -1,5 +1,5 @@
-from wtforms import StringField, PasswordField, BooleanField, FormField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms import StringField, PasswordField, BooleanField, FormField, SubmitField, EmailField
+from wtforms.validators import DataRequired, Email, Length, EqualTo
 from flask_wtf import FlaskForm
 
 from .subforms.apartment_info_form import ApartmentInfoForm
@@ -12,6 +12,24 @@ class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
+
+
+class ForgotPasswordForm(FlaskForm):
+    email = EmailField('Email Address', validators=[DataRequired(), Email()])
+    submit = SubmitField('Send Reset Link')
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('New Password', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password', message='Passwords must match.')])
+    submit = SubmitField('Reset Password')
+
+
+class ChangePasswordForm(FlaskForm):
+    current_password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('new_password', message='Passwords must match.')])
+    submit = SubmitField('Change Password')
 
 
 class SignupForm(FlaskForm):

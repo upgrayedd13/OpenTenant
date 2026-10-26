@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.utils import secure_filename
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from shutil import move, disk_usage
 import logging
 import hashlib
@@ -9,6 +9,7 @@ import uuid
 import os
 
 from ..models.email_verification import EmailVerification
+from ..models.password_reset_token import PasswordResetToken
 from ..parsers.leaseParser import parse_lease
 from ..utils.get_config import get_config
 from ..schemas.lease import LeaseSchema
@@ -16,8 +17,8 @@ from ..models.lease import Lease
 from ..models.user import User
 from ..extensions import db
 
-from .verification import create_and_send_email_verification
-from .forms import LoginForm, SignupForm
+from .verification import create_and_send_email_verification, create_and_send_password_reset
+from .forms import LoginForm, SignupForm, ForgotPasswordForm, ResetPasswordForm, ChangePasswordForm
 
 
 account_bp = Blueprint('account', __name__, url_prefix='/account', template_folder='templates', static_folder='static', static_url_path='/account/static')
@@ -208,6 +209,113 @@ def upload_lease():
 def logout():
     logout_user()
     return redirect(url_for('account.login'))
+
+
+@account_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    form = ForgotPasswordForm()
+    
+    if form.validate_on_submit():
+        email = form.email.data
+        
+        # Get client IP address
+        if request.headers.get('X-Forwarded-For'):
+            client_ip = request.headers.get('X-Forwarded-For').split(',')[0].strip()
+        else:
+            client_ip = request.remote_addr
+        
+        # IP-based rate limiting: max 3 requests per IP per hour
+        one_hour_ago = datetime.now(timezone.utc).replace(microsecond=0) - timedelta(hours=1)
+        ip_reset_count = db.session.query(PasswordResetToken).filter(
+            PasswordResetToken.ip_address == client_ip,
+            PasswordResetToken.expires_at > one_hour_ago
+        ).count()
+        
+        if ip_reset_count >= 3:
+            flash('Too many password reset requests from this location. Please try again later.')
+            return render_template('account/forgot_password.html', form=form)
+        
+        user = User.get_one_or_none_by(email=email)
+        
+        if user is not None:
+            existing_token = PasswordResetToken.get_one_or_none_by(user_id=user.id)
+            if existing_token is not None and existing_token.expires_at > datetime.now(timezone.utc):
+                flash('A password reset link was recently sent to this email. Please wait for it to expire or check your inbox.')
+                return render_template('account/forgot_password.html', form=form)
+            
+            try:
+                create_and_send_password_reset(user, ip_address=client_ip)
+            except Exception:
+                logger.exception(f'Failed to send password reset email to {user.email}')
+        
+        flash('If your email is registered, you will receive a password reset link shortly.')
+        return render_template('account/forgot_password.html', form=form)
+    
+    return render_template('account/forgot_password.html', form=form)
+
+
+@account_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    token_hash = hashlib.sha256(token.encode()).hexdigest()
+    reset_token = PasswordResetToken.get_one_or_none_by(token_hash=token_hash)
+    
+    if reset_token is None:
+        flash('Invalid or expired reset link. Please request a new password reset.')
+        return redirect(url_for('account.forgot_password'))
+    
+    if reset_token.expires_at < datetime.now(timezone.utc):
+        db.session.delete(reset_token)
+        db.session.commit()
+        flash('This password reset link has expired. Please request a new one.')
+        return redirect(url_for('account.forgot_password'))
+    
+    form = ResetPasswordForm()
+    
+    if form.validate_on_submit():
+        new_password = form.password.data
+        
+        try:
+            user = reset_token.user
+            user.set_password(new_password)
+            db.session.delete(reset_token)
+            db.session.commit()
+            
+            flash('Your password has been reset successfully. Please log in with your new password.')
+            return redirect(url_for('account.login'))
+        except Exception:
+            db.session.rollback()
+            logger.exception(f'Failed to reset password for user {reset_token.user_id}')
+            flash('An error occurred while resetting your password. Please try again.')
+            return render_template('account/reset_password.html', form=form, token=token)
+    
+    return render_template('account/reset_password.html', form=form, token=token)
+
+
+@account_bp.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    
+    if form.validate_on_submit():
+        current_password = form.current_password.data
+        new_password = form.new_password.data
+        
+        if not current_user.check_password(current_password):
+            flash('Current password is incorrect.')
+            return render_template('account/change_password.html', form=form)
+        
+        try:
+            current_user.set_password(new_password)
+            db.session.commit()
+            flash('Your password has been changed successfully.')
+            return redirect(url_for('account.account'))
+        except Exception:
+            db.session.rollback()
+            logger.exception('Failed to change password')
+            flash('An error occurred while changing your password. Please try again.')
+            return render_template('account/change_password.html', form=form)
+    
+    return render_template('account/change_password.html', form=form)
 
 
 @account_bp.route('/account')

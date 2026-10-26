@@ -56,6 +56,94 @@
     padding: var(--space-md);
     font-size: var(--font-size-md);
     border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.login-btn:hover {
+    opacity: 0.9;
+}
+
+.login-btn.secondary {
+    background-color: transparent;
+    color: var(--text-color-secondary);
+    border: 1px solid #ccc;
+}
+
+.login-btn.secondary:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.password-fields-wrapper {
+    margin-bottom: var(--space-md);
+}
+
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-input-with-toggle {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-with-toggle input {
+    padding-right: 50px;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color-secondary);
+    z-index: 10;
+}
+
+.password-toggle-btn:hover {
+    color: var(--text-color-main);
+}
+
+.password-toggle-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.button-row {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    align-items: center;
+}
+
+.form-actions {
+    text-align: center;
+    margin-top: var(--space-md);
+}
+
+.forgot-link-container {
+    margin: var(--space-xs) 0 var(--space-sm);
+}
+
+.forgot-link {
+    color: var(--text-color-secondary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    text-align: right;
+    display: block;
+}
+
+.forgot-link:hover {
+    color: var(--text-color-main);
+    text-decoration: underline;
 }
 
 @media (max-width: 768px) {
@@ -76,6 +164,15 @@
     
     .login-btn {
         min-height: var(--min-touch-target);
+    }
+    
+    .button-row {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .button-row button {
+        width: 100%;
     }
 }
 

@@ -15,6 +15,7 @@ from .user_role import UserRole
 if TYPE_CHECKING:
     from .email_verification import EmailVerification
     from .lease import Lease
+    from .password_reset_token import PasswordResetToken
 
 
 logger = logging.getLogger(__name__)
@@ -32,8 +33,9 @@ class User(ModelBase, UserMixin, IdMixin, TimestampMixin, VersionedMixin, QueryM
     pronouns:           Mapped[str|None] = mapped_column(String(20),  nullable=True)
     email_verified:     Mapped[bool]     = mapped_column(Boolean, nullable=False, default=False)
 
-    leases:             Mapped[list['Lease']] = relationship(back_populates='user', order_by='Lease.start_date')
-    email_verification: Mapped['EmailVerification|None'] = relationship(back_populates='user', uselist=False, cascade='all, delete-orphan')
+    leases:                  Mapped[list['Lease']]                 = relationship(back_populates='user', order_by='Lease.start_date')
+    email_verification:      Mapped['EmailVerification|None']      = relationship(back_populates='user', uselist=False, cascade='all, delete-orphan')
+    password_reset_token:    Mapped['PasswordResetToken|None']     = relationship(back_populates='user', uselist=False, cascade='all, delete-orphan')
     elevator_status_history: Mapped[list['ElevatorStatusHistory']] = relationship(back_populates='changed_by_user', cascade='all, delete-orphan')
 
 

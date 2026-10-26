@@ -17,16 +17,60 @@ Login
     <form class="login-box" method="post">
         {{ form.hidden_tag() }}
         <div class="form-field">
-            <label>{{ form.username.label }} {{ form.username(size=32) }}</label>
+            <label>{{ form.username.label }}</label>
+            {{ form.username(size=32) }}
         </div>
-        <div class="form-field">
-            <label>{{ form.password.label }} {{ form.password(size=32) }}</label>
+        <div class="form-field password-input-wrapper">
+            <label>{{ form.password.label }}</label>
+            <div class="password-input-with-toggle">
+                {{ form.password(size=32) }}
+                <button type="button" class="password-toggle-btn" aria-label="Show password">
+                    <svg class="eye-icon closed"><use xlink:href="{{ url_for('static', filename='images/icons/icon-sprite.svg') }}#eye-closed"></use></svg>
+                    <svg class="eye-icon open" style="display: none;"><use xlink:href="{{ url_for('static', filename='images/icons/icon-sprite.svg') }}#eye-open"></use></svg>
+                </button>
+            </div>
         </div>
         <div class="form-field remember-field">
             <label>{{ form.remember.label }} {{ form.remember() }}</label>
         </div>
+        <div class="forgot-link-container">
+            <a href="{{ url_for('account.forgot_password') }}" class="forgot-link">Forgot Password?</a>
+        </div>
         <button class="login-btn" type="submit">Login</button>
     </form>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButtons = document.querySelectorAll('.password-toggle-btn');
+    
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const passwordInput = this.parentElement.querySelector('input');
+            const closedEye = this.querySelector('svg.eye-icon.closed');
+            const openEye = this.querySelector('svg.eye-icon.open');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                closedEye.style.display = 'none';
+                openEye.style.display = 'block';
+            } else {
+                passwordInput.type = 'password';
+                closedEye.style.display = 'block';
+                openEye.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+</function>
+</tool_call>
+<tool_call>
+<function=edit>
+<parameter=filePath>
+/home/hrahn/projects/OpenTenant/src/OpenTenant_app/account/templates/account/change_password.html
 
 {% endblock %}
